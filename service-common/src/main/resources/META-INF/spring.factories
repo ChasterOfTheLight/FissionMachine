@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.devil.fission.machine.auth.service.common.config.ServiceCommonConfig,\
+  com.devil.fission.machine.auth.service.common.config.ServiceFeignConfig,\
+  com.devil.fission.machine.auth.service.common.config.ServiceSwaggerConfig,\
+  com.devil.fission.machine.auth.service.common.nacos.NacosDeRegisterController,\
+  com.devil.fission.machine.auth.service.common.support.GlobalExceptionHandler
