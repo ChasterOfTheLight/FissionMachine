@@ -1,0 +1,57 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.devil.fission</groupId>
+        <artifactId>fission-machine-auth</artifactId>
+        <version>${revision}</version>
+    </parent>
+    
+    <artifactId>fission-machine-auth-service</artifactId>
+    <packaging>jar</packaging>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-service-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-redis-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-auth-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <finalName>auth-service</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <!--deploy 时忽略此model-->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <!--install 时忽略此model-->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

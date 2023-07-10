@@ -1,4 +1,4 @@
-package com.devil.fission.common.security;
+package com.devil.fission.machine.auth.api.enums;
 
 import java.util.Objects;
 

@@ -1,8 +1,8 @@
-package com.devil.fission.common.util;
+package com.devil.fission.machine.auth.service.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.devil.fission.common.security.AuthConstants;
+import com.devil.fission.machine.auth.service.constant.AuthConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -20,6 +20,11 @@ import java.util.Map;
 public class JwtUtils {
     
     public static String secret = "DevilFissionMachine";
+    
+    /**
+     * JWT默认过期时间12(小时) TimeUnit.Second.
+     */
+    public static Long JWT_DEFAULT_TTL = 12 * 3600L;
     
     /**
      * 根据数据生成令牌.
@@ -139,29 +144,6 @@ public class JwtUtils {
      */
     public static String getPlatform(Claims claims) {
         return getValue(claims, AuthConstants.AUTH_USER_PLATFORM);
-    }
-    
-    /**
-     * 根据令牌获取租户id(通过base64获取).
-     *
-     * @param token 令牌
-     */
-    public static String getTenantId(String token) {
-        try {
-            DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim(AuthConstants.AUTH_USER_TENANT_ID).asString();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    /**
-     * 根据令牌获取租户id.
-     *
-     * @param claims 身份信息
-     */
-    public static String getTenantId(Claims claims) {
-        return getValue(claims, AuthConstants.AUTH_USER_TENANT_ID);
     }
     
     /**

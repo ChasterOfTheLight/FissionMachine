@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        namespace: fission-machine
+        server-addr: localhost
+        group: FISSION-MACHINE
