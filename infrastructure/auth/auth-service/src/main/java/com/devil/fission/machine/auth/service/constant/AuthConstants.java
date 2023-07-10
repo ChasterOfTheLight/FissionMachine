@@ -1,4 +1,4 @@
-package com.devil.fission.common.security;
+package com.devil.fission.machine.auth.service.constant;
 
 /**
  * 用户验证常量.
@@ -37,10 +37,5 @@ public class AuthConstants {
      * 用户平台.
      */
     public static final String AUTH_USER_PLATFORM = "authUserPlatform";
-    
-    /**
-     * 租户id.
-     */
-    public static final String AUTH_USER_TENANT_ID = "authUserTenantId";
     
 }
