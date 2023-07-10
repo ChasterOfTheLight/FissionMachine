@@ -28,7 +28,7 @@ public class ServiceFeignConfig {
     }
     
     @Bean
-    public MachineFeignInterceptor tojoyMallFeignInterceptor() {
+    public MachineFeignInterceptor machineFeignInterceptor() {
         return new MachineFeignInterceptor();
     }
     

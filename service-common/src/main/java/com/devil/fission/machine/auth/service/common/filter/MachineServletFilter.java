@@ -50,7 +50,7 @@ public class MachineServletFilter implements Filter {
             // continue filter chain
             chain.doFilter(request, response);
         } catch (Exception e) {
-            LOGGER.error("TojoyMallServletFilter Server failed: ", e);
+            LOGGER.error("MachineServletFilter Server failed: ", e);
         } finally {
             MachineContextHolder.remove();
         }
