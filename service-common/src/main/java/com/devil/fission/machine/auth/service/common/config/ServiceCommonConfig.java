@@ -31,7 +31,7 @@ public class ServiceCommonConfig {
     }
     
     @Bean
-    public FilterRegistrationBean<Filter> tojoyMallServletFilterRegistration(MachineServletFilter filter) {
+    public FilterRegistrationBean<Filter> machineServletFilterRegistration(MachineServletFilter filter) {
         return createFilterRegistration(filter, 7);
     }
     
@@ -49,7 +49,7 @@ public class ServiceCommonConfig {
     }
     
     @Bean
-    public MachineServletFilter tojoyMallServletFilter() {
+    public MachineServletFilter machineServletFilter() {
         return new MachineServletFilter();
     }
     
@@ -60,7 +60,7 @@ public class ServiceCommonConfig {
     
     @Autowired(required = false)
     @ConditionalOnBean(RestTemplate.class)
-    public void tojoyMallRestTemplateInterceptor(RestTemplate restTemplate) {
+    public void machineRestTemplateInterceptor(RestTemplate restTemplate) {
         restTemplate.getInterceptors().add(new MachineRestTemplateInterceptor());
     }
     

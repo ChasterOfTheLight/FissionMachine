@@ -5,12 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.devil.fission</groupId>
-    <artifactId>fission-machine</artifactId>
+    <artifactId>fission-machine-all</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
     
     <modules>
         <module>common</module>
+        <module>framework</module>
+        <module>infrastructure</module>
+        <module>service-common</module>
     </modules>
 
     <properties>
@@ -469,9 +472,26 @@
             </dependency>
 
             <!-- ================================ 共有依赖 (以上) ===================================================== -->
+            
 
             <!-- ================================ 私有依赖 (以下) ===================================================== -->
-
+            
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-service-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-jdbc-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
             <!-- ================================ 私有依赖 (以上) ===================================================== -->
         </dependencies>
     </dependencyManagement>
