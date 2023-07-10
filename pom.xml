@@ -491,6 +491,11 @@
                 <artifactId>fission-machine-jdbc-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-redis-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             
             <!-- ================================ 私有依赖 (以上) ===================================================== -->
         </dependencies>

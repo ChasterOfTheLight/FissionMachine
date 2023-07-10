@@ -12,6 +12,7 @@
     
     <modules>
         <module>jdbc-starter</module>
+        <module>redis-starter</module>
     </modules>
     
 </project>
