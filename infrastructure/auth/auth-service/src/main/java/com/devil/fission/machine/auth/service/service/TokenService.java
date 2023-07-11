@@ -3,7 +3,7 @@ package com.devil.fission.machine.auth.service.service;
 import cn.hutool.core.util.IdUtil;
 import com.devil.fission.machine.auth.api.dto.TokenDto;
 import com.devil.fission.machine.auth.api.dto.VerifyTokenDto;
-import com.devil.fission.machine.auth.service.constant.AuthConstants;
+import com.devil.fission.machine.auth.api.AuthConstants;
 import com.devil.fission.machine.auth.service.entity.TokenEntity;
 import com.devil.fission.machine.auth.service.util.JwtUtils;
 import com.devil.fission.machine.common.Constants;

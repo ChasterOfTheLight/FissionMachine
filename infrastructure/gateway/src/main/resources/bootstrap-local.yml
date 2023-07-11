@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        namespace: fission-machine
+        server-addr: localhost
+        group: FISSION-MACHINE
+        file-extension: yaml

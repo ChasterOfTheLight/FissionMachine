@@ -1,6 +1,7 @@
 package com.devil.fission.machine.common.support;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import com.devil.fission.machine.common.Constants;
 import com.devil.fission.machine.common.util.StringUtils;
 import com.google.gson.Gson;
 
@@ -74,6 +75,15 @@ public class MachineContextHolder {
      * 是否支持请求头.
      */
     public static boolean supportHeader(String headerName) {
+        if (StringUtils.isNotEmpty(headerName)) {
+            return headerName.compareToIgnoreCase(Constants.HEADER_SERVICE_MARK) == 0
+                    || headerName.compareToIgnoreCase(Constants.HEADER_SW_ID) == 0
+                    || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_USER_ID) == 0
+                    || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_USER_NAME) == 0
+                    || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_USER_PLATFORM) == 0
+                    || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_IP) == 0
+                    || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_SOURCE) == 0;
+        }
         return false;
     }
     
