@@ -2,7 +2,7 @@ package com.devil.fission.machine.auth.service.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.devil.fission.machine.auth.service.constant.AuthConstants;
+import com.devil.fission.machine.auth.api.AuthConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
