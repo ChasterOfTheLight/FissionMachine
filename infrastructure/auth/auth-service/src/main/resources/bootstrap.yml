@@ -3,6 +3,6 @@ server:
 
 spring:
   application:
-    name: fission-machine-auth-service
+    name: auth-service
   profiles:
     active: local

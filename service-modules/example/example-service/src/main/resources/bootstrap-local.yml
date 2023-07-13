@@ -1,8 +1,20 @@
 spring:
   cloud:
     nacos:
+      # spring-cloud项目的分布式配置需要放在bootstrap中
       config:
         namespace: fission-machine
         server-addr: localhost
         group: FISSION-MACHINE
         file-extension: yaml
+        shared-configs:
+          # 这块data-id控制台添加的文件data-id必须是与配置文件中配置的data-id保持一致(有后缀名) 估计是nacos设计问题
+          - data-id: common-config.yaml
+            group: ${spring.cloud.nacos.config.group}
+            refresh: true
+      # 服务发现可以也可以放在application中
+      discovery:
+        enabled: true
+        namespace: ${spring.cloud.nacos.config.namespace}
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        group: ${spring.cloud.nacos.config.group}

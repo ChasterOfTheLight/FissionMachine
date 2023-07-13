@@ -3,6 +3,6 @@ server:
 
 spring:
   application:
-    name: fission-machine-example-service
+    name: example-service
   profiles:
     active: local
