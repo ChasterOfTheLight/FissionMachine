@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.devil.fission.machine.example.service.mapper.SysUserMapper">
+    
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.devil.fission.machine.example.service.entity.SysUserEntity" id="sysUserMap">
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userPassword" column="user_password"/>
+        <result property="isEnabled" column="is_enabled"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="lastLoginDate" column="last_login_date"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="updatedBy" column="updated_by"/>
+        <result property="updatedTime" column="updated_time"/>
+    </resultMap>
+
+</mapper>

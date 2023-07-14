@@ -1,2 +1,174 @@
 # FissionMachine
 A machine that meets the requirements of project fission and is suitable for quickly building a Spring Cloud scaffolding project.Using these tools and technologies, you can quickly set up a Spring Cloud project and meet the requirements of project fission, allowing for efficient development and scalability.
+
+## Technology Stack
+
+- JDk1.8
+- Spring Boot2.3
+- Spring Cloud Hoxton
+- Nacos2.X
+- Mybatis Plus3.5.3.1
+- Redisson3.16.7
+- Jetcache2.6.5
+- Hutool5.8.12
+- JWT
+- RabbitMQ
+- Mysql
+- Redis
+
+## Architecture
+
+* **Project Directory**
+
+```text
+FissionMachine （项目根目录）
+  ├─common（公共工具和方法）
+  ├─framework（免配置工具）
+  ├─infrastructure（基建工程）
+  ├─service-common（启动服务公共工具和方法）
+  ├─service-modules（服务工程）
+```
+
+* **Base Process**
+
+```text
+  +---------+
+  | request |
+  +---------+
+       ^
+       |
+       v
+  +---------+          +--------------+
+  | gateway |  < —— >  | auth-service |
+  +---------+          +--------------+
+       ^
+       |
+       v
+  +-----------------+
+  | example-service |
+  +-----------------+
+```
+
+## Common Config
+
+* nacos公共配置common-config.yaml
+```yaml
+server:
+  compression:
+    enabled: true
+    mime-types:
+      - text/xml
+      - application/xml
+      - application/json
+    min-response-size: 2048
+# feign
+feign:
+  sentinel:
+    enabled: true
+  client:
+    config:
+      default:
+        # 连接超时时间
+        connectTimeout: 5000
+        readTimeout: 5000
+  compression:
+    request:
+      enabled: true
+      mime-types:
+        - text/xml
+        - application/xml
+        - application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+      useGzipDecoder: true
+# management
+management:
+  endpoint:
+    health:
+      cache:
+        time-to-live: 5000
+      enabled: true
+# mybatis-plus
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    # 开启打印sql，不配置不打印
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+```
+
+## Gateway Config
+
+* nacos config
+
+```yaml
+# routes config
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: example
+          predicates:
+            - Path=/example/**
+          uri: lb://example-service
+          filters:
+            # 是否对此路由打印接口请求时间（对应RequestTimeGatewayFilterFactory类的实现），true代表打印get参数
+            - RequestTime=true
+            # swagger地址特殊处理，数字代表地址跳过几个/，如1代表：/example/v2/api-docs -> /v2/api-docs
+            - SwaggerPathStripPrefix=3
+
+# white or black List config
+gateway-config:
+  ipBlackList:
+    # ip黑名单配置，配置在此黑名单，无法访问接口
+    - 192.168.1.1
+  uriWhitelist:
+    # uri白名单，配置在此列表的接口不需要走认证逻辑，支持ant类型的uri
+    - /**/v2/api-docs
+```
+
+* 接口文档访问gateway地址的/doc.html
+* 接口文档枚举在gateway枚举类ServerRouteEnum配置
+
+## Version Management
+
+```shell
+# change version
+mvn versions:set -DnewVersion=1.0.0
+```
+
+```shell
+# revert
+mvn versions:revert
+```
+
+## Swagger Use
+
+```yaml
+swagger:
+  enable: true
+  application-name: XXX服务接口
+  application-version: 2.0
+  application-description: XXX服务接口 
+```
+
+## Xss Custom Config
+
+```java
+@Component
+public class ExampleConfig {
+    
+    @Bean
+    public FilterRegistrationBean<Filter> xssFilterRegistration(XssFilter filter) {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>(filter);
+        filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST);
+        filterRegistrationBean.addUrlPatterns("/*");
+        Map<String, String> initParameters = new HashMap<>();
+        // apis not handle xss
+        initParameters.put("exclusions", "/api1,/api2");
+        filterRegistrationBean.setInitParameters(initParameters);
+        filterRegistrationBean.setOrder(6);
+        return filterRegistrationBean;
+    }
+}
+```
