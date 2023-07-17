@@ -172,3 +172,43 @@ public class ExampleConfig {
     }
 }
 ```
+
+## Auth OpenApi Config
+
+```yaml
+machine:
+  auth:
+    access:
+    # 数组，可配置多个
+    - accessKey: your_accessKey
+      accessSecret: your_accessSecret
+      # 访问来源
+      accessSource: business_name
+      # 可选 不配置默认可以访问全部uri
+      accessUriList:
+        - /example
+```
+
+```java
+class SignGen {
+    
+    public String genSign() {
+        // 对参数排序
+        TreeMap<String, String> treeMap = new TreeMap<>();
+        treeMap.put("accessKey", "your_accessKey");
+        String currentTimeMillis = String.valueOf(System.currentTimeMillis());
+        treeMap.put("nonce", "random_or_custom_str");
+        treeMap.put("timestamp", currentTimeMillis);
+        String argStr = treeMap.entrySet().stream().map(Object::toString).collect(Collectors.joining("&"));
+        String accessSecret = "your_accessSecret";
+        String secretStr = argStr + "&accessSecret=" + accessSecret;
+        return DigestUtils.md5DigestAsHex(secretStr.getBytes(StandardCharsets.UTF_8)).toUpperCase(Locale.ROOT);
+        // 将生成的sign，accessKey，nonce，timestamp放到请求头,请求头分别为：
+        // x-auth-access-key
+        // x-auth-timestamp
+        // x-auth-nonce
+        // x-auth-sign
+    }
+    
+}
+```
