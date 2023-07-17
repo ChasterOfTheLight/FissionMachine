@@ -189,6 +189,8 @@ machine:
         - /example
 ```
 
+- **sign generate rule**
+
 ```java
 class SignGen {
     
@@ -211,4 +213,34 @@ class SignGen {
     }
     
 }
+```
+
+## Jdbc Config
+
+```yaml
+spring:
+  datasource: 
+    hikari:
+      driverClassName: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/example?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+      username: root
+      password: root
+```
+
+## Redis Config
+
+```yaml
+spring:
+  redis:
+    database: 1
+    host: localhost
+    port: 6379
+    password: your_redis_password
+    lettuce:
+      pool:
+        max-active: 1000
+        max-idle: 10
+        max-wait: -1
+        min-idle: 5
+    timeout: 6000
 ```
