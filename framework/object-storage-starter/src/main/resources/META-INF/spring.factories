@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.devil.fission.machine.object.storage.tencent.CosConfiguration,\
+  com.devil.fission.machine.object.storage.alibaba.OssConfiguration
+
+  
