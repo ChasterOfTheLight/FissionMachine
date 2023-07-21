@@ -3,14 +3,17 @@ package com.devil.fission.machine.example.service.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.devil.fission.machine.common.response.PageData;
 import com.devil.fission.machine.common.response.Response;
+import com.devil.fission.machine.example.api.dto.SysUserDto;
 import com.devil.fission.machine.example.api.vo.SysUserQueryVo;
 import com.devil.fission.machine.example.service.entity.SysUserEntity;
+import com.devil.fission.machine.example.service.feign.SysUserFeignClient;
 import com.devil.fission.machine.example.service.param.SysUserDeleteParam;
 import com.devil.fission.machine.example.service.param.SysUserInfoQueryParam;
 import com.devil.fission.machine.example.service.param.SysUserInsertParam;
 import com.devil.fission.machine.example.service.param.SysUserPageQueryParam;
 import com.devil.fission.machine.example.service.param.SysUserUpdateParam;
 import com.devil.fission.machine.example.service.service.ISysUserService;
+import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +40,11 @@ public class SysUserWebController {
     
     private final ISysUserService sysUserService;
     
-    public SysUserWebController(ISysUserService sysUserService) {
+    private final SysUserFeignClient sysUserFeignClient;
+    
+    public SysUserWebController(ISysUserService sysUserService, SysUserFeignClient sysUserFeignClient) {
         this.sysUserService = sysUserService;
+        this.sysUserFeignClient = sysUserFeignClient;
     }
     
     /**
@@ -55,6 +61,10 @@ public class SysUserWebController {
             return Response.success(PageData.empty(param.getPageNum(), param.getPageSize()));
         }
         
+        // test feign
+        SysUserQueryVo sysUserQueryVo = sysUserFeignClient.info(SysUserDto.builder().userId(5L).build()).getData();
+        log.info(new Gson().toJson(sysUserQueryVo));
+        
         return Response.success(
                 new PageData<>(queryPage.getRecords().stream().map(SysUserEntity::convert2Vo).collect(Collectors.toList()), queryPage.getTotal(),
                         queryPage.getSize(), queryPage.getCurrent()));
@@ -68,8 +78,8 @@ public class SysUserWebController {
      */
     @PostMapping(value = "/info", produces = {"application/json"})
     @ApiOperation(value = "运营用户表详情查询", notes = "运营用户表详情查询")
-    public Response<SysUserQueryVo> info(@Valid @RequestBody SysUserInfoQueryParam param) {
-        SysUserEntity sysUser = sysUserService.queryById(param.getUserId());
+    public Response<SysUserQueryVo> info(@Valid @RequestBody SysUserDto dto) {
+        SysUserEntity sysUser = sysUserService.queryById(dto.getUserId());
         SysUserQueryVo vo = SysUserEntity.convert2Vo(sysUser);
         return Response.success(vo);
     }

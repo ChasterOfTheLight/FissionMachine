@@ -20,7 +20,7 @@ public interface SysUserClient {
      * @param dto 查询dto
      * @return 数据分页集合
      */
-    @PostMapping("/sysUser/app/info")
+    @PostMapping("/sysUser/web/info")
     Response<SysUserQueryVo> info(@RequestBody(required = false) SysUserDto dto);
     
 }
