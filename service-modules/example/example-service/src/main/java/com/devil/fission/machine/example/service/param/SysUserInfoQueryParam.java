@@ -26,10 +26,4 @@ public class SysUserInfoQueryParam {
     @ApiModelProperty(value = "用户ID", required = true)
     private Long userId;
     
-    /**
-     * content.
-     */
-    @ApiModelProperty(value = "content", required = true)
-    private String content;
-    
 }

@@ -1,5 +1,6 @@
 package com.devil.fission.machine.auth.service.common.support;
 
+import cn.hutool.core.net.URLDecoder;
 import com.devil.fission.machine.common.exception.ServiceException;
 import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.support.MachineContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -73,6 +75,7 @@ public class RestControllerAspect implements Ordered {
                     String value = request.getHeader(name);
                     // 处理需要传递的请求头，不是所有的都传递，content-length非必要不传
                     if (MachineContextHolder.supportHeader(name)) {
+                        value = URLDecoder.decode(value, StandardCharsets.UTF_8);
                         aspectLog.append("        ").append(String.format("%s : %s", name, value)).append("\r\n");
                     }
                 }
