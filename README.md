@@ -3,7 +3,7 @@ A machine that meets the requirements of project fission and is suitable for qui
 
 ## Technology Stack
 
-- JDk1.8
+- JDK1.8
 - Spring Boot2.3
 - Spring Cloud Hoxton
 - Nacos2.X
@@ -164,7 +164,7 @@ public class ExampleConfig {
         filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST);
         filterRegistrationBean.addUrlPatterns("/*");
         Map<String, String> initParameters = new HashMap<>();
-        // apis not handle xss
+        // apis not handle xss  一些富文本的场景需要加入到这个排除
         initParameters.put("exclusions", "/api1,/api2");
         filterRegistrationBean.setInitParameters(initParameters);
         filterRegistrationBean.setOrder(6);
