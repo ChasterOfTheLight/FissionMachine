@@ -1,13 +1,13 @@
 package com.devil.fission.machine.auth.service.common.support;
 
 import com.devil.fission.machine.common.support.MachineContextHolder;
-import com.devil.fission.machine.auth.service.common.util.HttpUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * RestTemplateInterceptor.
@@ -19,11 +19,11 @@ public class MachineRestTemplateInterceptor implements ClientHttpRequestIntercep
     
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        HttpUtils.getCurrentRequestHeaders().forEach((headerName, headerValue) -> {
-            if (MachineContextHolder.supportHeader(headerName)) {
-                request.getHeaders().set(headerName, headerValue);
-            }
-        });
+        Object o = MachineContextHolder.getLocalMap().get(ContextConstant.CONTEXT_HEADER_MAP_KEY);
+        if (o != null) {
+            Map<String, String> headerMap = (Map<String, String>) o;
+            headerMap.forEach((k, v) -> request.getHeaders().set(k, v));
+        }
         return execution.execute(request, body);
     }
 }

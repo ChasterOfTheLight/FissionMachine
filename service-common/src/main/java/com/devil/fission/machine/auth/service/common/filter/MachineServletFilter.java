@@ -1,6 +1,7 @@
 package com.devil.fission.machine.auth.service.common.filter;
 
 import cn.hutool.core.net.URLDecoder;
+import com.devil.fission.machine.auth.service.common.support.ContextConstant;
 import com.devil.fission.machine.common.support.MachineContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * servlet拦截器.
@@ -39,14 +42,19 @@ public class MachineServletFilter implements Filter {
         try {
             Enumeration<String> headerNames = httpRequest.getHeaderNames();
             if (headerNames != null) {
+                Map<String, String> contextHeader = new HashMap<>(16);
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
                     String value = httpRequest.getHeader(name);
                     // 将需要的请求头塞入上下文中
                     if (MachineContextHolder.supportHeader(name)) {
                         value = URLDecoder.decode(value, StandardCharsets.UTF_8);
+                        contextHeader.put(name, value);
                         MachineContextHolder.set(name, value);
                     }
+                }
+                if (!contextHeader.isEmpty()) {
+                    MachineContextHolder.set(ContextConstant.CONTEXT_HEADER_MAP_KEY, contextHeader);
                 }
             }
             
