@@ -41,12 +41,7 @@ public enum ResponseCode {
     /**
      * 刷新token.
      */
-    REFRESH_TOKEN(10001, "刷新token"),
-    
-    /**
-     * 没有登录.
-     */
-    NOT_LOGIN(10002, "请登录");
+    REFRESH_TOKEN(10001, "刷新token");
     
     int code;
     
