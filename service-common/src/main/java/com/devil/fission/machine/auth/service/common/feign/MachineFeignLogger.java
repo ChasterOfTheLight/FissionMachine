@@ -131,6 +131,6 @@ public class MachineFeignLogger extends feign.Logger {
     @Override
     protected void log(String configKey, String format, Object... args) {
         // 默认info日志
-        logger.info(String.format(methodTag(configKey) + format, args));
+        logger.info(methodTag(configKey) + format);
     }
 }

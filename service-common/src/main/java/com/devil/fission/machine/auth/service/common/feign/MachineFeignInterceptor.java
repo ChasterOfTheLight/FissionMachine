@@ -1,5 +1,6 @@
 package com.devil.fission.machine.auth.service.common.feign;
 
+import cn.hutool.core.net.URLEncodeUtil;
 import com.devil.fission.machine.auth.service.common.support.ContextConstant;
 import com.devil.fission.machine.common.support.MachineContextHolder;
 import feign.RequestInterceptor;
@@ -20,7 +21,7 @@ public class MachineFeignInterceptor implements RequestInterceptor {
         Object o = MachineContextHolder.getLocalMap().get(ContextConstant.CONTEXT_HEADER_MAP_KEY);
         if (o != null) {
             Map<String, String> headerMap = (Map<String, String>) o;
-            headerMap.forEach(requestTemplate::header);
+            headerMap.forEach((k, v) -> requestTemplate.header(k, URLEncodeUtil.encode(v)));
         }
     }
 }
