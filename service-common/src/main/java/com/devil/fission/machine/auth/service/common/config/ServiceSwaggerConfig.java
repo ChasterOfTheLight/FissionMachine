@@ -1,25 +1,30 @@
 package com.devil.fission.machine.auth.service.common.config;
 
+import com.devil.fission.machine.common.response.ResponseCode;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.RequestParameterBuilder;
+import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.ParameterType;
 import springfox.documentation.service.RequestParameter;
+import springfox.documentation.service.Response;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -58,6 +63,12 @@ public class ServiceSwaggerConfig {
     @Bean
     public Docket docket() {
         LOGGER.info("Init Swagger Docket =========================== enable： {}", enable);
+        
+        // 处理全局响应码
+        List<Response> responseList = new ArrayList<>();
+        Arrays.stream(ResponseCode.values()).forEach(resultCode -> responseList.add(
+                new ResponseBuilder().code(String.valueOf(resultCode.getCode())).description(resultCode.getMsg()).build()));
+        
         return new Docket(DocumentationType.SWAGGER_2).pathMapping("/")
                 // 定义是否开启swagger，false为关闭，可以通过变量控制，线上关闭
                 .enable(enable)
@@ -70,7 +81,11 @@ public class ServiceSwaggerConfig {
                 // RequestHandlerSelectors.basePackage("net.xdclass.*")  指定包位置
                 // withMethodAnnotation(ApiOperation.class)标记有这个注解 ApiOperation
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)).paths(PathSelectors.any()).build()
-                .globalRequestParameters(getGlobalRequestParameters());
+                .globalRequestParameters(getGlobalRequestParameters())
+                .globalResponses(HttpMethod.GET, responseList)
+                .globalResponses(HttpMethod.POST, responseList)
+                .globalResponses(HttpMethod.PUT, responseList)
+                .globalResponses(HttpMethod.DELETE, responseList);
     }
     
     private ApiInfo apiInfo() {
