@@ -72,6 +72,7 @@ public class OkHttpConfig {
      *
      * @return OkHttp 客户端配
      */
+    @SuppressWarnings("KotlinInternalInJava")
     @Bean
     public OkHttpClient okHttpClient(SSLSocketFactory sslSocketFactory, X509TrustManager x509TrustManager, HostnameVerifier hostnameVerifier) {
         return new OkHttpClient.Builder()
