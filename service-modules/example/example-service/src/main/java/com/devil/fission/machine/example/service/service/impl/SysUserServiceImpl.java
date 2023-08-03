@@ -29,7 +29,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
     
     public static final String CACHE_PREFIX = "SysUser:id:";
     
-    @CreateCache(name = CACHE_PREFIX, expire = 3600)
+    public static final int CACHE_EXPIRE = 3600;
+    
+    @CreateCache(name = CACHE_PREFIX, expire = CACHE_EXPIRE)
     private Cache<String, SysUserEntity> cache;
     
     @Override
@@ -56,7 +58,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         return super.list((assemblyWrapper(entity)));
     }
     
-    @Cached(name = CACHE_PREFIX, key = "#userId", expire = 3600)
+    @Cached(name = CACHE_PREFIX, key = "#userId", expire = CACHE_EXPIRE)
     @Override
     public SysUserEntity queryById(Long userId) {
         if (userId == null) {

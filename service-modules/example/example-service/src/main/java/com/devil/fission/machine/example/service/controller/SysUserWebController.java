@@ -12,7 +12,7 @@ import com.devil.fission.machine.example.service.param.SysUserInsertParam;
 import com.devil.fission.machine.example.service.param.SysUserPageQueryParam;
 import com.devil.fission.machine.example.service.param.SysUserUpdateParam;
 import com.devil.fission.machine.example.service.service.ISysUserService;
-import com.devil.fission.machine.example.service.service.SysUserServiceImplManager;
+import com.devil.fission.machine.example.service.service.impl.SysUserServiceImplManager;
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

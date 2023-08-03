@@ -1,8 +1,9 @@
-package com.devil.fission.machine.example.service.service;
+package com.devil.fission.machine.example.service.service.impl;
 
 import com.alicp.jetcache.Cache;
 import com.alicp.jetcache.anno.CreateCache;
 import com.devil.fission.machine.example.service.entity.SysUserEntity;
+import com.devil.fission.machine.example.service.service.ISysUserService;
 import com.devil.fission.machine.example.service.service.impl.SysUserServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class SysUserServiceImplManager {
         this.sysUserService = sysUserService;
     }
     
-    @CreateCache(name = SysUserServiceImpl.CACHE_PREFIX, expire = 3600)
+    @CreateCache(name = SysUserServiceImpl.CACHE_PREFIX, expire = SysUserServiceImpl.CACHE_EXPIRE)
     private Cache<String, SysUserEntity> cache;
     
     public List<SysUserEntity> queryByIds(List<Long> ids) {
