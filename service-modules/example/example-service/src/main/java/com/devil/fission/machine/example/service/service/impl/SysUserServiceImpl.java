@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +27,7 @@ import java.util.Objects;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity> implements ISysUserService {
     
-    private static final String CACHE_PREFIX = "SysUser:id:";
+    public static final String CACHE_PREFIX = "SysUser:id:";
     
     @CreateCache(name = CACHE_PREFIX, expire = 3600)
     private Cache<String, SysUserEntity> cache;
@@ -64,23 +63,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
             return null;
         }
         return super.getById(userId);
-    }
-    
-    @Override
-    public List<SysUserEntity> queryByIds(List<Long> ids) {
-        List<SysUserEntity> list = new ArrayList<>();
-        if (ids != null && !ids.isEmpty()) {
-            for (Long id : ids) {
-                // 从缓存中拿
-                SysUserEntity cachedEntity = cache.get(String.valueOf(id));
-                if (cachedEntity != null) {
-                    list.add(cachedEntity);
-                } else {
-                    list.add(queryById(id));
-                }
-            }
-        }
-        return list;
     }
     
     @Transactional(rollbackFor = Exception.class)

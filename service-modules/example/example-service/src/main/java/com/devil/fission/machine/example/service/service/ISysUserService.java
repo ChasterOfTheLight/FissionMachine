@@ -40,14 +40,6 @@ public interface ISysUserService {
     SysUserEntity queryById(Long userId);
     
     /**
-     * 根据主键集合查询SysUser列表.
-     *
-     * @param userIds 主键集合
-     * @return 列表
-     */
-    List<SysUserEntity> queryByIds(List<Long> userIds);
-    
-    /**
      * 新增一条SysUserEntity记录.
      *
      * @param entity 新增实体
