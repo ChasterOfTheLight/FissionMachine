@@ -8,11 +8,11 @@ import com.devil.fission.machine.example.api.vo.SysUserQueryVo;
 import com.devil.fission.machine.example.service.entity.SysUserEntity;
 import com.devil.fission.machine.example.service.feign.SysUserFeignClient;
 import com.devil.fission.machine.example.service.param.SysUserDeleteParam;
-import com.devil.fission.machine.example.service.param.SysUserInfoQueryParam;
 import com.devil.fission.machine.example.service.param.SysUserInsertParam;
 import com.devil.fission.machine.example.service.param.SysUserPageQueryParam;
 import com.devil.fission.machine.example.service.param.SysUserUpdateParam;
 import com.devil.fission.machine.example.service.service.ISysUserService;
+import com.devil.fission.machine.example.service.service.impl.SysUserServiceImplManager;
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -40,10 +43,13 @@ public class SysUserWebController {
     
     private final ISysUserService sysUserService;
     
+    private final SysUserServiceImplManager sysUserServiceImplManager;
+    
     private final SysUserFeignClient sysUserFeignClient;
     
-    public SysUserWebController(ISysUserService sysUserService, SysUserFeignClient sysUserFeignClient) {
+    public SysUserWebController(ISysUserService sysUserService, SysUserServiceImplManager sysUserServiceImplManager, SysUserFeignClient sysUserFeignClient) {
         this.sysUserService = sysUserService;
+        this.sysUserServiceImplManager = sysUserServiceImplManager;
         this.sysUserFeignClient = sysUserFeignClient;
     }
     
@@ -71,9 +77,23 @@ public class SysUserWebController {
     }
     
     /**
+     * 查询列表.
+     */
+    @PostMapping(value = "/list", produces = {"application/json"})
+    @ApiOperation(value = "查询运营用户表列表", notes = "查询运营用户表列表")
+    public Response<List<SysUserQueryVo>> list() {
+        List<SysUserEntity> sysUserEntities = sysUserService.queryList(new SysUserEntity());
+        if (CollectionUtils.isEmpty(sysUserEntities)) {
+            return Response.success(Collections.emptyList());
+        }
+        
+        return Response.success(sysUserEntities.stream().map(SysUserEntity::convert2Vo).collect(Collectors.toList()));
+    }
+    
+    /**
      * 详情.
      *
-     * @param param 详情查询参数
+     * @param dto 详情查询参数
      * @return 详情
      */
     @PostMapping(value = "/info", produces = {"application/json"})
@@ -82,6 +102,20 @@ public class SysUserWebController {
         SysUserEntity sysUser = sysUserService.queryById(dto.getUserId());
         SysUserQueryVo vo = SysUserEntity.convert2Vo(sysUser);
         return Response.success(vo);
+    }
+    
+    /**
+     * 批量详情.
+     *
+     * @param dtoList 批量详情查询参数
+     * @return 详情
+     */
+    @PostMapping(value = "/infos", produces = {"application/json"})
+    @ApiOperation(value = "运营用户表批量详情查询", notes = "运营用户表批量详情查询")
+    public Response<List<SysUserQueryVo>> infos(@Valid @RequestBody List<SysUserDto> dtoList) {
+        List<SysUserEntity> sysUserEntities = sysUserServiceImplManager.queryByIds(dtoList.stream().map(SysUserDto::getUserId).collect(Collectors.toList()));
+        List<SysUserQueryVo> voList = sysUserEntities.stream().filter(Objects::nonNull).map(SysUserEntity::convert2Vo).collect(Collectors.toList());
+        return Response.success(voList);
     }
     
     /**

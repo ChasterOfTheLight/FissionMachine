@@ -4,6 +4,7 @@ import com.alicp.jetcache.Cache;
 import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.Cached;
 import com.alicp.jetcache.anno.CreateCache;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,9 +28,11 @@ import java.util.Objects;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity> implements ISysUserService {
     
-    private static final String CACHE_PREFIX = "SysUser:id:";
+    public static final String CACHE_PREFIX = "SysUser:id:";
     
-    @CreateCache(name = CACHE_PREFIX, expire = 3600)
+    public static final int CACHE_EXPIRE = 3600;
+    
+    @CreateCache(name = CACHE_PREFIX, expire = CACHE_EXPIRE)
     private Cache<String, SysUserEntity> cache;
     
     @Override
@@ -39,8 +41,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
             page = 1;
         }
         // 默认10条
-        if (size == 0 || size > 10) {
+        if (size == 0) {
             size = 10;
+        }
+        // 最大100条
+        if (size > 100) {
+            size = 100;
         }
         Page<SysUserEntity> mybatisPage = new Page<>(page, size);
         // 查询实体处理
@@ -52,35 +58,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         return page(mybatisPage, queryWrapper);
     }
     
+    @DS("slave_1")
     @Override
     public List<SysUserEntity> queryList(SysUserEntity entity) {
         return super.list((assemblyWrapper(entity)));
     }
     
-    @Cached(name = CACHE_PREFIX, key = "#userId", expire = 3600)
+    @Cached(name = CACHE_PREFIX, key = "#userId", expire = CACHE_EXPIRE)
     @Override
     public SysUserEntity queryById(Long userId) {
         if (userId == null) {
             return null;
         }
         return super.getById(userId);
-    }
-    
-    @Override
-    public List<SysUserEntity> queryByIds(List<Long> ids) {
-        List<SysUserEntity> list = new ArrayList<>();
-        if (ids != null && !ids.isEmpty()) {
-            for (Long id : ids) {
-                // 从缓存中拿
-                SysUserEntity cachedEntity = cache.get(String.valueOf(id));
-                if (cachedEntity != null) {
-                    list.add(cachedEntity);
-                } else {
-                    list.add(queryById(id));
-                }
-            }
-        }
-        return list;
     }
     
     @Transactional(rollbackFor = Exception.class)
