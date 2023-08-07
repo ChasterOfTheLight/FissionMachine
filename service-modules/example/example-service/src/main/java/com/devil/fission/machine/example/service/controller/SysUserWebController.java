@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -73,6 +74,20 @@ public class SysUserWebController {
         return Response.success(
                 new PageData<>(queryPage.getRecords().stream().map(SysUserEntity::convert2Vo).collect(Collectors.toList()), queryPage.getTotal(),
                         queryPage.getSize(), queryPage.getCurrent()));
+    }
+    
+    /**
+     * 查询列表.
+     */
+    @PostMapping(value = "/list", produces = {"application/json"})
+    @ApiOperation(value = "查询运营用户表列表", notes = "查询运营用户表列表")
+    public Response<List<SysUserQueryVo>> list() {
+        List<SysUserEntity> sysUserEntities = sysUserService.queryList(new SysUserEntity());
+        if (CollectionUtils.isEmpty(sysUserEntities)) {
+            return Response.success(Collections.emptyList());
+        }
+        
+        return Response.success(sysUserEntities.stream().map(SysUserEntity::convert2Vo).collect(Collectors.toList()));
     }
     
     /**

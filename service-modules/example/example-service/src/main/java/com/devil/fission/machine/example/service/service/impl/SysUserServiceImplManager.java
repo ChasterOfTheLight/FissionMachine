@@ -4,14 +4,13 @@ import com.alicp.jetcache.Cache;
 import com.alicp.jetcache.anno.CreateCache;
 import com.devil.fission.machine.example.service.entity.SysUserEntity;
 import com.devil.fission.machine.example.service.service.ISysUserService;
-import com.devil.fission.machine.example.service.service.impl.SysUserServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SysUserServiceManager.
+ * SysUserServiceImplManager.
  *
  * @author Devil
  * @date Created in 2023/8/3 16:46

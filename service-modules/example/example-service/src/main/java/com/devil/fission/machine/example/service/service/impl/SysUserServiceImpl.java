@@ -4,6 +4,7 @@ import com.alicp.jetcache.Cache;
 import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.Cached;
 import com.alicp.jetcache.anno.CreateCache;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -40,8 +41,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
             page = 1;
         }
         // 默认10条
-        if (size == 0 || size > 10) {
+        if (size == 0) {
             size = 10;
+        }
+        // 最大100条
+        if (size > 100) {
+            size = 100;
         }
         Page<SysUserEntity> mybatisPage = new Page<>(page, size);
         // 查询实体处理
@@ -53,6 +58,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         return page(mybatisPage, queryWrapper);
     }
     
+    @DS("slave_1")
     @Override
     public List<SysUserEntity> queryList(SysUserEntity entity) {
         return super.list((assemblyWrapper(entity)));
