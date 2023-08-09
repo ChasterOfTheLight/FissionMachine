@@ -82,7 +82,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         return super.save(entity);
     }
     
-    @CacheInvalidate(name = CACHE_PREFIX, key = "#entity.userId", condition = "#result=true")
+    @CacheInvalidate(name = CACHE_PREFIX, key = "#entity.userId", condition = "#result==true")
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean update(SysUserEntity entity) {
@@ -92,7 +92,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         return super.updateById(entity);
     }
     
-    @CacheInvalidate(name = CACHE_PREFIX, key = "#userId", condition = "#result=true")
+    @CacheInvalidate(name = CACHE_PREFIX, key = "#userId", condition = "#result==true")
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean deleteById(Long userId) {
