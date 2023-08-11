@@ -230,6 +230,27 @@ spring:
       password: root
 ```
 
+## Multi DataSource Config
+
+```yaml
+spring:
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          url: jdbc:mysql://localhost:3306/sample?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        slave_1:
+          url: jdbc:mysql://localhost:3306/sample_slave1?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver
+```
+
 ## Redis Config
 
 ```yaml
