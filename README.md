@@ -268,3 +268,8 @@ spring:
         min-idle: 5
     timeout: 6000
 ```
+
+## Run Example Application
+
+- spring boot application main function
+- docker container  `docker build --build-arg profile=local -t fission-machine-example-service:0.1.0 .`
