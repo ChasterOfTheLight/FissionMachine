@@ -220,6 +220,14 @@ class SignGen {
 
 ## Jdbc Config
 
+- Import Dependency
+```xml
+<dependency>
+    <groupId>com.devil.fission</groupId>
+    <artifactId>fission-machine-jdbc-starter</artifactId>
+</dependency>
+```
+
 ```yaml
 spring:
   datasource: 
@@ -232,6 +240,15 @@ spring:
 
 ## Multi DataSource Config
 
+- Import Dependency
+```xml
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+</dependency>
+```
+
+- Nacos Properties
 ```yaml
 spring:
   datasource:
@@ -253,6 +270,15 @@ spring:
 
 ## Redis Config
 
+- Import Dependency
+```xml
+<dependency>
+    <groupId>com.devil.fission</groupId>
+    <artifactId>fission-machine-redis-stater</artifactId>
+</dependency>
+```
+
+- Nacos Properties
 ```yaml
 spring:
   redis:
@@ -273,3 +299,55 @@ spring:
 
 - spring boot application main function
 - docker container  `docker build --build-arg profile=local -t fission-machine-example-service:0.1.0 .`
+
+## Rabbitmq Config
+
+- Import Dependency
+```xml
+<dependency>
+    <groupId>com.devil.fission</groupId>
+    <artifactId>fission-machine-rabbitmq-stater</artifactId>
+</dependency>
+```
+
+- Nacos properties
+```yaml
+spring:
+  # rabbitmq
+  rabbitmq:
+    addresses: localhost:5672
+    username: guest
+    password: guest
+    virtual-host: /
+```
+
+- Sender
+```java
+public class XXXXXX {
+    
+    private final MessageSender messageSender;
+    
+    public XXXXXX(MessageSender messageSender) {
+        this.messageSender = messageSender;
+    }
+    
+    public Response<PageData<XXXX>> send() {
+        // com.devil.fission.machine.rabbitmq.RabbitMqConstants 可以在这里维护使用的交换机，队列，routingKey
+        messageSender.sendDirectMessage("交换机名称", "routingKey", "hello world");
+    }
+    
+}
+```
+
+- Consumer
+```java
+@RabbitmqConsumer(queue = "队列名称")
+public class RabbitConsumerSample implements MessageConsumerProcess<Object> {
+    
+    @Override
+    public MessageResult process(Object message) {
+        log.info(new Gson().toJson(message));
+        return MessageResult.success();
+    }
+}
+```

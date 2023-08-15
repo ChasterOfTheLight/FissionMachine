@@ -13,6 +13,7 @@
     <modules>
         <module>jdbc-starter</module>
         <module>object-storage-starter</module>
+        <module>rabbitmq-stater</module>
         <module>redis-starter</module>
     </modules>
     
