@@ -124,6 +124,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
      */
     private QueryWrapper<SysUserEntity> assemblyWrapper(SysUserEntity entity) {
         QueryWrapper<SysUserEntity> entityWrapper = new QueryWrapper<>();
+        entityWrapper.lambda().select(SysUserEntity::getUserId, SysUserEntity::getUserName, SysUserEntity::getIsEnabled);
         if (null != entity) {
             entityWrapper.eq(Objects.nonNull(entity.getUserId()), "user_id", entity.getUserId());
             entityWrapper.eq(StringUtils.isNotBlank(entity.getUserName()), "user_name", entity.getUserName());
