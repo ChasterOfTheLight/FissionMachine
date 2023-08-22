@@ -22,7 +22,7 @@ public class CosConfiguration {
     
     @Bean
     @ConditionalOnProperty(prefix = "object.storage.tencent.cos", value = {"secret-id", "secret-key"})
-    public CosStorageService tencentStorage(CosProperties properties) {
+    public CosStorageServiceImpl tencentStorage(CosProperties properties) {
         COSCredentials cred = new BasicCOSCredentials(properties.getSecretId(), properties.getSecretKey());
         Region region = new Region(properties.getRegion());
         ClientConfig clientConfig = new ClientConfig(region);
@@ -31,6 +31,6 @@ public class CosConfiguration {
                 new CosEndpointBuilder(properties.getGeneralApi(), properties.getServiceApi(), clientConfig.getEndpointBuilder()));
         COSClient cosClient = new COSClient(cred, clientConfig);
         LogUtils.TENCENT_LOG.info("Tencent Cos Client init success");
-        return new CosStorageService(cosClient, properties);
+        return new CosStorageServiceImpl(cosClient, properties);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 /**
  * redisson延迟执行轮训.
  *
- * @author Devil
+ * @author devil
  * @date Created in 2022/10/31 16:56
  */
 public class RedissonDelayedRunner implements CommandLineRunner {

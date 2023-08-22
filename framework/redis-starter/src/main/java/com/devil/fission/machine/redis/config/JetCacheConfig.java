@@ -29,6 +29,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * JetCacheConfig.
+ *
+ * @author devil
+ * @date Created in 2023/8/22 17:24
+ */
 @Configuration
 @EnableMethodCache(basePackages = "com.devil.fission", order = -1)
 @EnableCreateCacheAnnotation

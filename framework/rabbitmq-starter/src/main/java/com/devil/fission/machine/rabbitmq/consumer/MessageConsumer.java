@@ -10,6 +10,8 @@ public interface MessageConsumer {
     
     /**
      * 消费消息.
+     *
+     * @return 消息状态返回
      */
     MessageResult consume();
     

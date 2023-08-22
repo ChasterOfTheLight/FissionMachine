@@ -20,9 +20,12 @@ import java.util.List;
 
 /**
  * 阿里云对象储存器.
+ *
+ * @author devil
+ * @date Created in 2023/8/22 17:24
  */
 @Slf4j
-public class OssStorageService implements StorageService<ObjectMetadata>, TempSecret<OssTempSecretObject> {
+public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, TempSecret<OssTempSecretObject> {
 
     final OSS ossClient;
 
@@ -30,7 +33,7 @@ public class OssStorageService implements StorageService<ObjectMetadata>, TempSe
 
     String bucket;
 
-    public OssStorageService(OSS ossClient, OssProperties properties) {
+    public OssStorageServiceImpl(OSS ossClient, OssProperties properties) {
         this.ossClient = ossClient;
         this.properties = properties;
         this.bucket = properties.getBucket();

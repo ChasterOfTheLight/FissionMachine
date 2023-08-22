@@ -5,14 +5,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * {@link LocalFileStorageService } unit test.
+ * {@link LocalFileStorageServiceImpl } unit test.
  *
  * @author Devil
  * @date Created in 2023/3/22 13:39
  */
 public class LocalStorageServiceTest {
     
-    LocalFileStorageService storageService = new LocalFileStorageService("/root");
+    LocalFileStorageServiceImpl storageService = new LocalFileStorageServiceImpl("/root");
     
     @Test
     public void localStorageTest() {

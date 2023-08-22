@@ -10,6 +10,9 @@ public interface MessageConsumerProcess<T> {
 
     /**
      * 消息接收处理.
+     *
+     * @param message 消息体
+     * @return 消息状态返回
      */
     MessageResult process(T message);
 }

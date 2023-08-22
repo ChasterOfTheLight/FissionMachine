@@ -14,18 +14,18 @@ import java.io.*;
  * @author devil
  * @date Created in 2022/4/26 9:34
  */
-public class LocalFileStorageService implements StorageService<String> {
+public class LocalFileStorageServiceImpl implements StorageService<String> {
     
     /**
      * 根路径.
      */
     private String root;
     
-    public LocalFileStorageService() {
+    public LocalFileStorageServiceImpl() {
         this.root = ".";
     }
     
-    public LocalFileStorageService(String root) {
+    public LocalFileStorageServiceImpl(String root) {
         this.root = root;
     }
     

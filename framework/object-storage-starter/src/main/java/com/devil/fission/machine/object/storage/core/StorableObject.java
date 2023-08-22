@@ -11,9 +11,25 @@ import java.io.InputStream;
  */
 public interface StorableObject {
     
+    /**
+     * 获取数据流.
+     *
+     * @throws IOException io异常
+     * @return 数据流
+     */
     InputStream getInputStream() throws IOException;
     
+    /**
+     * 获取存储键.
+     *
+     * @return 存储键
+     */
     String getKey();
     
+    /**
+     * 获取权限.
+     *
+     * @return 权限
+     */
     int getPermission();
 }

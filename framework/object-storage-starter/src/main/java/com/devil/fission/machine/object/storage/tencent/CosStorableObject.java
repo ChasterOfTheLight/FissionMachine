@@ -19,14 +19,14 @@ public class CosStorableObject implements StorableObject {
     
     private COSObject cosObject;
     
-    private CosStorageService storageService;
+    private CosStorageServiceImpl storageService;
     
     private String key;
     
     public CosStorableObject() {
     }
     
-    public CosStorableObject(CosStorageService storageService, String key) {
+    public CosStorableObject(CosStorageServiceImpl storageService, String key) {
         this.storageService = storageService;
         this.key = key;
         this.cosObject = storageService.cosClient.getObject(storageService.bucket, key);

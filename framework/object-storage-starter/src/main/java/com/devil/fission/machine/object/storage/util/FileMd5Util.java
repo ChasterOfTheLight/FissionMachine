@@ -8,6 +8,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * FileMd5Util.
+ *
+ * @author devil
+ * @date Created in 2023/8/22 17:23
+ */
 public class FileMd5Util {
     /**
      * @param data 文件输入流
@@ -39,19 +45,15 @@ public class FileMd5Util {
         InputStream inSr4Md5 = new ByteArrayInputStream(baos.toByteArray());
         // 用以上传云服务流
         InputStream inSt4Oss = new ByteArrayInputStream(baos.toByteArray());
-        //获得后缀
+        // 获得后缀
         String fileSuffix = filename.substring(filename.lastIndexOf("."));
         // 获取文件名之前的相对路径 如果开启会导致不同文件夹上传重复文件 先不开启
         String fileUri = "";
-        /*if (filename.contains("/") || filename.contains("\\")) {
-            filename = filename.replaceAll("\\\\","/");
-            fileUri = filename.substring(0, filename.lastIndexOf("/")) + "/";
-        }*/
-        //获取一个md加密
+        // 获取一个md加密
         String md5OfFileName = md5Stream(inSr4Md5);
-        //拼接成完整的文件名。
+        // 拼接成完整的文件名。
         String objectName = fileUri + md5OfFileName + fileSuffix;
-        //拼接url，这个就是地址
+        // 拼接url，这个就是地址
         return new StorableRequest(inSt4Oss, filename, objectName);
     }
 

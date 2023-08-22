@@ -20,7 +20,7 @@ public class OssConfiguration {
     
     @Bean
     @ConditionalOnProperty(prefix = "object.storage.alibaba.oss", value = {"access-key-id", "secret-access-key"})
-    public OssStorageService alibabaStorage(OssProperties properties) {
+    public OssStorageServiceImpl alibabaStorage(OssProperties properties) {
         ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         if (properties.getProtocol() != null) {
             conf.setProtocol(properties.getProtocol());
@@ -31,6 +31,6 @@ public class OssConfiguration {
     
         OSS ossClient = new OSSClientBuilder().build(properties.getEndpoint(), properties.getAccessKeyId(), properties.getSecretAccessKey(), conf);
         LogUtils.ALIBABA_LOG.info("Alibaba Oss Client init success");
-        return new OssStorageService(ossClient, properties);
+        return new OssStorageServiceImpl(ossClient, properties);
     }
 }

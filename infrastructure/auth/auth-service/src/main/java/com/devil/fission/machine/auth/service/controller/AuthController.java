@@ -19,7 +19,7 @@ import javax.validation.Valid;
 /**
  * 认证控制器.
  *
- * @author Devil
+ * @author devil
  * @date Created in 2022/12/27 13:54
  */
 @RestController

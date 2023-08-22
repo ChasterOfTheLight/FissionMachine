@@ -13,15 +13,11 @@ import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * redis service.
@@ -464,25 +460,6 @@ public class RedisService {
         return redisTemplate.opsForHash().multiGet(key, fields);
     }
 
-    public Map<String, String> hMGet(String key, Collection<String> fields) {
-        List<Object> objectList = fields.stream().filter(Objects::nonNull).filter(field -> field.trim().length() != 0).collect(Collectors.toList());
-        if (objectList.size() == 0) {
-            return Collections.emptyMap();
-        }
-        List<Object> resultList = hMultiGet(key, objectList);
-        Map<String, String> resultMap = new HashMap<>(objectList.size());
-        for (int i = 0; i < objectList.size(); i++) {
-            String mapKey = (String) objectList.get(i);
-            Object o = resultList.get(i);
-            if (o == null) {
-                resultMap.put(mapKey, null);
-            } else {
-                resultMap.put(mapKey, o.toString());
-            }
-        }
-        return resultMap;
-    }
-
     /**
      * 给字段赋值
      *
@@ -769,7 +746,7 @@ public class RedisService {
      * @param unit    时间单位
      * @return
      */
-    public Object lBLeftPop(String key, long timeout, TimeUnit unit) {
+    public Object lBlockLeftPop(String key, long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().leftPop(key, timeout, unit);
     }
 
@@ -791,7 +768,7 @@ public class RedisService {
      * @param unit    时间单位
      * @return
      */
-    public Object lBRightPop(String key, long timeout, TimeUnit unit) {
+    public Object lBlockRightPop(String key, long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().rightPop(key, timeout, unit);
     }
 
@@ -815,7 +792,7 @@ public class RedisService {
      * @param unit
      * @return
      */
-    public Object lBRightPopAndLeftPush(String sourceKey, String destinationKey, long timeout, TimeUnit unit) {
+    public Object lBlockRightPopAndLeftPush(String sourceKey, String destinationKey, long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey, timeout, unit);
     }
 
@@ -1324,7 +1301,7 @@ public class RedisService {
      * @param key
      * @return
      */
-    public Long zZCard(String key) {
+    public Long zCard(String key) {
         return redisTemplate.opsForZSet().zCard(key);
     }
 
@@ -1417,38 +1394,5 @@ public class RedisService {
     public Cursor<ZSetOperations.TypedTuple<Object>> zScan(String key, ScanOptions options) {
         return redisTemplate.opsForZSet().scan(key, options);
     }
-
-
-    /**
-     * @param key
-     * @Description： 获取计数器
-     * @author: GuXiYang
-     * @date: 2019年1月30日 下午4:23:50
-     * @return
-     */
-    public Long getIncr(String key) {
-        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
-        Long increment = entityIdCounter.incrementAndGet();
-        return increment;
-    }
-
-    /**
-     * @param key
-     * @param liveTime
-     * @return
-     * @Description： 获取计数器
-     * @author: GuXiYang
-     * @date: 2019年1月30日 下午4:23:50
-     */
-    public Long getIncr(String key, long liveTime) {
-        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
-        Long increment = entityIdCounter.incrementAndGet();
-
-        if ((null == increment || increment.longValue() == 0) && liveTime > 0) {// 初始设置过期时间
-            entityIdCounter.expire(liveTime, TimeUnit.MILLISECONDS);// 单位毫秒
-        }
-        return increment;
-    }
-
 
 }

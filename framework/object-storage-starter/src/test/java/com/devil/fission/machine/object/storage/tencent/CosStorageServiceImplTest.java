@@ -16,17 +16,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 /**
- * {@link CosStorageService } unit test.
+ * {@link CosStorageServiceImpl } unit test.
  *
  * @author Devil
  * @date Created in 2023/3/22 14:16
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CosStorageServiceTest {
+public class CosStorageServiceImplTest {
     
     // 实际使用中可以用注入方式
     @Mock
-    private CosStorageService cosStorageService;
+    private CosStorageServiceImpl cosStorageServiceImpl;
     
     @Test
     public void cosStorageTest() throws IOException {
@@ -34,18 +34,18 @@ public class CosStorageServiceTest {
         String fileName = "123";
         // 从本地文件上传到远端
         LocalFileStorableObject storableObject = new LocalFileStorableObject(path, fileName);
-        Mockito.when(cosStorageService.put(path, storableObject, StorablePermission.PUBLIC)).thenReturn(new CosStorableObject());
-        StorableObject object = cosStorageService.put(path, storableObject, StorablePermission.PUBLIC);
+        Mockito.when(cosStorageServiceImpl.put(path, storableObject, StorablePermission.PUBLIC)).thenReturn(new CosStorableObject());
+        StorableObject object = cosStorageServiceImpl.put(path, storableObject, StorablePermission.PUBLIC);
         Assert.assertNotNull(object);
         
         // 从流上传
         InputStreamStorableObject storableObject2 = new InputStreamStorableObject(Files.newInputStream(new File("123").toPath()));
-        Mockito.when(cosStorageService.put(path, storableObject2, StorablePermission.PUBLIC)).thenReturn(new CosStorableObject());
-        StorableObject object2 = cosStorageService.put(path, storableObject2, StorablePermission.PUBLIC);
+        Mockito.when(cosStorageServiceImpl.put(path, storableObject2, StorablePermission.PUBLIC)).thenReturn(new CosStorableObject());
+        StorableObject object2 = cosStorageServiceImpl.put(path, storableObject2, StorablePermission.PUBLIC);
         Assert.assertNotNull(object2);
         
-        Mockito.when(cosStorageService.isExist(path)).thenReturn(true);
-        boolean exist = cosStorageService.isExist(path);
+        Mockito.when(cosStorageServiceImpl.isExist(path)).thenReturn(true);
+        boolean exist = cosStorageServiceImpl.isExist(path);
         Assert.assertTrue(exist);
     }
     

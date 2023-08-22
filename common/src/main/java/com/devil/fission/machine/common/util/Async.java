@@ -97,12 +97,14 @@ public class Async {
     
     public static void create() {
         int max = Runtime.getRuntime().availableProcessors();
-        if (max <= 4) {
-            max = 4;
+        int minPoolSize = 4;
+        int maxPoolSize = 12;
+        if (max <= minPoolSize) {
+            max = minPoolSize;
         }
         
-        if (max > 12) {
-            max = 12;
+        if (max > maxPoolSize) {
+            max = maxPoolSize;
         }
         
         executor = new ThreadPoolExecutor(4, max, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(256), new UserThreadFactory("machine-"));
