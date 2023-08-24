@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class XssFilter implements Filter {
     
-    private final static Logger LOGGER = LoggerFactory.getLogger(XssFilter.class);
+    private static final  Logger LOGGER = LoggerFactory.getLogger(XssFilter.class);
     
     private String[] prefixIgnores;
     

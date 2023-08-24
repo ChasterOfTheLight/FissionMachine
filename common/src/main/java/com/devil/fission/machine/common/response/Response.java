@@ -106,7 +106,6 @@ public class Response<T> implements Serializable {
         return new Response<T>(code, msg, null);
     }
     
-    
     /**
      * 返回其他消息.
      *

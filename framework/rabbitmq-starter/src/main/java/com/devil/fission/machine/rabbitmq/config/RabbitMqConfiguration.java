@@ -105,11 +105,11 @@ public class RabbitMqConfiguration {
         connectionFactory.setPublisherReturns(true);
         connectionFactory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED);
         
-        if (Objects.nonNull(rabbitProperties.getCache())){
-            if(Objects.nonNull(rabbitProperties.getCache().getConnection())) {
+        if (Objects.nonNull(rabbitProperties.getCache())) {
+            if (Objects.nonNull(rabbitProperties.getCache().getConnection())) {
                 connectionFactory.setCacheMode(rabbitProperties.getCache().getConnection().getMode());
             }
-            if (Objects.nonNull(rabbitProperties.getCache().getChannel())&&Objects.nonNull(rabbitProperties.getCache().getChannel().getSize())) {
+            if (Objects.nonNull(rabbitProperties.getCache().getChannel()) && Objects.nonNull(rabbitProperties.getCache().getChannel().getSize())) {
                 connectionFactory.setChannelCacheSize(rabbitProperties.getCache().getChannel().getSize());
             }
         }

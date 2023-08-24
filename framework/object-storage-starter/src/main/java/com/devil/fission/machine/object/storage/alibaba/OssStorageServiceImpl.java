@@ -2,7 +2,12 @@ package com.devil.fission.machine.object.storage.alibaba;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.model.*;
+import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.CannedAccessControlList;
+import com.aliyun.oss.model.MatchMode;
+import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.PolicyConditions;
+import com.aliyun.oss.model.PutObjectRequest;
 import com.devil.fission.machine.object.storage.core.StorableObject;
 import com.devil.fission.machine.object.storage.core.StorablePermission;
 import com.devil.fission.machine.object.storage.core.StorableRequest;
@@ -39,7 +44,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
         this.bucket = properties.getBucket();
         if (bucket == null) {
             List<Bucket> buckets = ossClient.listBuckets();
-            if (buckets != null && buckets.size() > 0) {
+            if (buckets != null && !buckets.isEmpty()) {
                 this.bucket = buckets.get(0).getName();
             }
         }

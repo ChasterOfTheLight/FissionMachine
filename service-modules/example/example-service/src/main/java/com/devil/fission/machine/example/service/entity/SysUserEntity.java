@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 /**
- * 运营用户表 实体
+ * 运营用户表 实体.
  *
  * @author devil
  * @date 2022-12-12 10:46:52

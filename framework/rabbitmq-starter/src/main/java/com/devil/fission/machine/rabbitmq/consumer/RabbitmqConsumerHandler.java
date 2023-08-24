@@ -58,8 +58,8 @@ public class RabbitmqConsumerHandler implements ApplicationContextAware, Command
     @SuppressWarnings("all")
     private <T> void initConsumerPool(String queueName, Object bean) {
         MessageConsumerProcess<T> consumerProcess = (MessageConsumerProcess<T>) bean;
-        ThreadPoolConsumerBuilder<T> consumerBuilder = new ThreadPoolConsumerBuilder<T>().setQueue(queueName).setMessageConsumerProcess(consumerProcess)
-                .setMessageConsumer(buildMessageConsumer(queueName, consumerProcess));
+        ThreadPoolConsumerBuilder<T> consumerBuilder = new ThreadPoolConsumerBuilder<T>().setQueue(queueName)
+                .setMessageConsumerProcess(consumerProcess).setMessageConsumer(buildMessageConsumer(queueName, consumerProcess));
         ThreadPoolConsumer<T> consumer = consumerBuilder.build();
         consumer.start();
     }

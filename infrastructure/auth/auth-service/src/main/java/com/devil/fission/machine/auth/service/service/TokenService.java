@@ -65,11 +65,11 @@ public class TokenService {
         boolean isKicked = tokenEntity.getLoginPlatform().isKick();
         if (!isKicked) {
             // 如果不是可被踢，用userId + uuid作为token key
-            tokenKey = tokenKey + ":" + IdUtil.fastUUID();
+            tokenKey = tokenKey + Constants.SEPARATOR + IdUtil.fastUUID();
         }
         tokenEntity.setTokenKey(tokenKey);
         // 存储信息(存储信息越多，token长度越长，因为http请求头默认大小问题，一般4K/8K，存储信息不要太多)
-        Map<String, Object> claimsMap = new HashMap<>();
+        Map<String, Object> claimsMap = new HashMap<>(16);
         claimsMap.put(AuthConstants.AUTH_TOKEN_KEY, tokenKey);
         long currentTimeMillis = System.currentTimeMillis();
         // 利用RestControllerAspect处理，不再token的payload中单独定义
@@ -86,7 +86,7 @@ public class TokenService {
         long tokenExpiredTime = tokenEntity.getLoginTime() + cacheExpiredTime;
         tokenEntity.setExpireTime(tokenExpiredTime);
         // 加锁缓存token
-        RLock lock = redissonClient.getLock(lockPrefix + tokenEntity.getLoginPlatform().name() + ":" + tokenEntity.getUserId());
+        RLock lock = redissonClient.getLock(lockPrefix + tokenEntity.getLoginPlatform().name() + Constants.SEPARATOR + tokenEntity.getUserId());
         try {
             boolean locked = lock.tryLock(100L, 1000L, TimeUnit.MILLISECONDS);
             if (locked) {
@@ -123,10 +123,10 @@ public class TokenService {
             verifyTokenDto.setPlatform(platformEnum);
             
             // 查询缓存，看是否有分布式session
-            String tokenEntityInRedis = redisService.getAsString(tokenPrefix + platform + ":" + tokenKey);
+            String tokenEntityInRedis = redisService.getAsString(tokenPrefix + platform + Constants.SEPARATOR + tokenKey);
             if (tokenEntityInRedis == null) {
                 // 刷新token如果有并发，可能会有旧token的请求，但此时已经更换新token，导致旧token在缓存中找不到，需要放行这部分请求
-                if (!redisService.hasKey(lockPrefix + refreshTokenPrefix + platform + ":" + tokenKey)) {
+                if (!redisService.hasKey(lockPrefix + refreshTokenPrefix + platform + Constants.SEPARATOR + tokenKey)) {
                     return Response.other(ResponseCode.UN_AUTHORIZED, "登录状态已过期,请重新登录!", null);
                 }
                 return Response.success(verifyTokenDto);
@@ -143,7 +143,7 @@ public class TokenService {
                 boolean isRefreshToken = platformEnum.isRefreshToken();
                 if (isRefreshToken) {
                     // 在刷新token白名单中直接处理
-                    String whiteListToken = redisService.getAsString(tokenWhileListPrefix + platform + ":" + tokenKey);
+                    String whiteListToken = redisService.getAsString(tokenWhileListPrefix + platform + Constants.SEPARATOR + tokenKey);
                     if (StringUtils.isNotEmpty(whiteListToken) && whiteListToken.equals(requestToken)) {
                         return Response.success(verifyTokenDto);
                     }
@@ -188,7 +188,7 @@ public class TokenService {
         String platform = JwtUtils.getPlatform(requestToken);
         String expireSeconds = JwtUtils.getExpireSeconds(requestToken);
         
-        Map<String, Object> claimsMap = new HashMap<>();
+        Map<String, Object> claimsMap = new HashMap<>(16);
         claimsMap.put(AuthConstants.AUTH_TOKEN_KEY, tokenKey);
         long currentTimeMillis = System.currentTimeMillis();
         claimsMap.put(AuthConstants.AUTH_TOKEN_CREATE_TIME, currentTimeMillis);
@@ -199,7 +199,7 @@ public class TokenService {
         // 颁发新token，先生成，因为可能耗时导致锁失效
         String newToken = JwtUtils.createToken(claimsMap, JwtUtils.JWT_DEFAULT_TTL * 1000L);
         // 防并发加锁
-        RLock lock = redissonClient.getLock(lockPrefix + refreshTokenPrefix + platform + ":" + tokenKey);
+        RLock lock = redissonClient.getLock(lockPrefix + refreshTokenPrefix + platform + Constants.SEPARATOR + tokenKey);
         try {
             boolean locked = lock.tryLock(100L, 1000L, TimeUnit.MILLISECONDS);
             if (locked) {
@@ -214,9 +214,9 @@ public class TokenService {
                 tokenEntity.setExpireTime(tokenExpiredTime);
                 redisService.setEx(cacheKey, new Gson().toJson(tokenEntity), cacheExpiredTime, TimeUnit.MILLISECONDS);
                 // 设置2s白名单（2s内该用户的请求都放行，不用token做key，因为token可能膨胀很大，存在大key风险）
-                redisService.setEx(tokenWhileListPrefix + platform + ":" + tokenKey, requestToken, 2000L, TimeUnit.MILLISECONDS);
+                redisService.setEx(tokenWhileListPrefix + platform + Constants.SEPARATOR + tokenKey, requestToken, 2000L, TimeUnit.MILLISECONDS);
                 // 判断是否正常塞入
-                if (!redisService.hasKey(cacheKey) || !redisService.hasKey(tokenWhileListPrefix + platform + ":" + tokenKey)) {
+                if (!redisService.hasKey(cacheKey) || !redisService.hasKey(tokenWhileListPrefix + platform + Constants.SEPARATOR + tokenKey)) {
                     // 返回请求token重试
                     return requestToken;
                 }
@@ -271,7 +271,7 @@ public class TokenService {
      * 拼装缓存key.
      */
     private String buildCacheKey(String tokenKey, String platform) {
-        return tokenPrefix + platform + ":" + tokenKey;
+        return tokenPrefix + platform + Constants.SEPARATOR + tokenKey;
     }
     
 }

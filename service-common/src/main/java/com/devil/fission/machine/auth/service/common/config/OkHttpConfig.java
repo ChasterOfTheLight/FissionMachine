@@ -68,7 +68,7 @@ public class OkHttpConfig {
     }
     
     /**
-     * OkHttp 客户端配置
+     * OkHttp 客户端配置.
      *
      * @return OkHttp 客户端配
      */
@@ -92,7 +92,7 @@ public class OkHttpConfig {
     }
     
     /**
-     * 信任所有主机名
+     * 信任所有主机名.
      *
      * @return 主机名校验
      */

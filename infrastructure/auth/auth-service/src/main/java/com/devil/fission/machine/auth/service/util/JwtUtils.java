@@ -19,12 +19,12 @@ import java.util.Map;
  */
 public class JwtUtils {
     
-    public static String secret = "DevilFissionMachine";
+    public static final String SECRET = "DevilFissionMachine";
     
     /**
      * JWT默认过期时间12(小时) TimeUnit.Second.
      */
-    public static Long JWT_DEFAULT_TTL = 12 * 3600L;
+    public static final Long JWT_DEFAULT_TTL = 12 * 3600L;
     
     /**
      * 根据数据生成令牌.
@@ -34,7 +34,7 @@ public class JwtUtils {
      * @return 令牌
      */
     public static String createToken(Map<String, Object> claims, long ttlMillis) {
-        JwtBuilder builder = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret);
+        JwtBuilder builder = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, SECRET);
         long nowMillis = System.currentTimeMillis();
         if (ttlMillis >= 0) {
             long expMillis = nowMillis + ttlMillis;
@@ -51,7 +51,7 @@ public class JwtUtils {
      * @return 数据声明
      */
     public static Claims parseToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
     }
     
     /**

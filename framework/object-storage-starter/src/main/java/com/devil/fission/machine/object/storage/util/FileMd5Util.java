@@ -15,7 +15,10 @@ import java.io.InputStream;
  * @date Created in 2023/8/22 17:23
  */
 public class FileMd5Util {
+    
     /**
+     * md5流加密.
+     *
      * @param data 文件输入流
      * @return MD5加密十六进制字符串
      * @throws IOException 流读取失败
@@ -23,14 +26,14 @@ public class FileMd5Util {
     public static String md5Stream(InputStream data) throws IOException {
         return DigestUtils.md5Hex(data);
     }
-
+    
     /**
-     * md加密
+     * 获取存储请求.
      *
      * @param inputStream 文件输入流
      * @param filename    上传的文件的名字
      * @return StorableRequest
-     * @throws IOException
+     * @throws IOException io异常
      */
     public static StorableRequest getStorableRequest(InputStream inputStream, String filename) throws IOException {
         // 创建一个输出流来缓存，防止多次读取导致数据读取错误
@@ -56,5 +59,5 @@ public class FileMd5Util {
         // 拼接url，这个就是地址
         return new StorableRequest(inSt4Oss, filename, objectName);
     }
-
+    
 }

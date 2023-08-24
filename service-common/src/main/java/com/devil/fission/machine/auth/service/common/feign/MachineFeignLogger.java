@@ -1,5 +1,6 @@
 package com.devil.fission.machine.auth.service.common.feign;
 
+import cn.hutool.http.HttpStatus;
 import com.devil.fission.machine.common.util.StringUtils;
 import feign.Request;
 import feign.Response;
@@ -91,7 +92,8 @@ public class MachineFeignLogger extends feign.Logger {
             
             // 拼装返回体，限制字符1000（考虑日志的占用量，可以根据实际情况优化，但不建议不限制字符）
             int bodyLength = 0;
-            if (response.body() != null && !(status == 204 || status == 205)) {
+            boolean notSpecialStatus = !(status == HttpStatus.HTTP_NO_CONTENT || status == HttpStatus.HTTP_RESET);
+            if (response.body() != null && notSpecialStatus) {
                 byte[] bodyData = Util.toByteArray(response.body().asInputStream());
                 bodyLength = bodyData.length;
                 if (logLevel.ordinal() >= Level.FULL.ordinal() && bodyLength > 0) {
@@ -112,6 +114,7 @@ public class MachineFeignLogger extends feign.Logger {
         return response;
     }
     
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     @Override
     protected IOException logIOException(String configKey, Level logLevel, IOException ioe, long elapsedTime) {
         StringBuilder stringBuilder = new StringBuilder();

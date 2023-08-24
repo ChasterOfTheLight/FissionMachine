@@ -29,7 +29,7 @@ public interface Constants {
     String WILDCARD = "*";
     
     /**
-     * 换行。
+     * 换行.
      */
     String CRLF = "\n";
     
@@ -147,5 +147,10 @@ public interface Constants {
      * 请求IP 头.
      */
     String HEADER_REQUEST_IP = "x-request-ip";
+    
+    /**
+     * 一般分页查询最大行数.
+     */
+    int COMMON_MAX_PAGE_NUM = 100;
     
 }

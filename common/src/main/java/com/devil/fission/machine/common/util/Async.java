@@ -21,6 +21,7 @@ import java.util.function.Supplier;
  * @author Devil
  * @date Created in 2023/3/3 10:24
  */
+@SuppressWarnings("ALL")
 public class Async {
     
     private static ExecutorService executor;
@@ -33,10 +34,22 @@ public class Async {
         throw new UnsupportedOperationException();
     }
     
+    /**
+     * 异步执行单个任务.
+     *
+     * @param task 线程任务
+     * @return 无返回
+     */
     public static CompletableFuture<Void> run(Runnable task) {
         return CompletableFuture.runAsync(task, executor);
     }
     
+    /**
+     * 异步执行单个或多个任务.
+     *
+     * @param task 单个或多个线程任务
+     * @return 无返回
+     */
     public static List<CompletableFuture<Void>> run(Runnable... task) {
         List<CompletableFuture<Void>> list = new ArrayList<>();
         
@@ -47,10 +60,22 @@ public class Async {
         return list;
     }
     
+    /**
+     * 任意任务执行后结果返回.
+     *
+     * @param task 任务
+     * @return 结果
+     */
     public static CompletableFuture<Object> anyOf(Runnable... task) {
         return CompletableFuture.anyOf(Arrays.stream(task).map(Async::run).toArray(CompletableFuture[]::new));
     }
     
+    /**
+     * 所有任务执行后结果返回.
+     *
+     * @param task 任务
+     * @return 结果
+     */
     public static CompletableFuture<Void> allOf(Runnable... task) {
         return CompletableFuture.allOf(Arrays.stream(task).map(Async::run).toArray(CompletableFuture[]::new));
     }

@@ -801,7 +801,7 @@
                     <failsOnError>true</failsOnError>
                     <!-- 排除部分目录风格检查 -->
                     <excludes>
-                        **/platform/cms/**,**/platform/generator/**,**/platform/xxl/job/admin/**,**/alibaba/csp/sentinel/**
+                        **/common/util/**,**/redis/service/**
                     </excludes>
                 </configuration>
                 <executions>

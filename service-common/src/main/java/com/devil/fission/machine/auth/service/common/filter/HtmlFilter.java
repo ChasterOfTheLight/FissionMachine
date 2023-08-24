@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
  * @author Cal Hendersen
  * @author Michael Semb Wever
  */
+@SuppressWarnings("all")
 public final class HtmlFilter {
     
     /**
@@ -160,28 +161,28 @@ public final class HtmlFilter {
     public HtmlFilter() {
         vAllowed = new HashMap<>();
         
-        final ArrayList<String> a_atts = new ArrayList<String>();
-        a_atts.add("href");
-        a_atts.add("target");
-        vAllowed.put("a", a_atts);
+        final ArrayList<String> aAtts = new ArrayList<String>();
+        aAtts.add("href");
+        aAtts.add("target");
+        vAllowed.put("a", aAtts);
         
-        final ArrayList<String> img_atts = new ArrayList<String>();
-        img_atts.add("src");
-        img_atts.add("width");
-        img_atts.add("height");
-        img_atts.add("alt");
-        vAllowed.put("img", img_atts);
+        final ArrayList<String> imgAtts = new ArrayList<String>();
+        imgAtts.add("src");
+        imgAtts.add("width");
+        imgAtts.add("height");
+        imgAtts.add("alt");
+        vAllowed.put("img", imgAtts);
         
-        final ArrayList<String> no_atts = new ArrayList<String>();
-        vAllowed.put("b", no_atts);
-        vAllowed.put("strong", no_atts);
-        vAllowed.put("i", no_atts);
-        vAllowed.put("em", no_atts);
+        final ArrayList<String> noAtts = new ArrayList<String>();
+        vAllowed.put("b", noAtts);
+        vAllowed.put("strong", noAtts);
+        vAllowed.put("i", noAtts);
+        vAllowed.put("em", noAtts);
         
         vSelfClosingTags = new String[] {"img"};
         vNeedClosingTags = new String[] {"a", "b", "strong", "i", "em"};
         vDisallowed = new String[] {};
-        vAllowedProtocols = new String[] {"http", "mailto", "https"}; // no ftp.
+        vAllowedProtocols = new String[] {"http", "mailto", "https"};
         vProtocolAtts = new String[] {"src", "href"};
         vRemoveBlanks = new String[] {"a", "b", "strong", "i", "em"};
         vAllowedEntities = new String[] {"amp", "gt", "lt", "quot"};

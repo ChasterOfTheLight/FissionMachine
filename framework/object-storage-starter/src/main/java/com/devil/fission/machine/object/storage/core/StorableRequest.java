@@ -11,7 +11,9 @@ import java.io.InputStream;
 public class StorableRequest {
 
     private InputStream inputStream;
+    
     private String fileName;
+    
     private String objectName;
 
     public StorableRequest() {

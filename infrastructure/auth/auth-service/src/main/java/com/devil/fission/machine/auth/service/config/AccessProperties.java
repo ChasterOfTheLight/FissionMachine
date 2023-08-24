@@ -43,7 +43,7 @@ public class AccessProperties {
         if (access != null) {
             return access.stream().filter(Objects::nonNull).collect(Collectors.toMap(a -> a.accessKey, a -> a));
         } else {
-            return new HashMap<>();
+            return new HashMap<>(16);
         }
     }
     

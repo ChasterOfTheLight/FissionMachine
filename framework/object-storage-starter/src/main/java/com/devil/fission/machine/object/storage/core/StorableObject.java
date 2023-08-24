@@ -14,8 +14,8 @@ public interface StorableObject {
     /**
      * 获取数据流.
      *
+     * @return 输入流
      * @throws IOException io异常
-     * @return 数据流
      */
     InputStream getInputStream() throws IOException;
     

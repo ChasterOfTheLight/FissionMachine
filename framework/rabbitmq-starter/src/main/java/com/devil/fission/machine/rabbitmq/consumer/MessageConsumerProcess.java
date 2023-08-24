@@ -7,7 +7,7 @@ package com.devil.fission.machine.rabbitmq.consumer;
  * @date Created in 2023/5/29 16:20
  */
 public interface MessageConsumerProcess<T> {
-
+    
     /**
      * 消息接收处理.
      *

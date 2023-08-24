@@ -206,7 +206,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
      * token认证.
      */
     private AuthResult authToken(ServerWebExchange exchange, String token) {
-        ServerHttpRequest serverHttpRequest = exchange.getRequest();
+        final ServerHttpRequest serverHttpRequest = exchange.getRequest();
         // 如果前端设置了令牌前缀，则裁剪掉前缀
         if (token.startsWith(Constants.REQUEST_HEADER_AUTHORIZATION_BEARER)) {
             token = token.replaceFirst(Constants.REQUEST_HEADER_AUTHORIZATION_BEARER, StringUtils.EMPTY);
