@@ -19,15 +19,39 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public interface AuthClient {
     
+    /**
+     * 验证token.
+     *
+     * @param token token
+     * @return 验证token结果
+     */
     @PostMapping(value = "/verifyToken")
     Response<VerifyTokenDto> verifyToken(@RequestParam(value = "token") String token);
     
+    /**
+     * 生成token.
+     *
+     * @param loginParam 登录参数
+     * @return token
+     */
     @PostMapping(value = "/generateToken")
     Response<TokenDto> generateToken(@RequestBody LoginParam loginParam);
     
+    /**
+     * 删除token.
+     *
+     * @param logoutParam 登出参数
+     * @return 是否登出成功
+     */
     @PostMapping(value = "/deleteToken")
     Response<Boolean> deleteToken(@RequestBody LogoutParam logoutParam);
     
+    /**
+     * 校验sign.
+     *
+     * @param verifySignParam 校验sign参数
+     * @return 校验sign结果
+     */
     @PostMapping(value = "/verifySign")
     Response<VerifySignDto> verifySign(@RequestBody VerifySignParam verifySignParam);
     

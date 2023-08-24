@@ -16,11 +16,13 @@ import java.util.regex.Pattern;
  */
 public class RegexUtils {
     
+    private static final int MAX_LEN = 256;
+    
     /**
      * 判断字符串是否符合正则表达式.
      */
     public static boolean find(String str, String regex) {
-        if (str == null || str.length() < 1 || str.length() > 256 || regex == null || regex.length() < 1 || regex.length() > 256) {
+        if (str == null || str.isEmpty() || str.length() > MAX_LEN || regex == null || regex.isEmpty() || regex.length() > MAX_LEN) {
             return false;
         }
         Pattern p = Pattern.compile(regex);
@@ -32,7 +34,7 @@ public class RegexUtils {
      * 判断输入的字符串是否符合Email格式.
      */
     public static boolean isEmail(String email) {
-        if (email == null || email.length() < 1 || email.length() > 256) {
+        if (email == null || email.isEmpty() || email.length() > MAX_LEN) {
             return false;
         }
         Pattern pattern = Pattern.compile(RegexPool.EMAIL, Pattern.CASE_INSENSITIVE);
@@ -43,7 +45,7 @@ public class RegexUtils {
      * 判断是否为url.
      */
     public static boolean isUrl(String value) {
-        if (value == null || value.length() < 1 || value.length() > 256) {
+        if (value == null || value.isEmpty() || value.length() > MAX_LEN) {
             return false;
         }
         Pattern pattern = Pattern.compile(RegexPool.URL);
@@ -54,7 +56,7 @@ public class RegexUtils {
      * 判断是否为手机号.
      */
     public static boolean isMobile(String value) {
-        if (value == null || value.length() < 1 || value.length() > 256) {
+        if (value == null || value.isEmpty() || value.length() > MAX_LEN) {
             return false;
         }
         Pattern pattern = Pattern.compile(RegexPool.MOBILE);
@@ -65,10 +67,11 @@ public class RegexUtils {
      * 判断是否为浮点数，包括double和float.
      */
     public static boolean isDouble(String value) {
-        if (value == null || value.length() < 1 || value.length() > 256) {
+        if (value == null || value.isEmpty() || value.length() > MAX_LEN) {
             return false;
         }
-        Pattern pattern = Pattern.compile("^[-\\+]?\\d+\\.\\d+$");
+        String regex = "^[-\\+]?\\d+\\.\\d+$";
+        Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(value).matches();
     }
     
@@ -76,10 +79,11 @@ public class RegexUtils {
      * 判断是否为整数.
      */
     public static boolean isInteger(String value) {
-        if (value == null || value.length() < 1 || value.length() > 256) {
+        if (value == null || value.isEmpty() || value.length() > MAX_LEN) {
             return false;
         }
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
+        String regex = "^[-\\+]?[\\d]+$";
+        Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(value).matches();
     }
     

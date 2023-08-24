@@ -20,14 +20,14 @@ public class OssStorableObject implements StorableObject {
     
     private OSSObject ossObject;
     
-    private OssStorageService storageService;
+    private OssStorageServiceImpl storageService;
     
     private String key;
     
     public OssStorableObject() {
     }
     
-    public OssStorableObject(OssStorageService storageService, String key) {
+    public OssStorableObject(OssStorageServiceImpl storageService, String key) {
         this.storageService = storageService;
         this.key = key;
         this.ossObject = storageService.ossClient.getObject(storageService.bucket, key);

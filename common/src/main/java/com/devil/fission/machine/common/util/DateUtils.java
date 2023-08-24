@@ -162,14 +162,14 @@ public class DateUtils {
     /**
      * 获取 N天前后的   00：00：00.
      */
-    public static Date getLastNDayDate(int beforeDays, boolean isLastSecond) {
-        return getLastNDayDate(new Date(), beforeDays, isLastSecond);
+    public static Date getLastSomeDayDate(int beforeDays, boolean isLastSecond) {
+        return getLastSomeDayDate(new Date(), beforeDays, isLastSecond);
     }
     
     /**
      * 获取 date天前后的   00：00：00.
      */
-    public static Date getLastNDayDate(Date date, int beforeDays, boolean isLastSecond) {
+    public static Date getLastSomeDayDate(Date date, int beforeDays, boolean isLastSecond) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, -beforeDays);
@@ -188,7 +188,7 @@ public class DateUtils {
      * 获取当天00:00.
      */
     public static Date getCurrentDay() {
-        return getLastNDayDate(0, false);
+        return getLastSomeDayDate(0, false);
     }
     
 }

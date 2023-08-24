@@ -2,7 +2,12 @@ package com.devil.fission.machine.object.storage.alibaba;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.model.*;
+import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.CannedAccessControlList;
+import com.aliyun.oss.model.MatchMode;
+import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.PolicyConditions;
+import com.aliyun.oss.model.PutObjectRequest;
 import com.devil.fission.machine.object.storage.core.StorableObject;
 import com.devil.fission.machine.object.storage.core.StorablePermission;
 import com.devil.fission.machine.object.storage.core.StorableRequest;
@@ -20,9 +25,12 @@ import java.util.List;
 
 /**
  * 阿里云对象储存器.
+ *
+ * @author devil
+ * @date Created in 2023/8/22 17:24
  */
 @Slf4j
-public class OssStorageService implements StorageService<ObjectMetadata>, TempSecret<OssTempSecretObject> {
+public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, TempSecret<OssTempSecretObject> {
 
     final OSS ossClient;
 
@@ -30,13 +38,13 @@ public class OssStorageService implements StorageService<ObjectMetadata>, TempSe
 
     String bucket;
 
-    public OssStorageService(OSS ossClient, OssProperties properties) {
+    public OssStorageServiceImpl(OSS ossClient, OssProperties properties) {
         this.ossClient = ossClient;
         this.properties = properties;
         this.bucket = properties.getBucket();
         if (bucket == null) {
             List<Bucket> buckets = ossClient.listBuckets();
-            if (buckets != null && buckets.size() > 0) {
+            if (buckets != null && !buckets.isEmpty()) {
                 this.bucket = buckets.get(0).getName();
             }
         }

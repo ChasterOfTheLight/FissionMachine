@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * AccessConfig.
  *
- * @author Devil
+ * @author devil
  * @date Created in 2023/5/4 14:52
  */
 @Configuration

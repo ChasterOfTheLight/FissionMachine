@@ -64,6 +64,9 @@ public class ThreadPoolConsumer<T> {
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
     }
     
+    /**
+     * 线程池停止.
+     */
     public void stop() {
         this.stop = true;
         try {

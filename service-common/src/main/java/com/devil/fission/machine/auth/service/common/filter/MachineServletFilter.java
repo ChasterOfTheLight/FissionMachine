@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class MachineServletFilter implements Filter {
     
-    private final static Logger LOGGER = LoggerFactory.getLogger(MachineServletFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MachineServletFilter.class);
     
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

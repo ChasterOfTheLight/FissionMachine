@@ -8,20 +8,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * redis service.
@@ -45,10 +40,10 @@ public class RedisService {
     /* -------------------key相关操作--------------------- */
 
     /**
-     * set一个值,如果原值存在覆盖之
+     * set一个值,如果原值存在覆盖之.
      *
-     * @param key
-     * @param value
+     * @param key 键
+     * @param value 值
      * @param timeout [超时]
      * @param unit    [时间单位]
      */
@@ -262,7 +257,7 @@ public class RedisService {
     /**
      * 获取指定 key 的String值.
      *
-     * @param key
+     * @param key 键
      */
     public String getAsString(String key) {
         return stringRedisTemplate.opsForValue().get(key);
@@ -282,8 +277,8 @@ public class RedisService {
     /**
      * 将给定 key 的值设为 value ，并返回 key 的旧值(old value).
      *
-     * @param key
-     * @param value
+     * @param key 键
+     * @param value 值
      */
     public String getAndSet(String key, String value) {
         return stringRedisTemplate.opsForValue().getAndSet(key, value);
@@ -292,7 +287,7 @@ public class RedisService {
     /**
      * 批量获取.
      *
-     * @param keys
+     * @param keys 键集合
      */
     public List<String> multiGet(Collection<String> keys) {
         return stringRedisTemplate.opsForValue().multiGet(keys);
@@ -301,8 +296,8 @@ public class RedisService {
     /**
      * 将值 value 关联到 key ，并将 key 的过期时间设为 timeout.
      *
-     * @param key
-     * @param value
+     * @param key 键
+     * @param value 值
      * @param timeout 过期时间
      * @param unit    时间单位, 天:TimeUnit.DAYS 小时:TimeUnit.HOURS 分钟:TimeUnit.MINUTES 秒:TimeUnit.SECONDS 毫秒:TimeUnit.MILLISECONDS
      */
@@ -313,8 +308,8 @@ public class RedisService {
     /**
      * 只有在 key 不存在时设置 key 的值.
      *
-     * @param key
-     * @param value
+     * @param key 键
+     * @param value 值
      * @return 之前已经存在返回false, 不存在返回true
      */
     public boolean setIfAbsent(String key, String value) {
@@ -324,10 +319,10 @@ public class RedisService {
     /**
      * 只有在 key 不存在时设置 key 的值.
      *
-     * @param key
-     * @param value
-     * @param timeout
-     * @param unit
+     * @param key 键
+     * @param value 值
+     * @param timeout 过期时间
+     * @param unit 时间单位
      */
     public boolean setIfAbsent(String key, String value, long timeout, TimeUnit unit) {
         return stringRedisTemplate.opsForValue().setIfAbsent(key, value, timeout, unit);
@@ -336,9 +331,9 @@ public class RedisService {
     /**
      * 只有在 key 不存在时设置 key 的值.
      *
-     * @param key
-     * @param value
-     * @param timeout
+     * @param key 键
+     * @param value 值
+     * @param timeout 超时时间
      */
     public boolean setIfAbsent(String key, String value, Duration timeout) {
         return stringRedisTemplate.opsForValue().setIfAbsent(key, value, timeout);
@@ -347,8 +342,8 @@ public class RedisService {
     /**
      * 用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始.
      *
-     * @param key
-     * @param value
+     * @param key 键
+     * @param value 值
      * @param offset 从指定位置开始覆写
      */
     public void setRange(String key, String value, long offset) {
@@ -358,7 +353,7 @@ public class RedisService {
     /**
      * 获取字符串的长度.
      *
-     * @param key
+     * @param key 键
      */
     public Long size(String key) {
         return stringRedisTemplate.opsForValue().size(key);
@@ -367,7 +362,7 @@ public class RedisService {
     /**
      * 批量添加.
      *
-     * @param maps
+     * @param maps 批量map
      */
     public void multiSet(Map<String, String> maps) {
         stringRedisTemplate.opsForValue().multiSet(maps);
@@ -376,7 +371,7 @@ public class RedisService {
     /**
      * 同时设置一个或多个 key-value 对，当且仅当所有给定 key 都不存在.
      *
-     * @param maps
+     * @param maps 批量map
      * @return 之前已经存在返回false, 不存在返回true
      */
     public boolean multiSetIfAbsent(Map<String, String> maps) {
@@ -386,8 +381,8 @@ public class RedisService {
     /**
      * 增加(自增长), 负数则为自减.
      *
-     * @param key
-     * @param increment
+     * @param key 键
+     * @param increment 增长值
      */
     public Long incrBy(String key, long increment) {
         return stringRedisTemplate.opsForValue().increment(key, increment);
@@ -396,7 +391,7 @@ public class RedisService {
     /**
      * 自增长.
      *
-     * @param key
+     * @param key 键
      */
     public Long incr(String key) {
         return stringRedisTemplate.opsForValue().increment(key);
@@ -405,8 +400,8 @@ public class RedisService {
     /**
      * 增加(自增长), 负数则为自减  浮点.
      *
-     * @param key
-     * @param increment
+     * @param key 键
+     * @param increment 增长值
      */
     public Double incrByFloat(String key, double increment) {
         return stringRedisTemplate.opsForValue().increment(key, increment);
@@ -415,8 +410,8 @@ public class RedisService {
     /**
      * 追加到末尾.
      *
-     * @param key
-     * @param value
+     * @param key 键
+     * @param value 值
      */
     public Integer append(String key, String value) {
         return stringRedisTemplate.opsForValue().append(key, value);
@@ -427,8 +422,8 @@ public class RedisService {
     /**
      * 获取存储在哈希表中指定字段的值.
      *
-     * @param key
-     * @param field
+     * @param key 键
+     * @param field 字段
      */
     public Object hGet(String key, Object field) {
         return redisTemplate.opsForHash().get(key, field);
@@ -437,8 +432,8 @@ public class RedisService {
     /**
      * 获取存储在哈希表中指定字段的值.
      *
-     * @param key
-     * @param field
+     * @param key 键
+     * @param field 字段
      */
     public Boolean hHasKey(String key, Object field) {
         return redisTemplate.opsForHash().hasKey(key, field);
@@ -447,7 +442,7 @@ public class RedisService {
     /**
      * 获取所有给定字段的值.
      *
-     * @param key
+     * @param key 键
      */
     public Map<Object, Object> hGetAll(String key) {
         return redisTemplate.opsForHash().entries(key);
@@ -456,39 +451,20 @@ public class RedisService {
     /**
      * 获取所有给定字段的值
      *
-     * @param key
-     * @param fields
-     * @return
+     * @param key 键
+     * @param fields 字段集合
+     * @return 值集合
      */
     public List<Object> hMultiGet(String key, Collection<Object> fields) {
         return redisTemplate.opsForHash().multiGet(key, fields);
     }
 
-    public Map<String, String> hMGet(String key, Collection<String> fields) {
-        List<Object> objectList = fields.stream().filter(Objects::nonNull).filter(field -> field.trim().length() != 0).collect(Collectors.toList());
-        if (objectList.size() == 0) {
-            return Collections.emptyMap();
-        }
-        List<Object> resultList = hMultiGet(key, objectList);
-        Map<String, String> resultMap = new HashMap<>(objectList.size());
-        for (int i = 0; i < objectList.size(); i++) {
-            String mapKey = (String) objectList.get(i);
-            Object o = resultList.get(i);
-            if (o == null) {
-                resultMap.put(mapKey, null);
-            } else {
-                resultMap.put(mapKey, o.toString());
-            }
-        }
-        return resultMap;
-    }
-
     /**
      * 给字段赋值
      *
-     * @param key
-     * @param hashKey
-     * @param value
+     * @param key 键
+     * @param hashKey hash字段
+     * @param value 值
      */
     public void hPut(String key, String hashKey, Object value) {
         redisTemplate.opsForHash().put(key, hashKey, value);
@@ -497,8 +473,8 @@ public class RedisService {
     /**
      * 给所有字段赋值
      *
-     * @param key
-     * @param maps
+     * @param key 键
+     * @param maps 字段map
      */
     public void hPutAll(String key, Map<Object, Object> maps) {
         redisTemplate.opsForHash().putAll(key, maps);
@@ -507,9 +483,9 @@ public class RedisService {
     /**
      * 仅当hashKey不存在时才设置
      *
-     * @param key
-     * @param hashKey
-     * @param value
+     * @param key 键
+     * @param hashKey hash字段
+     * @param value 值
      * @return
      */
     public Boolean hPutIfAbsent(String key, Object hashKey, Object value) {
@@ -519,8 +495,8 @@ public class RedisService {
     /**
      * 删除一个或多个哈希表字段
      *
-     * @param key
-     * @param fields
+     * @param key 键
+     * @param fields 字段，支持多个
      * @return
      */
     public Long hDelete(String key, Object... fields) {
@@ -769,7 +745,7 @@ public class RedisService {
      * @param unit    时间单位
      * @return
      */
-    public Object lBLeftPop(String key, long timeout, TimeUnit unit) {
+    public Object lBlockLeftPop(String key, long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().leftPop(key, timeout, unit);
     }
 
@@ -791,7 +767,7 @@ public class RedisService {
      * @param unit    时间单位
      * @return
      */
-    public Object lBRightPop(String key, long timeout, TimeUnit unit) {
+    public Object lBlockRightPop(String key, long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().rightPop(key, timeout, unit);
     }
 
@@ -815,7 +791,7 @@ public class RedisService {
      * @param unit
      * @return
      */
-    public Object lBRightPopAndLeftPush(String sourceKey, String destinationKey, long timeout, TimeUnit unit) {
+    public Object lBlockRightPopAndLeftPush(String sourceKey, String destinationKey, long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey, timeout, unit);
     }
 
@@ -1324,7 +1300,7 @@ public class RedisService {
      * @param key
      * @return
      */
-    public Long zZCard(String key) {
+    public Long zCard(String key) {
         return redisTemplate.opsForZSet().zCard(key);
     }
 
@@ -1417,38 +1393,5 @@ public class RedisService {
     public Cursor<ZSetOperations.TypedTuple<Object>> zScan(String key, ScanOptions options) {
         return redisTemplate.opsForZSet().scan(key, options);
     }
-
-
-    /**
-     * @param key
-     * @Description： 获取计数器
-     * @author: GuXiYang
-     * @date: 2019年1月30日 下午4:23:50
-     * @return
-     */
-    public Long getIncr(String key) {
-        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
-        Long increment = entityIdCounter.incrementAndGet();
-        return increment;
-    }
-
-    /**
-     * @param key
-     * @param liveTime
-     * @return
-     * @Description： 获取计数器
-     * @author: GuXiYang
-     * @date: 2019年1月30日 下午4:23:50
-     */
-    public Long getIncr(String key, long liveTime) {
-        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
-        Long increment = entityIdCounter.incrementAndGet();
-
-        if ((null == increment || increment.longValue() == 0) && liveTime > 0) {// 初始设置过期时间
-            entityIdCounter.expire(liveTime, TimeUnit.MILLISECONDS);// 单位毫秒
-        }
-        return increment;
-    }
-
 
 }

@@ -16,7 +16,8 @@ public class VerifyCodeUtils {
      * @param n 验证码字符数
      */
     public static String getCode(int n) {
-        if (n <= 0 || n >= 50) {
+        int maxCodeLen = 50;
+        if (n <= 0 || n >= maxCodeLen) {
             return null;
         }
         return RandomUtil.randomNumbers(n);

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * redisson延迟队列工具类.
  *
- * @author Devil
+ * @author devil
  * @date Created in 2022/10/31 16:07
  */
 public class RedissonDelayedUtil {

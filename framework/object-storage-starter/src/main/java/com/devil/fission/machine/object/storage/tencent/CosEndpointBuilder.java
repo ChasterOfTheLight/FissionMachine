@@ -2,6 +2,12 @@ package com.devil.fission.machine.object.storage.tencent;
 
 import com.qcloud.cos.endpoint.EndpointBuilder;
 
+/**
+ * CosEndpointBuilder.
+ *
+ * @author devil
+ * @date Created in 2023/8/22 17:23
+ */
 public class CosEndpointBuilder implements EndpointBuilder {
     
     private String generalApi;

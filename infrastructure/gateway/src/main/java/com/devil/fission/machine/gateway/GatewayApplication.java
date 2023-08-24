@@ -12,6 +12,12 @@ import org.springframework.http.converter.HttpMessageConverter;
 
 import java.util.stream.Collectors;
 
+/**
+ * GatewayApplication.
+ *
+ * @author devil
+ * @date Created in 2023/8/24 16:28
+ */
 @SpringBootApplication
 @EnableFeignClients(basePackages = {"com.devil.fission.machine.gateway.feign"})
 @EnableDiscoveryClient

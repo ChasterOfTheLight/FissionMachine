@@ -39,6 +39,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisConfig.class);
     
     public static Jackson2JsonRedisSerializer jackson2JsonRedisSerializer;
+    
     public static StringRedisSerializer stringRedisSerializer;
     
     static {

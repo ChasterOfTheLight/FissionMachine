@@ -20,13 +20,19 @@ public class SysUserServiceImplManager {
     
     private final ISysUserService sysUserService;
     
+    @CreateCache(name = SysUserServiceImpl.CACHE_PREFIX, expire = SysUserServiceImpl.CACHE_EXPIRE)
+    private Cache<String, SysUserEntity> cache;
+    
     public SysUserServiceImplManager(ISysUserService sysUserService) {
         this.sysUserService = sysUserService;
     }
     
-    @CreateCache(name = SysUserServiceImpl.CACHE_PREFIX, expire = SysUserServiceImpl.CACHE_EXPIRE)
-    private Cache<String, SysUserEntity> cache;
-    
+    /**
+     * 批量获取用户.
+     *
+     * @param ids 用户id集合
+     * @return 用户集合
+     */
     public List<SysUserEntity> queryByIds(List<Long> ids) {
         List<SysUserEntity> list = new ArrayList<>();
         if (ids != null && !ids.isEmpty()) {

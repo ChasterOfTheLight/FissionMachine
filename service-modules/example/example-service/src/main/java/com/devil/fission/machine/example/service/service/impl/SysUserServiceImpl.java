@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.devil.fission.machine.common.Constants;
 import com.devil.fission.machine.example.service.entity.SysUserEntity;
 import com.devil.fission.machine.example.service.mapper.SysUserMapper;
 import com.devil.fission.machine.example.service.service.ISysUserService;
@@ -45,7 +46,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
             size = 10;
         }
         // 最大100条
-        if (size > 100) {
+        if (size > Constants.COMMON_MAX_PAGE_NUM) {
             size = 100;
         }
         Page<SysUserEntity> mybatisPage = new Page<>(page, size);

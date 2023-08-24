@@ -5,6 +5,12 @@ import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * FeignConfig.
+ *
+ * @author devil
+ * @date Created in 2023/8/24 16:28
+ */
 @Configuration
 public class FeignConfig {
     

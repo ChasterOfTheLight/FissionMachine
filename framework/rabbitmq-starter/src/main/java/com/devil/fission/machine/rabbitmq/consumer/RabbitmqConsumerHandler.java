@@ -58,8 +58,8 @@ public class RabbitmqConsumerHandler implements ApplicationContextAware, Command
     @SuppressWarnings("all")
     private <T> void initConsumerPool(String queueName, Object bean) {
         MessageConsumerProcess<T> consumerProcess = (MessageConsumerProcess<T>) bean;
-        ThreadPoolConsumerBuilder<T> consumerBuilder = new ThreadPoolConsumerBuilder<T>().setQueue(queueName).setMessageConsumerProcess(consumerProcess)
-                .setMessageConsumer(buildMessageConsumer(queueName, consumerProcess));
+        ThreadPoolConsumerBuilder<T> consumerBuilder = new ThreadPoolConsumerBuilder<T>().setQueue(queueName)
+                .setMessageConsumerProcess(consumerProcess).setMessageConsumer(buildMessageConsumer(queueName, consumerProcess));
         ThreadPoolConsumer<T> consumer = consumerBuilder.build();
         consumer.start();
     }
@@ -119,7 +119,8 @@ public class RabbitmqConsumerHandler implements ApplicationContextAware, Command
                         } else {
                             // 消费失败，记录错误次数
                             int errorCount = errorCount(messageId);
-                            if (errorCount >= 5) {
+                            int errorThreshold = 5;
+                            if (errorCount >= errorThreshold) {
                                 // 错误次数达到阈值，忽略消息，不再重新入队
                                 channel.basicReject(response.getEnvelope().getDeliveryTag(), false);
                                 clearErrorCount(messageId);

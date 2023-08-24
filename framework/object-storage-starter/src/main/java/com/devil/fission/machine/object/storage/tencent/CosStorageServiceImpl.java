@@ -27,7 +27,7 @@ import java.util.TreeMap;
  * @author devil
  * @date Created in 2022/4/26 11:15
  */
-public class CosStorageService implements StorageService<ObjectMetadata>, TempSecret<CosTempSecretObject> {
+public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, TempSecret<CosTempSecretObject> {
 
     final COSClient cosClient;
 
@@ -35,7 +35,7 @@ public class CosStorageService implements StorageService<ObjectMetadata>, TempSe
 
     String bucket;
 
-    public CosStorageService(COSClient cosClient, CosProperties properties) {
+    public CosStorageServiceImpl(COSClient cosClient, CosProperties properties) {
         this.cosClient = cosClient;
         this.properties = properties;
         this.bucket = properties.getBucket();

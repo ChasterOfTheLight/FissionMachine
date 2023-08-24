@@ -6,7 +6,10 @@ import com.devil.fission.machine.object.storage.core.StorageErrorCode;
 import com.devil.fission.machine.object.storage.core.StorageException;
 import com.devil.fission.machine.object.storage.core.StorageService;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 本地对象存储.
@@ -14,18 +17,18 @@ import java.io.*;
  * @author devil
  * @date Created in 2022/4/26 9:34
  */
-public class LocalFileStorageService implements StorageService<String> {
+public class LocalFileStorageServiceImpl implements StorageService<String> {
     
     /**
      * 根路径.
      */
     private String root;
     
-    public LocalFileStorageService() {
+    public LocalFileStorageServiceImpl() {
         this.root = ".";
     }
     
-    public LocalFileStorageService(String root) {
+    public LocalFileStorageServiceImpl(String root) {
         this.root = root;
     }
     

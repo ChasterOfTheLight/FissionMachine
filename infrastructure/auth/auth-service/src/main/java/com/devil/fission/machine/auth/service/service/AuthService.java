@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 /**
  * 认证服务.
  *
- * @author Devil
+ * @author devil
  * @date Created in 2022/12/27 14:07
  */
 @Service

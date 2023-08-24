@@ -25,7 +25,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 下划线.
      */
-    private static final char SEPARATOR = '_';
+    private static final Character SEPARATOR = '_';
     
     /**
      * 获取参数不为空值.
@@ -275,9 +275,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
                 nexteCharIsUpperCase = Character.isUpperCase(str.charAt(i + 1));
             }
             
+            boolean k = (i != 0) && !preCharIsUpperCase;
             if (preCharIsUpperCase && curreCharIsUpperCase && !nexteCharIsUpperCase) {
                 sb.append(SEPARATOR);
-            } else if ((i != 0 && !preCharIsUpperCase) && curreCharIsUpperCase) {
+            } else if (k && curreCharIsUpperCase) {
                 sb.append(SEPARATOR);
             }
             sb.append(Character.toLowerCase(c));
@@ -316,7 +317,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (name == null || name.isEmpty()) {
             // 没必要转换
             return "";
-        } else if (!name.contains("_")) {
+        } else if (!name.contains(SEPARATOR.toString())) {
             // 不含下划线，仅将首字母大写
             return name.substring(0, 1).toUpperCase() + name.substring(1);
         }

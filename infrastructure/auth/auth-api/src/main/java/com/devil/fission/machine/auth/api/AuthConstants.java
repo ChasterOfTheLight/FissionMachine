@@ -44,22 +44,22 @@ public class AuthConstants {
     public static final String SERVICE_REGISTER_NAME = "fission-machine-auth-service";
     
     /**
-     * sign认证 accessKey 访问key
+     * sign认证 accessKey 访问key.
      */
     public static final String AUTH_ACCESS_KEY = "x-auth-access-key";
     
     /**
-     * sign认证 timestamp 时间戳
+     * sign认证 timestamp 时间戳.
      */
     public static final String AUTH_TIMESTAMP = "x-auth-timestamp";
     
     /**
-     * sign认证 nonce 随机数
+     * sign认证 nonce 随机数.
      */
     public static final String AUTH_NONCE = "x-auth-nonce";
     
     /**
-     * sign认证 sign
+     * sign认证 sign.
      */
     public static final String AUTH_SIGN = "x-auth-sign";
     

@@ -42,7 +42,7 @@ public class NacosDeRegisterController {
         LOGGER.info("deregister from nacos, serviceName:{}, groupName:{}, clusterName:{}, ip:{}, port:{}", serviceName, groupName, clusterName, ip,
                 port);
         try {
-            NamingService namingService = nacosServiceManager.getNamingService(nacosDiscoveryProperties.getNacosProperties());
+            NamingService namingService = nacosServiceManager.getNamingService();
             namingService.deregisterInstance(serviceName, groupName, ip, port, clusterName);
         } catch (NacosException e) {
             LOGGER.error("deregister from nacos error", e);
