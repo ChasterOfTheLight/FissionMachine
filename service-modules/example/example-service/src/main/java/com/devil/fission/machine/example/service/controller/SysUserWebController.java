@@ -12,6 +12,7 @@ import com.devil.fission.machine.example.service.param.SysUserInsertParam;
 import com.devil.fission.machine.example.service.param.SysUserPageQueryParam;
 import com.devil.fission.machine.example.service.param.SysUserUpdateParam;
 import com.devil.fission.machine.example.service.service.ISysUserService;
+import com.devil.fission.machine.example.service.service.NacosFlagService;
 import com.devil.fission.machine.example.service.service.impl.SysUserServiceImplManager;
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.Collections;
@@ -47,11 +49,14 @@ public class SysUserWebController {
     
     private final SysUserFeignClient sysUserFeignClient;
     
+    private final NacosFlagService nacosFlagService;
+    
     public SysUserWebController(ISysUserService sysUserService, SysUserServiceImplManager sysUserServiceImplManager,
-            SysUserFeignClient sysUserFeignClient) {
+            SysUserFeignClient sysUserFeignClient, NacosFlagService nacosFlagService) {
         this.sysUserService = sysUserService;
         this.sysUserServiceImplManager = sysUserServiceImplManager;
         this.sysUserFeignClient = sysUserFeignClient;
+        this.nacosFlagService = nacosFlagService;
     }
     
     /**
@@ -157,6 +162,15 @@ public class SysUserWebController {
     public Response<Boolean> delete(@Valid @RequestBody SysUserDeleteParam param) {
         boolean result = sysUserService.deleteById(param.getUserId());
         return result ? Response.success(true) : Response.error("删除失败", false);
+    }
+    
+    /**
+     * nacos配置刷新实验.
+     */
+    @ApiIgnore
+    @PostMapping(value = "/flag", produces = {"application/json"})
+    public Response<String> flag() {
+        return Response.success(nacosFlagService.flag());
     }
     
 }

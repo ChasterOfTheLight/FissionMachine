@@ -85,7 +85,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         // 判断是否包含系统请求头，请求时如果携带非法
         HttpHeaders requestHeaders = serverHttpRequest.getHeaders();
         if (requestHeaders.containsKey(Constants.HEADER_SERVICE_MARK) || requestHeaders.containsKey(Constants.HEADER_SW_ID)) {
-            return unAuthorizedResponse(serverHttpResponse, Response.other(ResponseCode.FORBIDDEN), path);
+            return unAuthorizedResponse(serverHttpResponse, Response.other(ResponseCode.FORBIDDEN, "携带非法请求头", null), path);
         }
         
         ServerHttpRequest.Builder mutate = serverHttpRequest.mutate();
