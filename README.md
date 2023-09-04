@@ -351,3 +351,45 @@ public class RabbitConsumerSample implements MessageConsumerProcess<Object> {
     }
 }
 ```
+
+## Sentinel Use
+
+- Import Dependency
+```xml
+<dependency>
+    <groupId>com.devil.fission</groupId>
+    <artifactId>fission-machine-sentinel-starter</artifactId>
+</dependency>
+```
+
+- Config
+```yaml
+# 该配置会在公共配置中添加
+spring:
+  cloud:
+    # sentinel
+    sentinel:
+      transport:
+        #配置Sentinel dashboard地址（根据实际情况修改）
+        dashboard: localhost:8080
+      #规则持久化从nacos拉取
+      datasource:
+        # ds1 名称可以随便写
+        ds1:
+          nacos:
+            server-addr: localhost:8848
+            # 修改为对应环境的id
+            namespace: localhost
+            username: nacos
+            password: nacos
+            # 需要先在sentinel-service后台配置一个流控 或者 在nacos中克隆一份其他服务的
+            data-id: ${spring.application.name}-flow-rules
+            group-id: DEFAULT
+            data-type: json
+            rule-type: flow
+```
+
+- Add Annotation
+```txt
+@EnableFissionSentinel
+```

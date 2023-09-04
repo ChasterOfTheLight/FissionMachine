@@ -9,9 +9,14 @@ package com.devil.fission.machine.common;
 public interface Constants {
     
     /**
+     * 点号.
+     */
+    String DOT = ".";
+    
+    /**
      * 冒号.
      */
-    String SEPARATOR = ":";
+    String COLON = ":";
     
     /**
      * 逗号.
