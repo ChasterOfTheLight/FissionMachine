@@ -15,6 +15,7 @@
         <module>object-storage-starter</module>
         <module>rabbitmq-starter</module>
         <module>redis-starter</module>
+        <module>sentinel-starter</module>
     </modules>
     
 </project>
