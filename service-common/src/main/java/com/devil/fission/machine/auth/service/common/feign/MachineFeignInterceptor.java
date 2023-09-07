@@ -16,6 +16,11 @@ import java.util.Map;
  */
 public class MachineFeignInterceptor implements RequestInterceptor {
     
+    /**
+     * feign内部请求头标识.
+     */
+    public static final String FEIGN_REQUEST_FLAG = "machine-feign-request";
+    
     @Override
     public void apply(RequestTemplate requestTemplate) {
         Object o = MachineContextHolder.getLocalMap().get(ContextConstant.CONTEXT_HEADER_MAP_KEY);
@@ -23,5 +28,7 @@ public class MachineFeignInterceptor implements RequestInterceptor {
             Map<String, String> headerMap = (Map<String, String>) o;
             headerMap.forEach((k, v) -> requestTemplate.header(k, URLEncodeUtil.encode(v)));
         }
+        // 塞入feign调用专有头，方便区分
+        requestTemplate.header(FEIGN_REQUEST_FLAG, String.valueOf(true));
     }
 }

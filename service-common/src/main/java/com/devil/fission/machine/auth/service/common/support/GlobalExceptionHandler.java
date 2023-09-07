@@ -1,8 +1,10 @@
 package com.devil.fission.machine.auth.service.common.support;
 
+import com.devil.fission.machine.auth.service.common.feign.MachineFeignInterceptor;
 import com.devil.fission.machine.common.exception.ServiceException;
 import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.common.response.ResponseCode;
+import com.devil.fission.machine.common.util.StringUtils;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,7 +219,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // content-type: application/json;charset=UTF-8
         responseHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
         // 返回状态码200 但实际Response内code是错误码 方便调用端获取code并进行处理
-        return handleExceptionInternal(e, response, responseHeaders, HttpStatus.OK, request);
+        HttpStatus httpStatus = isFeignRequest(request) ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK;
+        return handleExceptionInternal(e, response, responseHeaders, httpStatus, request);
     }
     
     /**
@@ -229,7 +232,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String errorMsg = "请求地址" + requestUri + ",发生未知异常";
         LOGGER.error(errorMsg, e);
         Response<Object> response = Response.error(errorMsg);
-        return handleExceptionInternal(e, response, new HttpHeaders(), HttpStatus.OK, request);
+        HttpStatus httpStatus = isFeignRequest(request) ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK;
+        return handleExceptionInternal(e, response, new HttpHeaders(), httpStatus, request);
     }
     
     /**
@@ -241,7 +245,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String errorMsg = "请求地址" + requestUri + ",发生系统异常";
         LOGGER.error(errorMsg, e);
         Response<Object> response = Response.error(errorMsg);
-        return handleExceptionInternal(e, response, new HttpHeaders(), HttpStatus.OK, request);
+        HttpStatus httpStatus = isFeignRequest(request) ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK;
+        return handleExceptionInternal(e, response, new HttpHeaders(), httpStatus, request);
+    }
+    
+    /**
+     * 判断是否是内部feign请求.
+     *
+     * @param request 请求
+     * @return 是/否
+     */
+    private boolean isFeignRequest(WebRequest request) {
+        String header = request.getHeader(MachineFeignInterceptor.FEIGN_REQUEST_FLAG);
+        return !StringUtils.isEmpty(header) && String.valueOf(true).equals(header);
     }
     
 }
