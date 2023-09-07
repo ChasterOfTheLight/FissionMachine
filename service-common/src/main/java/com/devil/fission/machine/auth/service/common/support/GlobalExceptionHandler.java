@@ -211,7 +211,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             LOGGER.warn(errorMsg, e);
             response = Response.other(e.getCode(), errorMsg, null);
         } else {
-            errorMsg = "请求地址" + requestUri + ",发生业务异常";
+            errorMsg = Optional.ofNullable(e.getMessage()).orElse("请求地址" + requestUri + ",发生业务异常");
             LOGGER.error(errorMsg, e);
             response = Response.error(errorMsg, null);
         }
