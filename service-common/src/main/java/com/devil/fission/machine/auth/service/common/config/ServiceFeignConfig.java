@@ -4,7 +4,10 @@ import com.devil.fission.machine.auth.service.common.feign.MachineFeignException
 import com.devil.fission.machine.auth.service.common.feign.MachineFeignFormatter;
 import com.devil.fission.machine.auth.service.common.feign.MachineFeignInterceptor;
 import com.devil.fission.machine.auth.service.common.feign.MachineFeignLoggerFactory;
+import feign.Logger;
 import feign.codec.ErrorDecoder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.openfeign.FeignLoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,12 +21,18 @@ import org.springframework.context.annotation.Configuration;
 public class ServiceFeignConfig {
     
     @Bean
+    @ConditionalOnMissingBean
+    public Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
+    }
+    
+    @Bean
     public MachineFeignFormatter feignFormatter() {
         return new MachineFeignFormatter();
     }
     
     @Bean
-    public org.springframework.cloud.openfeign.FeignLoggerFactory feignLoggerFactory() {
+    public FeignLoggerFactory feignLoggerFactory() {
         return new MachineFeignLoggerFactory();
     }
     
