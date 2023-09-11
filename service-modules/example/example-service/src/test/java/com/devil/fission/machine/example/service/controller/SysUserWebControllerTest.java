@@ -1,5 +1,6 @@
 package com.devil.fission.machine.example.service.controller;
 
+import com.devil.fission.machine.common.response.ResponseCode;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,6 +22,14 @@ import java.util.concurrent.TimeUnit;
  * @date Created in 2023/9/5 13:33
  */
 public class SysUserWebControllerTest {
+    
+    @Test
+    public void enumTest() {
+        ResponseCode[] values = ResponseCode.values();
+        for (ResponseCode value : values) {
+            System.out.println(value.toString());
+        }
+    }
     
     @Test
     public void caffeineTest() {

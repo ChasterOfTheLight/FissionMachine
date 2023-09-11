@@ -57,6 +57,7 @@ public class SysUserWebController {
         this.sysUserServiceImplManager = sysUserServiceImplManager;
         this.sysUserFeignClient = sysUserFeignClient;
         this.nacosFlagService = nacosFlagService;
+        log.info("SysUserWebController init");
     }
     
     /**

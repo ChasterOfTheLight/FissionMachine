@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -25,7 +24,6 @@ import java.util.concurrent.TimeUnit;
  * @date Created in 2023/7/21 11:23
  */
 @Slf4j
-@Configuration
 public class OkHttpConfig {
     
     /**
