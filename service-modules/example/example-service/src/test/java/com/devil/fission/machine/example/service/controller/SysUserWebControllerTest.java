@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**

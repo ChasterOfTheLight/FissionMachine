@@ -1,6 +1,7 @@
 package com.devil.fission.machine.auth.service.common.feign;
 
 import cn.hutool.http.HttpStatus;
+import com.devil.fission.machine.common.util.GzipUtils;
 import com.devil.fission.machine.common.util.StringUtils;
 import feign.Request;
 import feign.Response;
@@ -11,7 +12,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
+import java.util.zip.GZIPInputStream;
 
+import static feign.Util.CONTENT_ENCODING;
+import static feign.Util.ENCODING_GZIP;
 import static feign.Util.UTF_8;
 import static feign.Util.decodeOrDefault;
 import static feign.Util.valuesOrEmpty;
@@ -97,7 +102,12 @@ public class MachineFeignLogger extends feign.Logger {
                 byte[] bodyData = Util.toByteArray(response.body().asInputStream());
                 bodyLength = bodyData.length;
                 if (logLevel.ordinal() >= Level.FULL.ordinal() && bodyLength > 0) {
-                    String binaryData = decodeOrDefault(bodyData, UTF_8, "Binary data");
+                    String binaryData;
+                    if (isGzip(response.headers().get(CONTENT_ENCODING))) {
+                        binaryData = GzipUtils.uncompressToString(bodyData);
+                    } else {
+                        binaryData = decodeOrDefault(bodyData, UTF_8, "Binary data");
+                    }
                     String resultData = StringUtils.substring(binaryData, 0, 1000);
                     stringBuilder.append("   ").append("Response Body: ").append(resultData).append("\r\n");
                 }
@@ -135,5 +145,14 @@ public class MachineFeignLogger extends feign.Logger {
     protected void log(String configKey, String format, Object... args) {
         // 默认info日志
         logger.info(methodTag(configKey) + format);
+    }
+    
+    /**
+     * 判断是否是gzip压缩.
+     */
+    private boolean isGzip(Collection<String> contentEncodingValues) {
+        return contentEncodingValues != null
+                && !contentEncodingValues.isEmpty()
+                && contentEncodingValues.contains(ENCODING_GZIP);
     }
 }
