@@ -3,6 +3,6 @@ server:
 
 spring:
   application:
-    name: fission-machine-gateway
+    name: gateway
   profiles:
     active: local

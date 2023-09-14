@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @date Created in 2023/8/24 16:28
  */
 @SpringBootApplication
-@EnableFeignClients(basePackages = {"com.devil.fission.machine.gateway.feign"})
+@EnableFeignClients(basePackages = {"com.devil.fission.machine.gateway.rpc"})
 @EnableDiscoveryClient
 public class GatewayApplication {
     

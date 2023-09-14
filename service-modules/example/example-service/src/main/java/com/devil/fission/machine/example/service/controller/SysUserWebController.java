@@ -57,6 +57,7 @@ public class SysUserWebController {
         this.sysUserServiceImplManager = sysUserServiceImplManager;
         this.sysUserFeignClient = sysUserFeignClient;
         this.nacosFlagService = nacosFlagService;
+        log.info("SysUserWebController init");
     }
     
     /**
@@ -168,7 +169,7 @@ public class SysUserWebController {
      * nacos配置刷新实验.
      */
     @ApiIgnore
-    @PostMapping(value = "/flag", produces = {"application/json"})
+    @RequestMapping(value = "/flag", produces = {"application/json"})
     public Response<String> flag() {
         return Response.success(nacosFlagService.flag());
     }

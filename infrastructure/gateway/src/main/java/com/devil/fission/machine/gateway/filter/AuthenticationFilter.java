@@ -10,7 +10,7 @@ import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.util.StringUtils;
 import com.devil.fission.machine.gateway.config.GatewayConfiguration;
-import com.devil.fission.machine.gateway.feign.AuthFeignClient;
+import com.devil.fission.machine.gateway.rpc.AuthFeignClient;
 import com.devil.fission.machine.gateway.util.IpUtils;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
