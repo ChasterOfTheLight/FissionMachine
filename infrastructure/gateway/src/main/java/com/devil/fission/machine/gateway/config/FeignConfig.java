@@ -1,5 +1,6 @@
 package com.devil.fission.machine.gateway.config;
 
+import com.devil.fission.machine.gateway.support.FeignExceptionDecoder;
 import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
