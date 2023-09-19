@@ -411,7 +411,7 @@ xxl:
       address:
       ip:
       port: 9010
-      logpath: /usr/local/tojoy/xxljob-logs
+      logpath: /usr/local/xxljob-logs
       logretentiondays: 5
 ```
 
