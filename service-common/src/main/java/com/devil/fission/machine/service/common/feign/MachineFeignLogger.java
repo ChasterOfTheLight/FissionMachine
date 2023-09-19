@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
-import java.util.zip.GZIPInputStream;
 
 import static feign.Util.CONTENT_ENCODING;
 import static feign.Util.ENCODING_GZIP;

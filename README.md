@@ -393,3 +393,38 @@ spring:
 ```txt
 @EnableFissionSentinel
 ```
+
+## Xxl-Job Use
+
+- Config
+
+```yaml
+xxl:
+  job:
+    accessToken: 'xxxxx'
+    admin:
+      # 为空关闭自动注册，手动注册
+      addresses: xxxxxxx
+    executor:
+      # 为空关闭自动注册，手动注册
+      appname: xxxxxx
+      address:
+      ip:
+      port: 9010
+      logpath: /usr/local/tojoy/xxljob-logs
+      logretentiondays: 5
+```
+
+- Add XxlJob Annotation
+
+```java
+public class TaskHandler {
+    
+    @XxlJob("batchJobDemo")
+    public void batchJobDemo() {
+        
+    }
+}
+```
+
+- XxlJob Console Config the Job

@@ -10,6 +10,17 @@
     <artifactId>fission-machine-job-service</artifactId>
     
     <dependencies>
+        <!-- spring batch -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
+        <!-- h2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!-- xxl-job-core -->
         <dependency>
             <groupId>com.xuxueli</groupId>
