@@ -3,16 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.devil.fission</groupId>
-        <artifactId>fission-machine-all</artifactId>
+        <artifactId>fission-machine-service-modules</artifactId>
         <version>${revision}</version>
     </parent>
     
-    <artifactId>fission-machine-service-modules</artifactId>
+    <artifactId>fission-machine-job</artifactId>
     <packaging>pom</packaging>
-    
     <modules>
-        <module>example</module>
-        <module>job</module>
+        <module>job-service</module>
     </modules>
 
 </project>
