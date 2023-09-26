@@ -4,6 +4,7 @@ import com.devil.fission.machine.service.common.support.MachineRestTemplateInter
 import com.devil.fission.machine.service.common.support.RestControllerAspect;
 import com.devil.fission.machine.service.common.filter.MachineServletFilter;
 import com.devil.fission.machine.service.common.filter.XssFilter;
+import com.devil.fission.machine.service.common.support.ServiceAspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -56,6 +57,11 @@ public class ServiceCommonConfig {
     @Bean
     public RestControllerAspect restControllerAspect() {
         return new RestControllerAspect();
+    }
+    
+    @Bean
+    public ServiceAspect serviceAspect() {
+        return new ServiceAspect();
     }
     
     @Autowired(required = false)
