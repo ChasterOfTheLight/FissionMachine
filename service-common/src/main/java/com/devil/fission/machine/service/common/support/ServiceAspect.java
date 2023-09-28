@@ -19,6 +19,9 @@ public class ServiceAspect {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceAspect.class);
     
+    /**
+     * around.
+     */
     @Around("@within(org.springframework.stereotype.Service)")
     public Object around(ProceedingJoinPoint joinPoint) {
         // 类名
