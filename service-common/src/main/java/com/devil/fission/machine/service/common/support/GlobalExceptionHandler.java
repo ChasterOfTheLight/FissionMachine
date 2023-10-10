@@ -206,7 +206,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // 非500业务异常不打印错误日志
         String errorMsg;
         Response<Object> response;
-        if (e.getCode() != ResponseCode.FAIL.getCode()) {
+        if (e.getCode() != ResponseCode.INTERNAL_SERVER_ERROR.getCode()) {
             errorMsg = Optional.ofNullable(e.getMessage()).orElse("请求地址" + requestUri + ",发生业务异常(非阻断)");
             LOGGER.warn(errorMsg, e);
             response = Response.other(e.getCode(), errorMsg, null);

@@ -98,7 +98,7 @@ public class RestControllerAspect implements Ordered {
             if (e instanceof ServiceException) {
                 throw (ServiceException) e;
             } else {
-                throw new ServiceException(ResponseCode.FAIL.getCode(), e.getLocalizedMessage(), e);
+                throw new ServiceException(ResponseCode.INTERNAL_SERVER_ERROR.getCode(), e.getLocalizedMessage(), e);
             }
         }
         stopWatch.stop();
