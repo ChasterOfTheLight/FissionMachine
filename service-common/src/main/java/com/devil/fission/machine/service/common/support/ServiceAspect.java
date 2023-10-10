@@ -19,6 +19,9 @@ public class ServiceAspect {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceAspect.class);
     
+    /**
+     * around.
+     */
     @Around("@within(org.springframework.stereotype.Service)")
     public Object around(ProceedingJoinPoint joinPoint) {
         // 类名
@@ -30,13 +33,13 @@ public class ServiceAspect {
         } catch (Throwable e) {
             if (e instanceof ServiceException) {
                 ServiceException se = (ServiceException) e;
-                if (se.getCode() == ResponseCode.FAIL.getCode()) {
+                if (se.getCode() == ResponseCode.INTERNAL_SERVER_ERROR.getCode()) {
                     LOGGER.error("{} - {} 执行错误", className, methodName, se);
                 }
                 throw (ServiceException) e;
             } else {
                 LOGGER.error("{} - {} 执行错误", className, methodName, e);
-                throw new ServiceException(ResponseCode.FAIL.getCode(), e.getLocalizedMessage(), e);
+                throw new ServiceException(ResponseCode.INTERNAL_SERVER_ERROR.getCode(), e.getLocalizedMessage(), e);
             }
         }
     }

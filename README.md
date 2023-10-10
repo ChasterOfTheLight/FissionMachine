@@ -63,7 +63,7 @@ server:
     min-response-size: 2048
 # feign
 feign:
-  # user okhttp client pool
+  # use okhttp client pool
   okhttp:
     enabled: true
   sentinel:

@@ -29,6 +29,9 @@ public class TaskHandler {
         this.job = job;
     }
     
+    /**
+     * batchJobDemo.
+     */
     @XxlJob("batchJobDemo")
     public void batchJobDemo() {
         JobParameters params = new JobParametersBuilder().addString("JobID", String.valueOf(System.currentTimeMillis())).toJobParameters();

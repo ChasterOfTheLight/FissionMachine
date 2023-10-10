@@ -3,4 +3,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.devil.fission.machine.service.common.config.ServiceFeignConfig,\
   com.devil.fission.machine.service.common.config.ServiceSwaggerConfig,\
   com.devil.fission.machine.service.common.nacos.NacosDeRegisterController,\
+  com.devil.fission.machine.service.common.health.ServerHealthController,\
   com.devil.fission.machine.service.common.support.GlobalExceptionHandler

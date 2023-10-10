@@ -16,7 +16,12 @@ public enum ResponseCode {
     /**
      * 请求失败.
      */
-    FAIL(500, "请求失败"),
+    FAIL(-1, "请求失败"),
+    
+    /**
+     * 系统错误.
+     */
+    INTERNAL_SERVER_ERROR(500, "系统错误"),
     
     /**
      * 参数异常.

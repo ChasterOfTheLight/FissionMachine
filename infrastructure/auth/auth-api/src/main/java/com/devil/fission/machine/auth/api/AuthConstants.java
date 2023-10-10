@@ -41,7 +41,7 @@ public class AuthConstants {
     /**
      * 服务名称.
      */
-    public static final String SERVICE_REGISTER_NAME = "fission-machine-auth-service";
+    public static final String SERVICE_REGISTER_NAME = "auth-service";
     
     /**
      * sign认证 accessKey 访问key.

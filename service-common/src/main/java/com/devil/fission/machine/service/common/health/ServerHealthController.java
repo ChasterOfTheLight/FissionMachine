@@ -18,7 +18,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class ServerHealthController {
     
     @GetMapping(value = "serverHealth")
-    public Response<Boolean> deregisterInstance() {
+    public Response<Boolean> serverHealth() {
         return Response.success(true);
     }
     

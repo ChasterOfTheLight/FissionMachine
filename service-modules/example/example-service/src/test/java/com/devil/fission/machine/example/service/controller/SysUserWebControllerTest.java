@@ -12,7 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * {@link SysUserWebController } unit test.
@@ -62,6 +66,18 @@ public class SysUserWebControllerTest {
         String s = cache.get("1");
         System.out.println(s);
         Assert.assertEquals("999", s);
+    }
+    
+    @Test
+    public void testSort() {
+        List<Long> list = new ArrayList<>();
+        list.add(1L);
+        list.add(2L);
+        list.add(3L);
+        list = list.stream().filter(e -> e > 0).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        for (Long l : list) {
+            System.out.println(l);
+        }
     }
   
 }

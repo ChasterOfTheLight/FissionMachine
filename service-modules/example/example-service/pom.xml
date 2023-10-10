@@ -32,6 +32,11 @@
             <artifactId>fission-machine-example-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-auth-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     
     <build>
