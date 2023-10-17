@@ -17,12 +17,12 @@ import java.util.Random;
  * @date Created in 2019-01-25 10:38
  */
 public class AesUtils {
-
+    
     /**
      * 初始向量（实现的是 AES-128，因此方法传入的 key 需为长度为 16 的字符串）.
      */
     private static final String IV_STRING = "AES--INIT-VECTOR";
-
+    
     /**
      * 参数分别代表 算法名称/加密模式/数据填充方式.
      */
@@ -32,9 +32,9 @@ public class AesUtils {
      * 加密.
      *
      * @param contentByteArray 待加密内容字节数组
-     * @param encryptKey 加密key
-     * @param algorithm 加密算法
-     * @param useBase64 是否使用base64
+     * @param encryptKey       加密key
+     * @param algorithm        加密算法
+     * @param useBase64        是否使用base64
      */
     public static byte[] encrypt(byte[] contentByteArray, String encryptKey, String algorithm, boolean useBase64) {
         try {
@@ -66,10 +66,10 @@ public class AesUtils {
     /**
      * 加密.
      *
-     * @param content 待加密内容
+     * @param content    待加密内容
      * @param encryptKey 加密key
-     * @param algorithm 加密算法
-     * @param useBase64 是否使用base64
+     * @param algorithm  加密算法
+     * @param useBase64  是否使用base64
      */
     public static byte[] encrypt(String content, String encryptKey, String algorithm, boolean useBase64) {
         return encrypt(content.getBytes(StandardCharsets.UTF_8), encryptKey, algorithm, useBase64);
@@ -83,9 +83,9 @@ public class AesUtils {
      * 解密.
      *
      * @param encryptedByteArray 待解密的字符数组
-     * @param decryptKey 解密key 需要与加密key一致
-     * @param algorithm 解密算法
-     * @param useBase64 是否使用base64
+     * @param decryptKey         解密key 需要与加密key一致
+     * @param algorithm          解密算法
+     * @param useBase64          是否使用base64
      */
     public static byte[] decrypt2ByteArray(byte[] encryptedByteArray, String decryptKey, String algorithm, boolean useBase64) {
         try {
@@ -118,9 +118,9 @@ public class AesUtils {
      * 解密.
      *
      * @param encryptedByteArray 待解密的字符数组
-     * @param decryptKey 解密key 需要与加密key一致
-     * @param algorithm 解密算法
-     * @param useBase64 是否使用base64
+     * @param decryptKey         解密key 需要与加密key一致
+     * @param algorithm          解密算法
+     * @param useBase64          是否使用base64
      */
     public static String decrypt(byte[] encryptedByteArray, String decryptKey, String algorithm, boolean useBase64) {
         return new String(decrypt2ByteArray(encryptedByteArray, decryptKey, algorithm, useBase64));
@@ -132,7 +132,7 @@ public class AesUtils {
     public static boolean isCbcAlgorithm(String algorithm) {
         return StringUtils.isNotBlank(algorithm) && algorithm.contains("CBC");
     }
-
+    
     /**
      * 创建指定位数的随机字符串.
      *
@@ -149,6 +149,6 @@ public class AesUtils {
         }
         return sb.toString();
     }
-
+    
 }
 

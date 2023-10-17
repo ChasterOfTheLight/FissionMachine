@@ -25,5 +25,5 @@ public class LogUtils {
      * Tencent log.
      */
     public static final Logger TENCENT_LOG = LoggerFactory.getLogger("com.devil.fission.machine.object.storage.tencent");
-
+    
 }

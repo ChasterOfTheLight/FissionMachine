@@ -93,14 +93,14 @@ public class JetCacheConfig {
                 .keyConvertor(FastjsonKeyConvertor.INSTANCE).valueEncoder(JavaValueEncoder.INSTANCE).valueDecoder(JavaValueDecoder.INSTANCE)
                 .keyPrefix("FissionMachine:").redisClient(redisClient);
         remoteBuilders.put(CacheConsts.DEFAULT_AREA, remoteCacheBuilder);
-    
+        
         GlobalCacheConfig globalCacheConfig = new GlobalCacheConfig();
         globalCacheConfig.setLocalCacheBuilders(localBuilders);
         globalCacheConfig.setRemoteCacheBuilders(remoteBuilders);
         // 默认不统计
         globalCacheConfig.setStatIntervalMinutes(0);
         globalCacheConfig.setAreaInCacheName(false);
-    
+        
         LOGGER.info("Jetcache Config Init Success");
         return globalCacheConfig;
     }

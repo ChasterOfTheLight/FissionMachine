@@ -14,7 +14,7 @@ import java.io.IOException;
  * @date Created in 2023/1/3 10:55
  */
 public class FeignExceptionDecoder implements ErrorDecoder {
-
+    
     @Override
     public Exception decode(String methodKey, Response response) {
         try {

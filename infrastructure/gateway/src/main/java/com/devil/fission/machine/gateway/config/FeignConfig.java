@@ -20,10 +20,10 @@ public class FeignConfig {
         // 不重试
         return Retryer.NEVER_RETRY;
     }
-
+    
     @Bean
     ErrorDecoder errorDecoder() {
         return new FeignExceptionDecoder();
     }
-
+    
 }

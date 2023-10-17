@@ -17,5 +17,5 @@
         <module>redis-starter</module>
         <module>sentinel-starter</module>
     </modules>
-    
+
 </project>

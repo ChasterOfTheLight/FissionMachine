@@ -1,10 +1,10 @@
 package com.devil.fission.machine.service.common.support;
 
-import com.devil.fission.machine.service.common.feign.MachineFeignInterceptor;
 import com.devil.fission.machine.common.exception.ServiceException;
 import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.util.StringUtils;
+import com.devil.fission.machine.service.common.feign.MachineFeignInterceptor;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

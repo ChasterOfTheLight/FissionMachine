@@ -7,6 +7,7 @@ import com.devil.fission.machine.object.storage.core.StorageErrorCode;
 import com.devil.fission.machine.object.storage.core.StorageException;
 import com.devil.fission.machine.object.storage.core.StorageService;
 import com.devil.fission.machine.object.storage.core.TempSecret;
+import com.devil.fission.machine.object.storage.util.FileMd5Util;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.Bucket;
 import com.qcloud.cos.model.CannedAccessControlList;
@@ -14,7 +15,6 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.tencent.cloud.CosStsClient;
 import com.tencent.cloud.Response;
-import com.devil.fission.machine.object.storage.util.FileMd5Util;
 import org.apache.http.impl.io.EmptyInputStream;
 
 import java.io.IOException;
@@ -28,13 +28,13 @@ import java.util.TreeMap;
  * @date Created in 2022/4/26 11:15
  */
 public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, TempSecret<CosTempSecretObject> {
-
+    
     final COSClient cosClient;
-
+    
     private final CosProperties properties;
-
+    
     String bucket;
-
+    
     public CosStorageServiceImpl(COSClient cosClient, CosProperties properties) {
         this.cosClient = cosClient;
         this.properties = properties;
@@ -46,7 +46,7 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             }
         }
     }
-
+    
     @Override
     public CosStorableObject create(String path, int permission) {
         PutObjectRequest req = new PutObjectRequest(bucket, path, EmptyInputStream.INSTANCE, null);
@@ -58,7 +58,7 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.COS_CREATE_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public CosStorableObject get(String path) {
         try {
@@ -94,7 +94,7 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.COS_PUT_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public CosStorableObject put(String path, StorableObject source, int permission) throws StorageException {
         try {
@@ -110,7 +110,7 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.COS_PUT_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public void remove(String path) {
         try {
@@ -119,7 +119,7 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.COS_DELETE_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public void setPermission(String path, int permission) {
         try {
@@ -128,7 +128,7 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.COS_SET_PERMISSION_FAIL, e);
         }
     }
-
+    
     @Override
     public boolean isExist(String path) {
         try {
@@ -137,7 +137,7 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.COS_FILE_IS_EXIST_FAIL, e);
         }
     }
-
+    
     /**
      * 获取cos权限.
      */
@@ -154,11 +154,11 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
                 return CannedAccessControlList.Default;
         }
     }
-
+    
     @Override
     public CosTempSecretObject generateUploadTempSecret(String path) {
         TreeMap<String, Object> config = new TreeMap<>();
-
+        
         try {
             // 替换为您的 SecretId
             config.put("SecretId", properties.getSecretId());
@@ -173,16 +173,16 @@ public class CosStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             // 这里改成允许的路径前缀，可以根据自己网站的用户登录态判断允许上传的具体路径，例子：a.jpg 或者 a/* 或者 * 。
             // 如果填写了“*”，将允许用户访问所有资源；除非业务需要，否则请按照最小权限原则授予用户相应的访问权限范围。
             config.put("allowPrefix", path);
-
+            
             // 密钥的权限列表。简单上传、表单上传和分片上传需要以下的权限，其他权限列表请看 https://cloud.tencent.com/document/product/436/31923
-            String[] allowActions = new String[]{
+            String[] allowActions = new String[] {
                     // 简单上传
                     "name/cos:PutObject", "name/cos:PostObject", "name/cos:InitiateMultipartUpload", "name/cos:ListMultipartUploads",
                     "name/cos:ListParts", "name/cos:UploadPart", "name/cos:CompleteMultipartUpload"};
             config.put("allowActions", allowActions);
-
+            
             Response response = CosStsClient.getCredential(config);
-
+            
             CosTempSecretObject tempSecretObject = new CosTempSecretObject();
             tempSecretObject.setTmpSecretId(response.credentials.tmpSecretId);
             tempSecretObject.setTmpSecretKey(response.credentials.tmpSecretKey);

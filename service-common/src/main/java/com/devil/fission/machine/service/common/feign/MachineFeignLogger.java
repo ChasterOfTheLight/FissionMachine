@@ -150,8 +150,6 @@ public class MachineFeignLogger extends feign.Logger {
      * 判断是否是gzip压缩.
      */
     private boolean isGzip(Collection<String> contentEncodingValues) {
-        return contentEncodingValues != null
-                && !contentEncodingValues.isEmpty()
-                && contentEncodingValues.contains(ENCODING_GZIP);
+        return contentEncodingValues != null && !contentEncodingValues.isEmpty() && contentEncodingValues.contains(ENCODING_GZIP);
     }
 }

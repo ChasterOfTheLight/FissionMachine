@@ -45,7 +45,7 @@ public class PageData<T> implements Serializable {
      * 列表数据.
      */
     private List<T> list;
-
+    
     public PageData() {
     
     }
@@ -72,7 +72,7 @@ public class PageData<T> implements Serializable {
         this.currPage = currPage;
         this.totalPage = pageSize > 0 ? (totalCount + pageSize - 1) / pageSize : 0;
     }
-
+    
     /**
      * the totalCount.
      */

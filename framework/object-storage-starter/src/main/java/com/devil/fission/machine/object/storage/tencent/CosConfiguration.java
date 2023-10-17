@@ -1,11 +1,11 @@
 package com.devil.fission.machine.object.storage.tencent;
 
+import com.devil.fission.machine.object.storage.util.LogUtils;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
 import com.qcloud.cos.region.Region;
-import com.devil.fission.machine.object.storage.util.LogUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

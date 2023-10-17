@@ -50,5 +50,5 @@ public class OssTempSecretObject {
     @ApiModelProperty("dir")
     private String dir;
     
-
+    
 }

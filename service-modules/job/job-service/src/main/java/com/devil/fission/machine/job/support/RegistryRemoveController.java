@@ -20,5 +20,5 @@ public class RegistryRemoveController {
         ExecutorRegistryThread.getInstance().toStop();
         return "success";
     }
-
+    
 }

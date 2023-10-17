@@ -158,8 +158,8 @@ public class HttpClientUtils {
         }
         
         private String buildHeadersEntry(Header[] headers) {
-            return "\n请求头: [" + Arrays.stream(headers).map(header -> header.getName() + ": " + header.getValue())
-                    .collect(Collectors.joining(", ")) + "]";
+            return "\n请求头: [" + Arrays.stream(headers).map(header -> header.getName() + ": " + header.getValue()).collect(Collectors.joining(", "))
+                    + "]";
         }
         
         private String buildEntityEntry(HttpRequest request) throws IOException {

@@ -39,11 +39,12 @@ public class SignService {
     
     /**
      * 校验sign.
-     * @param accessKey 访问key
-     * @param timestamp 时间戳
-     * @param nonce 随机数
+     *
+     * @param accessKey   访问key
+     * @param timestamp   时间戳
+     * @param nonce       随机数
      * @param requestSign 请求的sign
-     * @param requestUri 请求uri
+     * @param requestUri  请求uri
      * @return 认证结果
      */
     public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String requestSign, String requestUri) {
