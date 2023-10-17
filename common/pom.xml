@@ -7,10 +7,10 @@
         <artifactId>fission-machine-all</artifactId>
         <version>${revision}</version>
     </parent>
-
+    
     <artifactId>fission-machine-common</artifactId>
     <packaging>jar</packaging>
-
+    
     <dependencies>
         <!-- lombok -->
         <dependency>
@@ -124,7 +124,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
         </dependency>
-
+    
     </dependencies>
 
 </project>

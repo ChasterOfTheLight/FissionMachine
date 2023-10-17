@@ -35,5 +35,5 @@ public class CosTempSecretObject {
      * expiredTime.
      */
     private String expiredTime;
-
+    
 }

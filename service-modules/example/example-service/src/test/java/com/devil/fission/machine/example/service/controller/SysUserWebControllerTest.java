@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * {@link SysUserWebController } unit test.
  *
- * @author Devil 
+ * @author Devil
  * @date Created in 2023/9/5 13:33
  */
 public class SysUserWebControllerTest {
@@ -79,5 +79,5 @@ public class SysUserWebControllerTest {
             System.out.println(l);
         }
     }
-  
+    
 }

@@ -31,13 +31,13 @@ import java.util.List;
  */
 @Slf4j
 public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, TempSecret<OssTempSecretObject> {
-
+    
     final OSS ossClient;
-
+    
     private final OssProperties properties;
-
+    
     String bucket;
-
+    
     public OssStorageServiceImpl(OSS ossClient, OssProperties properties) {
         this.ossClient = ossClient;
         this.properties = properties;
@@ -49,7 +49,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             }
         }
     }
-
+    
     @Override
     public OssStorableObject create(String path, int permission) throws StorageException {
         try {
@@ -62,7 +62,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.OSS_CREATE_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public OssStorableObject get(String path) throws StorageException {
         try {
@@ -97,7 +97,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.OSS_PUT_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public OssStorableObject put(String path, StorableObject source, int permission) throws StorageException {
         try {
@@ -114,7 +114,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.OSS_PUT_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public void remove(String path) throws StorageException {
         try {
@@ -123,7 +123,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.OSS_DELETE_FILE_FAIL, e);
         }
     }
-
+    
     @Override
     public void setPermission(String path, int permission) throws StorageException {
         try {
@@ -132,7 +132,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.OSS_SET_PERMISSION_FAIL, e);
         }
     }
-
+    
     @Override
     public boolean isExist(String path) throws StorageException {
         try {
@@ -141,7 +141,7 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             throw new StorageException(StorageErrorCode.OSS_FILE_IS_EXIST_FAIL, e);
         }
     }
-
+    
     /**
      * 获取oss权限.
      */
@@ -158,14 +158,14 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
                 return CannedAccessControlList.Default;
         }
     }
-
+    
     @Override
     public OssTempSecretObject generateUploadTempSecret(String path) {
         String accessId = properties.getAccessKeyId();
         String endpoint = properties.getEndpoint();
         // host的格式为 bucketname.endpoint
         String host = "https://" + bucket + "." + endpoint;
-
+        
         try {
             long expireTime = 30;
             long expireEndTime = System.currentTimeMillis() + expireTime * 1000;
@@ -173,13 +173,13 @@ public class OssStorageServiceImpl implements StorageService<ObjectMetadata>, Te
             PolicyConditions policyConds = new PolicyConditions();
             policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, 1048576000);
             policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, path);
-
+            
             // 授权post权限
             String postPolicy = ossClient.generatePostPolicy(expiration, policyConds);
             byte[] binaryData = postPolicy.getBytes(StandardCharsets.UTF_8);
             String encodedPolicy = BinaryUtil.toBase64String(binaryData);
             String postSignature = ossClient.calculatePostSignature(postPolicy);
-
+            
             OssTempSecretObject tempSecretObject = new OssTempSecretObject();
             tempSecretObject.setAccessId(accessId);
             tempSecretObject.setPolicy(encodedPolicy);

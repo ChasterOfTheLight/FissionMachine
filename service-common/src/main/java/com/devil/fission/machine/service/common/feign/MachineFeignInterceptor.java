@@ -1,8 +1,8 @@
 package com.devil.fission.machine.service.common.feign;
 
 import cn.hutool.core.net.URLEncodeUtil;
-import com.devil.fission.machine.service.common.support.ContextConstant;
 import com.devil.fission.machine.common.support.MachineContextHolder;
+import com.devil.fission.machine.service.common.support.ContextConstant;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 

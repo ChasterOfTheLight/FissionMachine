@@ -1,5 +1,8 @@
 # FissionMachine
-A machine that meets the requirements of project fission and is suitable for quickly building a Spring Cloud scaffolding project.Using these tools and technologies, you can quickly set up a Spring Cloud project and meet the requirements of project fission, allowing for efficient development and scalability.
+
+A machine that meets the requirements of project fission and is suitable for quickly building a Spring Cloud scaffolding project.Using these tools and
+technologies, you can quickly set up a Spring Cloud project and meet the requirements of project fission, allowing for efficient development and
+scalability.
 
 ## Technology Stack
 
@@ -52,6 +55,7 @@ FissionMachine （项目根目录）
 ## Common Config
 
 * nacos公共配置common-config.yaml
+
 ```yaml
 server:
   compression:
@@ -221,6 +225,7 @@ class SignGen {
 ## Jdbc Config
 
 - Import Dependency
+
 ```xml
 <dependency>
     <groupId>com.devil.fission</groupId>
@@ -241,6 +246,7 @@ spring:
 ## Multi DataSource Config
 
 - Import Dependency
+
 ```xml
 <dependency>
     <groupId>com.baomidou</groupId>
@@ -249,6 +255,7 @@ spring:
 ```
 
 - Nacos Properties
+
 ```yaml
 spring:
   datasource:
@@ -271,6 +278,7 @@ spring:
 ## Redis Config
 
 - Import Dependency
+
 ```xml
 <dependency>
     <groupId>com.devil.fission</groupId>
@@ -279,6 +287,7 @@ spring:
 ```
 
 - Nacos Properties
+
 ```yaml
 spring:
   redis:
@@ -303,6 +312,7 @@ spring:
 ## Rabbitmq Config
 
 - Import Dependency
+
 ```xml
 <dependency>
     <groupId>com.devil.fission</groupId>
@@ -311,6 +321,7 @@ spring:
 ```
 
 - Nacos properties
+
 ```yaml
 spring:
   # rabbitmq
@@ -322,6 +333,7 @@ spring:
 ```
 
 - Sender
+
 ```java
 public class XXXXXX {
     
@@ -340,6 +352,7 @@ public class XXXXXX {
 ```
 
 - Consumer
+
 ```java
 @RabbitmqConsumer(queue = "队列名称")
 public class RabbitConsumerSample implements MessageConsumerProcess<Object> {
@@ -355,6 +368,7 @@ public class RabbitConsumerSample implements MessageConsumerProcess<Object> {
 ## Sentinel Use
 
 - Import Dependency
+
 ```xml
 <dependency>
     <groupId>com.devil.fission</groupId>
@@ -363,6 +377,7 @@ public class RabbitConsumerSample implements MessageConsumerProcess<Object> {
 ```
 
 - Config
+
 ```yaml
 # 该配置会在公共配置中添加
 spring:
@@ -390,6 +405,7 @@ spring:
 ```
 
 - Add Annotation
+
 ```txt
 @EnableFissionSentinel
 ```

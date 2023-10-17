@@ -99,7 +99,7 @@ public class GzipUtils {
     /**
      * 指定编码解压.
      *
-     * @param bytes   要压缩的字符数组
+     * @param bytes    要压缩的字符数组
      * @param encoding 编码
      * @return 字节数组
      */

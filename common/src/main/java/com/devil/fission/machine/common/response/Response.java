@@ -94,7 +94,7 @@ public class Response<T> implements Serializable {
     public static <T> Response<T> other(int code, String msg, T data) {
         return new Response<T>(code, msg, data);
     }
-
+    
     /**
      * 返回其他消息.
      *

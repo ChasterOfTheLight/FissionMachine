@@ -53,7 +53,7 @@ public class OkHttpConfig {
     @Bean
     public SSLSocketFactory sslSocketFactory(X509TrustManager x509TrustManager) {
         try {
-            TrustManager[] trustManagers = new TrustManager[]{x509TrustManager};
+            TrustManager[] trustManagers = new TrustManager[] {x509TrustManager};
             SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, trustManagers, new SecureRandom());
             return sslContext.getSocketFactory();
@@ -73,9 +73,7 @@ public class OkHttpConfig {
     @SuppressWarnings("KotlinInternalInJava")
     @Bean
     public OkHttpClient okHttpClient(SSLSocketFactory sslSocketFactory, X509TrustManager x509TrustManager, HostnameVerifier hostnameVerifier) {
-        return new OkHttpClient.Builder()
-                .sslSocketFactory(sslSocketFactory, x509TrustManager)
-                .hostnameVerifier(hostnameVerifier)
+        return new OkHttpClient.Builder().sslSocketFactory(sslSocketFactory, x509TrustManager).hostnameVerifier(hostnameVerifier)
                 // 是否开启缓存
                 .retryOnConnectionFailure(false)
                 // 最大连接数、连接存活时间、存活时间单位（分钟）
@@ -85,8 +83,7 @@ public class OkHttpConfig {
                 // 读取超时时间
                 .readTimeout(5L, TimeUnit.SECONDS)
                 // 是否允许重定向
-                .followRedirects(true)
-                .build();
+                .followRedirects(true).build();
     }
     
     /**

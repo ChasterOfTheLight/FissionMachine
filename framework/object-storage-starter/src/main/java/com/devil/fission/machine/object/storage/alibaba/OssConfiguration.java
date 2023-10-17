@@ -28,7 +28,7 @@ public class OssConfiguration {
         if (properties.getSupportCname() != null) {
             conf.setSupportCname(properties.getSupportCname());
         }
-    
+        
         OSS ossClient = new OSSClientBuilder().build(properties.getEndpoint(), properties.getAccessKeyId(), properties.getSecretAccessKey(), conf);
         LogUtils.ALIBABA_LOG.info("Alibaba Oss Client init success");
         return new OssStorageServiceImpl(ossClient, properties);

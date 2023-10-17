@@ -7,8 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
- * NacosFlagService.
- * 加入RefreshScope后会自动刷新bean
+ * NacosFlagService. 加入RefreshScope后会自动刷新bean
  *
  * @author Devil
  * @date Created in 2023/8/28 14:38

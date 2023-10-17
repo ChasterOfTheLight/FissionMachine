@@ -11,6 +11,7 @@ import com.devil.fission.machine.example.service.param.SysUserDeleteParam;
 import com.devil.fission.machine.example.service.param.SysUserInsertParam;
 import com.devil.fission.machine.example.service.param.SysUserPageQueryParam;
 import com.devil.fission.machine.example.service.param.SysUserUpdateParam;
+import com.devil.fission.machine.example.service.service.ExampleService;
 import com.devil.fission.machine.example.service.service.ISysUserService;
 import com.devil.fission.machine.example.service.service.NacosFlagService;
 import com.devil.fission.machine.example.service.service.impl.SysUserServiceImplManager;
@@ -51,12 +52,15 @@ public class SysUserWebController {
     
     private final NacosFlagService nacosFlagService;
     
+    private final ExampleService exampleService;
+    
     public SysUserWebController(ISysUserService sysUserService, SysUserServiceImplManager sysUserServiceImplManager,
-            SysUserFeignClient sysUserFeignClient, NacosFlagService nacosFlagService) {
+            SysUserFeignClient sysUserFeignClient, NacosFlagService nacosFlagService, ExampleService exampleService) {
         this.sysUserService = sysUserService;
         this.sysUserServiceImplManager = sysUserServiceImplManager;
         this.sysUserFeignClient = sysUserFeignClient;
         this.nacosFlagService = nacosFlagService;
+        this.exampleService = exampleService;
         log.info("SysUserWebController init");
     }
     
@@ -172,6 +176,15 @@ public class SysUserWebController {
     @RequestMapping(value = "/flag", produces = {"application/json"})
     public Response<String> flag() {
         return Response.success(nacosFlagService.flag());
+    }
+    
+    /**
+     * queryExample.
+     */
+    @ApiIgnore
+    @RequestMapping(value = "/queryExample", produces = {"application/json"})
+    public Response<String> queryExample() {
+        return Response.success(exampleService.queryExample("123"));
     }
     
 }

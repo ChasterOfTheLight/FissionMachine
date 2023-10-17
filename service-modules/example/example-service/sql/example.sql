@@ -14,9 +14,9 @@ CREATE TABLE `sys_user`
     `is_enabled`      tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用 1是0 否；默认1',
     `last_login_ip`   varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '最后登录IP',
     `last_login_date` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
-    `created_by` bigint                                                       NOT NULL COMMENT '创建人ID',
+    `created_by`      bigint                                                       NOT NULL COMMENT '创建人ID',
     `created_time`    datetime                                                     NOT NULL COMMENT '创建时间',
-    `updated_by` bigint                                                       NOT NULL COMMENT '修改人ID',
+    `updated_by`      bigint                                                       NOT NULL COMMENT '修改人ID',
     `updated_time`    datetime                                                     NOT NULL COMMENT '修改时间',
     PRIMARY KEY (`user_id`) USING BTREE,
     UNIQUE INDEX `uk_user_name`(`user_name`) USING BTREE COMMENT '用户账号唯一索引'

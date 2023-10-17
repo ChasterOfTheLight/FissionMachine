@@ -20,7 +20,7 @@ import java.util.zip.GZIPInputStream;
  * @date Created in 2023/1/3 10:55
  */
 public class MachineFeignExceptionDecoder implements ErrorDecoder {
-
+    
     @Override
     public Exception decode(String methodKey, Response response) {
         try {

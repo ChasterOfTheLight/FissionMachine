@@ -81,10 +81,8 @@ public class ServiceSwaggerConfig {
                 // RequestHandlerSelectors.basePackage("net.xdclass.*")  指定包位置
                 // withMethodAnnotation(ApiOperation.class)标记有这个注解 ApiOperation
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)).paths(PathSelectors.any()).build()
-                .globalRequestParameters(getGlobalRequestParameters())
-                .globalResponses(HttpMethod.GET, responseList)
-                .globalResponses(HttpMethod.POST, responseList)
-                .globalResponses(HttpMethod.PUT, responseList)
+                .globalRequestParameters(getGlobalRequestParameters()).globalResponses(HttpMethod.GET, responseList)
+                .globalResponses(HttpMethod.POST, responseList).globalResponses(HttpMethod.PUT, responseList)
                 .globalResponses(HttpMethod.DELETE, responseList);
     }
     

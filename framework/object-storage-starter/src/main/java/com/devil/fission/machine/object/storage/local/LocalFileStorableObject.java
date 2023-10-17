@@ -1,7 +1,7 @@
 package com.devil.fission.machine.object.storage.local;
 
-import com.devil.fission.machine.object.storage.core.StorablePermission;
 import com.devil.fission.machine.object.storage.core.StorableObject;
+import com.devil.fission.machine.object.storage.core.StorablePermission;
 
 import java.io.File;
 import java.io.IOException;

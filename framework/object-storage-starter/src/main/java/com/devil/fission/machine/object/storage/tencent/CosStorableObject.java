@@ -1,10 +1,10 @@
 package com.devil.fission.machine.object.storage.tencent;
 
+import com.devil.fission.machine.object.storage.core.StorableObject;
+import com.devil.fission.machine.object.storage.core.StorablePermission;
 import com.qcloud.cos.model.AccessControlList;
 import com.qcloud.cos.model.COSObject;
 import com.qcloud.cos.model.CannedAccessControlList;
-import com.devil.fission.machine.object.storage.core.StorableObject;
-import com.devil.fission.machine.object.storage.core.StorablePermission;
 
 import java.io.IOException;
 import java.io.InputStream;

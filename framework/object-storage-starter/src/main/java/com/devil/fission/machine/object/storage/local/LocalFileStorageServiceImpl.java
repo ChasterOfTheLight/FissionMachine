@@ -1,7 +1,7 @@
 package com.devil.fission.machine.object.storage.local;
 
-import com.devil.fission.machine.object.storage.core.StorablePermission;
 import com.devil.fission.machine.object.storage.core.StorableObject;
+import com.devil.fission.machine.object.storage.core.StorablePermission;
 import com.devil.fission.machine.object.storage.core.StorageErrorCode;
 import com.devil.fission.machine.object.storage.core.StorageException;
 import com.devil.fission.machine.object.storage.core.StorageService;
@@ -124,7 +124,7 @@ public class LocalFileStorageServiceImpl implements StorageService<String> {
         File file = new File(root, path);
         return file.exists() && file.isFile();
     }
-
+    
     private boolean isFileExist(File file) {
         if (file == null) {
             return false;

@@ -76,8 +76,7 @@ public class MachineContextHolder {
      */
     public static boolean supportHeader(String headerName) {
         if (StringUtils.isNotEmpty(headerName)) {
-            return headerName.compareToIgnoreCase(Constants.HEADER_SERVICE_MARK) == 0
-                    || headerName.compareToIgnoreCase(Constants.HEADER_SW_ID) == 0
+            return headerName.compareToIgnoreCase(Constants.HEADER_SERVICE_MARK) == 0 || headerName.compareToIgnoreCase(Constants.HEADER_SW_ID) == 0
                     || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_USER_ID) == 0
                     || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_USER_NAME) == 0
                     || headerName.compareToIgnoreCase(Constants.HEADER_REQUEST_USER_PLATFORM) == 0

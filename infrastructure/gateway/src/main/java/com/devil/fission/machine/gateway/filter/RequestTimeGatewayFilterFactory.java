@@ -72,7 +72,8 @@ public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactor
                 int statusCode = exchange.getResponse().getStatusCode() != null ? exchange.getResponse().getStatusCode().value() : 500;
                 stringBuilder.append("    ").append("[Request End]");
                 if (startTime != null) {
-                    stringBuilder.append(" 响应码: ").append(statusCode).append(" 执行时间: ").append(System.currentTimeMillis() - startTime).append("ms");
+                    stringBuilder.append(" 响应码: ").append(statusCode).append(" 执行时间: ").append(System.currentTimeMillis() - startTime)
+                            .append("ms");
                     LOGGER.info(stringBuilder.toString());
                 }
             }));
