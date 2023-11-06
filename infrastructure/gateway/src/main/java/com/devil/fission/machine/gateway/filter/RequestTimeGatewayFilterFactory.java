@@ -52,9 +52,9 @@ public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactor
                 LOGGER.error("获取ip地址出错 {}", e.getMessage(), e);
             }
             // 请求前打印
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder startStringBuilder = new StringBuilder();
             String method = serverHttpRequest.getMethodValue();
-            stringBuilder.append(String.format("[Request Start] HttpMethod: %s 请求IP: %s 请求URI: %s", method, ipAddress,
+            startStringBuilder.append(String.format("[Request Start] HttpMethod: %s 请求IP: %s 请求URI: %s", method, ipAddress,
                     serverHttpRequest.getURI().getRawPath()));
             
             // 配置开关  比如：RequestTime=true开启参数打印
@@ -62,19 +62,24 @@ public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactor
                 // 只打印地址栏请求参数，body请求参数见服务侧的advice（RestControllerAspect）
                 if (!serverHttpRequest.getURI().getRawPath().contains(SwaggerProvider.API_URI)) {
                     if (!CollectionUtils.isEmpty(serverHttpRequest.getQueryParams())) {
-                        stringBuilder.append("    ").append(String.format("请求参数: %s", serverHttpRequest.getQueryParams()));
+                        startStringBuilder.append("    ").append(String.format("请求参数: %s", serverHttpRequest.getQueryParams()));
                     }
                 }
             }
             
+            // 前置打印
+            LOGGER.info(startStringBuilder.toString());
+            
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 Long startTime = exchange.getAttribute(REQUEST_TIME_BEGIN);
                 int statusCode = exchange.getResponse().getStatusCode() != null ? exchange.getResponse().getStatusCode().value() : 500;
-                stringBuilder.append("    ").append("[Request End]");
+                StringBuilder endStringBuilder = new StringBuilder();
+                endStringBuilder.append("    ").append("[Request End]");
                 if (startTime != null) {
-                    stringBuilder.append(" 响应码: ").append(statusCode).append(" 执行时间: ").append(System.currentTimeMillis() - startTime)
+                    endStringBuilder.append(" 响应码: ").append(statusCode).append(" 执行时间: ").append(System.currentTimeMillis() - startTime)
                             .append("ms");
-                    LOGGER.info(stringBuilder.toString());
+                    // 后置打印
+                    LOGGER.info(endStringBuilder.toString());
                 }
             }));
         };
