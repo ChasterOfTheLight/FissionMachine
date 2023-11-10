@@ -48,7 +48,7 @@ public class SignService {
      * @return 认证结果
      */
     public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String requestSign, String requestUri) {
-        String nonceFormatPrefix = "FISSION-MACHINE-API-NONCE:%s";
+        String nonceFormatPrefix = "FISSION-NONCE:" + accessKey + ":" + requestUri + ":%s";
         VerifySignDto verifySignDto = VerifySignDto.builder().build();
         if (Objects.nonNull(redisService.getAsString(String.format(nonceFormatPrefix, nonce)))) {
             return Response.other(ResponseCode.UN_AUTHORIZED, "标签nonce重复", verifySignDto);
@@ -94,8 +94,8 @@ public class SignService {
         }
         verifySignDto.setAccessSource(apiSourceEnum);
         
-        // 校验通过塞入nonce，60s内防止重复提交
-        redisService.setStringWithEx(String.format(nonceFormatPrefix, nonce), nonce, 60L, TimeUnit.SECONDS);
+        // 校验通过塞入nonce，5s内防止重复提交
+        redisService.setStringWithEx(String.format(nonceFormatPrefix, nonce), nonce, 5L, TimeUnit.SECONDS);
         return Response.success(verifySignDto);
     }
     
