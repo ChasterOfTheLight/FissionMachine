@@ -1,5 +1,6 @@
 package com.devil.fission.machine.service.common.config;
 
+import com.devil.fission.machine.service.common.filter.GzipFilter;
 import com.devil.fission.machine.service.common.filter.MachineServletFilter;
 import com.devil.fission.machine.service.common.filter.XssFilter;
 import com.devil.fission.machine.service.common.support.MachineRestTemplateInterceptor;
@@ -26,6 +27,11 @@ import javax.servlet.Filter;
 public class ServiceCommonConfig {
     
     @Bean
+    public FilterRegistrationBean<Filter> gzipFilterRegistration(GzipFilter filter) {
+        return createFilterRegistration(filter, 5);
+    }
+    
+    @Bean
     @ConditionalOnMissingBean
     public FilterRegistrationBean<Filter> xssFilterRegistration(XssFilter filter) {
         return createFilterRegistration(filter, 6);
@@ -42,6 +48,11 @@ public class ServiceCommonConfig {
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setOrder(order);
         return filterRegistrationBean;
+    }
+    
+    @Bean
+    public GzipFilter gzipFilter() {
+        return new GzipFilter();
     }
     
     @Bean
