@@ -120,7 +120,7 @@ public class SysUserWebController {
         String lockKey = "sysUser:" + "lock:" + dto.getUserId();
         RLock lock = redissonClient.getLock(lockKey);
         try {
-            boolean locked = lock.tryLock(100L, 3000L, TimeUnit.MILLISECONDS);
+            boolean locked = lock.tryLock(1L, 3000L, TimeUnit.MILLISECONDS);
             if (locked) {
                 SysUserEntity sysUser = sysUserService.queryById(dto.getUserId());
                 SysUserQueryVo vo = SysUserEntity.convert2Vo(sysUser);
