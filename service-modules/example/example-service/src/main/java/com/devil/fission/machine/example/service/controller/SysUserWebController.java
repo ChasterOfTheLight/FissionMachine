@@ -1,6 +1,7 @@
 package com.devil.fission.machine.example.service.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.devil.fission.machine.common.exception.ServiceException;
 import com.devil.fission.machine.common.response.PageData;
 import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.example.api.dto.SysUserDto;
@@ -19,6 +20,8 @@ import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +33,7 @@ import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -54,13 +58,16 @@ public class SysUserWebController {
     
     private final ExampleService exampleService;
     
+    private final RedissonClient redissonClient;
+    
     public SysUserWebController(ISysUserService sysUserService, SysUserServiceImplManager sysUserServiceImplManager,
-            SysUserFeignClient sysUserFeignClient, NacosFlagService nacosFlagService, ExampleService exampleService) {
+            SysUserFeignClient sysUserFeignClient, NacosFlagService nacosFlagService, ExampleService exampleService, RedissonClient redissonClient) {
         this.sysUserService = sysUserService;
         this.sysUserServiceImplManager = sysUserServiceImplManager;
         this.sysUserFeignClient = sysUserFeignClient;
         this.nacosFlagService = nacosFlagService;
         this.exampleService = exampleService;
+        this.redissonClient = redissonClient;
         log.info("SysUserWebController init");
     }
     
@@ -110,9 +117,24 @@ public class SysUserWebController {
     @PostMapping(value = "/info", produces = {"application/json"})
     @ApiOperation(value = "运营用户表详情查询", notes = "运营用户表详情查询")
     public Response<SysUserQueryVo> info(@Valid @RequestBody SysUserDto dto) {
-        SysUserEntity sysUser = sysUserService.queryById(dto.getUserId());
-        SysUserQueryVo vo = SysUserEntity.convert2Vo(sysUser);
-        return Response.success(vo);
+        String lockKey = "sysUser:" + "lock:" + dto.getUserId();
+        RLock lock = redissonClient.getLock(lockKey);
+        try {
+            boolean locked = lock.tryLock(1L, 3000L, TimeUnit.MILLISECONDS);
+            if (locked) {
+                SysUserEntity sysUser = sysUserService.queryById(dto.getUserId());
+                SysUserQueryVo vo = SysUserEntity.convert2Vo(sysUser);
+                return Response.success(vo);
+            } else {
+                return Response.success(null);
+            }
+        } catch (InterruptedException e) {
+            throw new ServiceException("运营用户表详情查询加锁失败", e);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
     
     /**
