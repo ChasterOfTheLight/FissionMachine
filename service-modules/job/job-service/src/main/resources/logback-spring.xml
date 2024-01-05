@@ -166,7 +166,7 @@
             <appender-ref ref="ASYNC-INFO"/>
         </root>
     </springProfile>
-    <springProfile name="prod">
+    <springProfile name="pro">
         <root level="INFO">
             <!-- 生产环境不建议开启控制台日志，以免因日志过多而耗尽内存 -->
             <!--<appender-ref ref="STDOUT"/>-->
