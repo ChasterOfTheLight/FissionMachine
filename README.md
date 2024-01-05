@@ -451,8 +451,8 @@ public class TaskHandler {
 
 ```xml
 <dependency>
-    <groupId>com.tojoy.mall</groupId>
-    <artifactId>tojoy-mall-log-starter</artifactId>
+    <groupId>com.devil.fission</groupId>
+    <artifactId>fission-machine-log-starter</artifactId>
 </dependency>
 ```
 
