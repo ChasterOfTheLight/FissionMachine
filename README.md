@@ -444,3 +444,23 @@ public class TaskHandler {
 ```
 
 - XxlJob Console Config the Job
+
+## 日志级别动态修改
+
+- 引入包
+
+```xml
+<dependency>
+    <groupId>com.tojoy.mall</groupId>
+    <artifactId>tojoy-mall-log-starter</artifactId>
+</dependency>
+```
+
+- 增加或修改配置
+
+```yaml
+fission:
+  machine:
+    log:
+      level: INFO
+```
