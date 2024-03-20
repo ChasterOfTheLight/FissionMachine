@@ -1,3 +1,4 @@
 # Configuration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.devil.fission.machine.jdbc.config.MyBatisPlusConfig
+  com.devil.fission.machine.jdbc.config.MyBatisPlusConfig,\
+  com.devil.fission.machine.jdbc.config.ConnectionPrintBeanPostProcessor
