@@ -121,8 +121,6 @@ spring:
           filters:
             # 是否对此路由打印接口请求时间（对应RequestTimeGatewayFilterFactory类的实现），true代表打印get参数
             - RequestTime=true
-            # swagger地址特殊处理，数字代表地址跳过几个/，如1代表：/example/v2/api-docs -> /v2/api-docs
-            - SwaggerPathStripPrefix=3
 
 # white or black List config
 gateway-config:
