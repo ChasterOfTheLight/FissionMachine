@@ -1,5 +1,6 @@
 package com.devil.fission.machine.example.api.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -81,5 +82,12 @@ public class SysUserQueryVo {
      */
     @ApiModelProperty("修改时间")
     private Date updatedTime;
+    
+    /**
+     * aBbb单次序列化问题.
+     */
+    @ApiModelProperty("aBbb单次序列化问题")
+    @JsonProperty(value = "aTest")
+    private String aTest;
     
 }

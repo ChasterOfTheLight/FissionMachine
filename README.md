@@ -121,8 +121,6 @@ spring:
           filters:
             # 是否对此路由打印接口请求时间（对应RequestTimeGatewayFilterFactory类的实现），true代表打印get参数
             - RequestTime=true
-            # swagger地址特殊处理，数字代表地址跳过几个/，如1代表：/example/v2/api-docs -> /v2/api-docs
-            - SwaggerPathStripPrefix=3
 
 # white or black List config
 gateway-config:
@@ -463,4 +461,130 @@ fission:
   machine:
     log:
       level: INFO
+```
+
+- Seata Config
+
+```xml
+<dependency>
+    <groupId>com.devil.fission</groupId>
+    <artifactId>fission-machine-seata-starter</artifactId>
+</dependency>
+```
+
+### 1.数据源配置(默认都是hikari，注意hikari的字段名和默认有区别)
+
+```yaml
+spring:
+  datasource:
+    hikari:
+      driverClassName: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://xxxx:3306/xxxx?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+      password: xxxx
+      username: xxxx
+```
+
+### 2.seata配置（xxx-service改成自己服务名）
+
+```yaml
+seata:
+  # 启用开关
+  enabled: true
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      # 修改为自己的application-name
+      xxx-service: default
+      # # 修改为自己的application-name
+  tx-service-group: xxx-service
+  registry:
+    # 通过nacos进行调度
+    nacos:
+      server-addr: 127.0.0.1:8848
+      cluster: default
+      namespace: seata
+      group: SEATA_GROUP
+      username: nacos
+      password: nacos
+    type: nacos
+  config:
+    # file模式 比其他模式容易理解，file一般不用改
+    type: file
+```
+
+### 3.在资源路径下加入file.conf
+
+```text
+transport {
+  # tcp udt unix-domain-socket
+  type = "TCP"
+  #NIO NATIVE
+  server = "NIO"
+  #enable heartbeat
+  heartbeat = true
+  # the client batch send request enable
+  enableClientBatchSendRequest = true
+  #thread factory for netty
+  threadFactory {
+    bossThreadPrefix = "NettyBoss"
+    workerThreadPrefix = "NettyServerNIOWorker"
+    serverExecutorThread-prefix = "NettyServerBizHandler"
+    shareBossWorker = false
+    clientSelectorThreadPrefix = "NettyClientSelector"
+    clientSelectorThreadSize = 1
+    clientWorkerThreadPrefix = "NettyClientWorkerThread"
+    # netty boss thread size,will not be used for UDT
+    bossThreadSize = 1
+    #auto default pin or 8
+    workerThreadSize = "default"
+  }
+  shutdown {
+    # when destroy server, wait seconds
+    wait = 3
+  }
+  serialization = "seata"
+  compressor = "none"
+}
+service {
+  #transaction service group mapping
+  #vgroupMapping.system-service = "default"
+  #only support when registry.type=file, please don't set multiple addresses
+  #default.grouplist = "127.0.0.1:8091"
+  #degrade, current not support
+  enableDegrade = false
+  #disable seata
+  disableGlobalTransaction = false
+}
+
+client {
+  rm {
+    asyncCommitBufferLimit = 10000
+    lock {
+      retryInterval = 10
+      retryTimes = 30
+      retryPolicyBranchRollbackOnConflict = true
+    }
+    reportRetryCount = 5
+    tableMetaCheckEnable = false
+    reportSuccessEnable = false
+  }
+  tm {
+    commitRetryCount = 5
+    rollbackRetryCount = 5
+  }
+  undo {
+    dataValidation = true
+    logSerialization = "jackson"
+    logTable = "undo_log"
+  }
+  log {
+    exceptionRate = 100
+  }
+}
+```
+
+### 4.spring boot启动类处理(取消jdbc的自动装配)
+
+```java
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 ```
