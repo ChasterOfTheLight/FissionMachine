@@ -12,16 +12,21 @@
     
     <dependencies>
         <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cola</groupId>
+            <artifactId>cola-component-statemachine</artifactId>
+        </dependency>
+        
+        <dependency>
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-service-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-jdbc-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>
