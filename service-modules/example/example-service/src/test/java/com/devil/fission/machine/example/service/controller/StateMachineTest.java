@@ -37,6 +37,11 @@ public class StateMachineTest {
     static class Order {
         String operator = "frank";
         String orderId = "123465";
+        
+        @Override
+        public String toString() {
+            return "Order{" + "operator='" + operator + '\'' + ", orderId='" + orderId + '\'' + '}';
+        }
     }
     
     static String MACHINE_ID = "orderStateMachine";
