@@ -1,5 +1,7 @@
 package com.devil.fission.machine.example.service.controller;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -18,6 +20,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -73,7 +76,7 @@ public class CommonTest {
     }
     
     @Test
-    public void testSort() {
+    public void sortTest() {
         List<Long> list = new ArrayList<>();
         list.add(1L);
         list.add(2L);
@@ -85,7 +88,7 @@ public class CommonTest {
     }
     
     @Test
-    public void testJsonObject() {
+    public void jsonObjectMergeTest() {
         String jsonOne = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
         String jsonTwo = "{\"id\":\"2\",\"name\":\"qwe\",\"age\":\"\",\"address\":\"\"}";
         JSONObject jsonObjectOne = JSONUtil.parseObj(jsonOne);
@@ -99,6 +102,13 @@ public class CommonTest {
         }
         System.out.println(JSONUtil.toJsonStr(jsonObjectOne));
         System.out.println(jsonObjectTwo.toString());
+    }
+    
+    @Test
+    public void dateBetweenTest() {
+        Date now = new Date();
+        Date before = DateUtil.yesterday();
+        System.out.println(DateUtil.between(now, now, DateUnit.SECOND, false));
     }
     
 }

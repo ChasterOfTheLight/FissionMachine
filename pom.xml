@@ -240,7 +240,6 @@
                 <artifactId>commons-collections</artifactId>
                 <version>3.2.2</version>
             </dependency>
-            
             <!-- aliyun -->
             <dependency>
                 <groupId>com.aliyun</groupId>
@@ -485,7 +484,22 @@
                 <artifactId>cola-component-statemachine</artifactId>
                 <version>${alibaba.cola.version}</version>
             </dependency>
-            
+            <!-- easy-es -->
+            <dependency>
+                <groupId>org.dromara.easy-es</groupId>
+                <artifactId>easy-es-boot-starter</artifactId>
+                <version>2.0.0-beta8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <version>7.14.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>7.14.0</version>
+            </dependency>
             
             <!-- ================================ 共有依赖 (以上) ===================================================== -->
             
@@ -504,12 +518,37 @@
             </dependency>
             <dependency>
                 <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-elasticsearch-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
                 <artifactId>fission-machine-jdbc-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-log-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-object-storage-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
                 <artifactId>fission-machine-redis-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-seata-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-sentinel-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             
