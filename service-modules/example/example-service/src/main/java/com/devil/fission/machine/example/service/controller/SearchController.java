@@ -64,7 +64,7 @@ public class SearchController {
         document.setId("1788506275212845058");
         document.setTitle("老汉");
         document.setContent("人才");
-        documentMapper.setCurrentActiveIndex("fission_document_202405111621");
+        documentMapper.setCurrentActiveIndex("FissionDocument");
         Integer count = documentMapper.insert(document);
         log.info("文档数据插入: {}", count);
         return Response.success(true);
@@ -77,7 +77,7 @@ public class SearchController {
         LambdaEsQueryWrapper<Document> wrapper = new LambdaEsQueryWrapper<>();
         wrapper.eq(Document::getTitle, title);
         wrapper.limit(1);
-        documentMapper.setCurrentActiveIndex("fission_document_202405111621");
+        documentMapper.setCurrentActiveIndex("FissionDocument");
         Document document = documentMapper.selectOne(wrapper);
         System.out.println(document);
         return Response.success(true);
@@ -90,7 +90,7 @@ public class SearchController {
         Document document1 = new Document();
         document1.setId(id);
         document1.setTitle(title1);
-        documentMapper.setCurrentActiveIndex("fission_document_202405111621");
+        documentMapper.setCurrentActiveIndex("FissionDocument");
         Integer count = documentMapper.updateById(document1);
         log.info("文档数据更新: {}", count);
         return Response.success(true);
@@ -101,7 +101,7 @@ public class SearchController {
         LambdaEsQueryWrapper<Document> wrapper = new LambdaEsQueryWrapper<>();
         String title = "隔壁老王";
         wrapper.eq(Document::getTitle, title);
-        documentMapper.setCurrentActiveIndex("fission_document_202405111621");
+        documentMapper.setCurrentActiveIndex("FissionDocument");
         int successCount = documentMapper.delete(wrapper);
         log.info("文档数据删除: {}", successCount);
         return Response.success(true);
