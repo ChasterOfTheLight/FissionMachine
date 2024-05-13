@@ -1,6 +1,12 @@
 package com.devil.fission.machine.example.service.controller;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONConfig;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.devil.fission.machine.common.response.ResponseCode;
+import com.devil.fission.machine.common.util.StringUtils;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
@@ -14,6 +20,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -24,7 +31,7 @@ import java.util.stream.Collectors;
  * @author Devil
  * @date Created in 2023/9/5 13:33
  */
-public class SysUserWebControllerTest {
+public class CommonTest {
     
     @Test
     public void enumTest() {
@@ -69,7 +76,7 @@ public class SysUserWebControllerTest {
     }
     
     @Test
-    public void testSort() {
+    public void sortTest() {
         List<Long> list = new ArrayList<>();
         list.add(1L);
         list.add(2L);
@@ -78,6 +85,30 @@ public class SysUserWebControllerTest {
         for (Long l : list) {
             System.out.println(l);
         }
+    }
+    
+    @Test
+    public void jsonObjectMergeTest() {
+        String jsonOne = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
+        String jsonTwo = "{\"id\":\"2\",\"name\":\"qwe\",\"age\":\"\",\"address\":\"\"}";
+        JSONObject jsonObjectOne = JSONUtil.parseObj(jsonOne);
+        JSONObject jsonObjectTwo = JSONUtil.parseObj(jsonTwo, JSONConfig.create().setIgnoreNullValue(true));
+        for (String key : jsonObjectOne.keySet()) {
+            if (jsonObjectOne.containsKey(key) && jsonObjectTwo.containsKey(key)) {
+                if (jsonObjectTwo.get(key) == null || StringUtils.isEmpty(jsonObjectTwo.getStr(key))) {
+                    jsonObjectTwo.set(key, jsonObjectOne.get(key));
+                }
+            }
+        }
+        System.out.println(JSONUtil.toJsonStr(jsonObjectOne));
+        System.out.println(jsonObjectTwo.toString());
+    }
+    
+    @Test
+    public void dateBetweenTest() {
+        Date now = new Date();
+        Date before = DateUtil.yesterday();
+        System.out.println(DateUtil.between(now, now, DateUnit.SECOND, false));
     }
     
 }

@@ -1,6 +1,7 @@
 package com.devil.fission.machine.example.service;
 
 import com.devil.fission.machine.redis.delay.EnableRedissonDelayed;
+import org.dromara.easyes.starter.register.EsMapperScan;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,6 +18,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 @EnableRedissonDelayed
 @MapperScan(basePackages = {"com.devil.fission.machine.example.service.mapper"})
+@EsMapperScan(value = "com.devil.fission.machine.example.service.es.mapper")
 @SpringBootApplication
 public class ExampleServiceApplication {
     

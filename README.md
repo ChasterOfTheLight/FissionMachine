@@ -588,3 +588,53 @@ client {
 ```java
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 ```
+
+## Redisson Delay Queue Use
+
+### 1.在启动类上加上开关
+
+```text
+@EnableRedissonDelayed
+```
+
+### 2.实现handler接口
+
+```java
+
+@Component
+public class DemoDelayedHandler implements RedissonDelayedHandler {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DemoDelayedHandler.class);
+    
+    @Override
+    public String getQueueName() {
+        // 延时队列名称，同一个项目中不可重复
+        return "123";
+    }
+    
+    @Override
+    public <String> void execute(String s) {
+        String arg = s.toString();
+        // 具体的业务逻辑，参数类型可根据业务需要自行替换
+        LOGGER.info("参数 = {}", arg);
+    }
+
+}
+```
+
+### 3.业务触发消息
+
+```text
+// 注入RedissonDelayedUtil
+// 入队消息 注意需要与handler中的queueName对应
+redissonDelayedUtil.offer("345", 10, TimeUnit.SECONDS, "123");
+
+// 删除消息 注意需要与handler中的queueName对应
+redissonDelayedUtil.remove("345", "123");
+```
+
+### 4.注意
+
+```text
+RedissonDelayedUtil一般会晚于项目当前包的bean的初始化，如果遇到初始化有问题，需要加入@Lazy使util晚初始化
+```

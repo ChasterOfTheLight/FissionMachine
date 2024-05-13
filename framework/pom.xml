@@ -18,6 +18,7 @@
         <module>redis-starter</module>
         <module>seata-starter</module>
         <module>sentinel-starter</module>
+        <module>elasticsearch-starter</module>
     </modules>
 
 </project>

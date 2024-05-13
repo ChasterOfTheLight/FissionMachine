@@ -32,6 +32,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 /**
@@ -209,10 +210,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (e.getCode() != ResponseCode.INTERNAL_SERVER_ERROR.getCode()) {
             errorMsg = Optional.ofNullable(e.getMessage()).orElse("请求地址" + requestUri + ",发生业务异常(非阻断)");
             LOGGER.warn(errorMsg, e);
+            printHeaderInfo(request, "WARN");
             response = Response.other(e.getCode(), errorMsg, null);
         } else {
             errorMsg = Optional.ofNullable(e.getMessage()).orElse("请求地址" + requestUri + ",发生业务异常");
             LOGGER.error(errorMsg, e);
+            printHeaderInfo(request, "ERROR");
             response = Response.error(errorMsg, null);
         }
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -258,6 +261,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private boolean isFeignRequest(WebRequest request) {
         String header = request.getHeader(MachineFeignInterceptor.FEIGN_REQUEST_FLAG);
         return !StringUtils.isEmpty(header) && String.valueOf(true).equals(header);
+    }
+    
+    /**
+     * 打印请求头信息.
+     *
+     * @param request 请求
+     */
+    private void printHeaderInfo(WebRequest request, String level) {
+        Iterator<String> headerNames = request.getHeaderNames();
+        StringBuilder headerInfo = new StringBuilder();
+        while (headerNames.hasNext()) {
+            String headerName = headerNames.next();
+            String headerValue = request.getHeader(headerName);
+            // 筛选请求头，排除cookie
+            if (StringUtils.isNotEmpty(headerName) && !headerName.equalsIgnoreCase(HttpHeaders.COOKIE)) {
+                headerInfo.append("    ").append(headerName).append(": ").append(headerValue).append(" \r\n");
+            }
+        }
+        if ("ERROR".equals(level)) {
+            LOGGER.error("Request Header In Exception: {}", headerInfo);
+        } else {
+            LOGGER.warn("Request Header In Exception: {}", headerInfo);
+        }
     }
     
 }

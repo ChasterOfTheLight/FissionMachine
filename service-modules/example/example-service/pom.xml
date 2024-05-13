@@ -12,6 +12,20 @@
     
     <dependencies>
         <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cola</groupId>
+            <artifactId>cola-component-statemachine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-service-common</artifactId>
         </dependency>
@@ -20,12 +34,12 @@
             <artifactId>fission-machine-jdbc-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-redis-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>
-            <artifactId>fission-machine-redis-starter</artifactId>
+            <artifactId>fission-machine-elasticsearch-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>
