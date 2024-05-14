@@ -5,8 +5,6 @@ import lombok.Data;
 import org.dromara.easyes.annotation.IndexField;
 import org.dromara.easyes.annotation.IndexId;
 import org.dromara.easyes.annotation.IndexName;
-import org.dromara.easyes.annotation.Join;
-import org.dromara.easyes.annotation.Node;
 import org.dromara.easyes.annotation.Settings;
 import org.dromara.easyes.annotation.rely.Analyzer;
 import org.dromara.easyes.annotation.rely.FieldType;
@@ -22,7 +20,6 @@ import org.dromara.easyes.annotation.rely.RefreshPolicy;
 @Data
 @Settings(shardsNum = 3, replicasNum = 2, settingsProvider = FissionSettingProvider.class)
 @IndexName(value = "fission_document_202405111621", aliasName = "FissionDocument", refreshPolicy = RefreshPolicy.IMMEDIATE)
-//@Join(nodes = {@Node(parentClass = Document.class, childClasses = {Author.class}), @Node(parentClass = Author.class, childClasses = Contact.class)})
 public class Document {
     
     /**

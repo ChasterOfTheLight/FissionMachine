@@ -13,13 +13,15 @@ import org.dromara.easyes.annotation.rely.FieldType;
  */
 @Data
 public class Author {
+    
     /**
-     * 作者id
+     * 作者id.
      */
     @IndexId
     private String authorId;
+    
     /**
-     * 作者姓名
+     * 作者姓名.
      */
     @IndexField(fieldType = FieldType.KEYWORD)
     private String authorName;

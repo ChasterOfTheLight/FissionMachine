@@ -551,6 +551,16 @@
                 <artifactId>fission-machine-sentinel-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-example-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-auth-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             
             <!-- ================================ 私有依赖 (以上) ===================================================== -->
         </dependencies>

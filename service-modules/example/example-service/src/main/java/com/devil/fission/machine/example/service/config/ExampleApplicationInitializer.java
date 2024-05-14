@@ -16,5 +16,6 @@ public class ExampleApplicationInitializer implements ApplicationContextInitiali
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         log.info("ExampleApplicationInitializer initialized");
+        // 前置设置或者配置一些环境变量
     }
 }

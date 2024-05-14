@@ -19,5 +19,6 @@ public class ExampleBeanFactoryPostProcessor implements BeanFactoryPostProcessor
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         log.info("ExampleBeanFactoryPostProcessor handled");
+        // 通过获取beanDefinition修改一些bean属性或配置
     }
 }

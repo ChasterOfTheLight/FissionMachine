@@ -35,7 +35,9 @@ public class StateMachineTest {
     
     // 订单（Context)
     static class Order {
+        
         String operator = "frank";
+        
         String orderId = "123465";
         
         @Override
@@ -44,20 +46,15 @@ public class StateMachineTest {
         }
     }
     
-    static String MACHINE_ID = "orderStateMachine";
+    static final String MACHINE_ID = "orderStateMachine";
     
     @Test
-    public void testExternalNormal(){
+    public void testExternalNormal() {
         // 第一步：生成一个状态机builder
         StateMachineBuilder<OrderState, OrderEvent, Order> builder = StateMachineBuilderFactory.create();
         
         // 第二步：设置一个外部状态转移类型的builder，并设置from\to\on\when\perform
-        builder.externalTransition()
-                .from(OrderState.INIT)
-                .to(OrderState.PAID)
-                .on(OrderEvent.PAY_SUCCESS)
-                .when(checkCondition())
-                .perform(doAction());
+        builder.externalTransition().from(OrderState.INIT).to(OrderState.PAID).on(OrderEvent.PAY_SUCCESS).when(checkCondition()).perform(doAction());
         
         // 第三步：设置状态机的id，并在StateMachineFactory中的stateMachineMap进行注册
         StateMachine<OrderState, OrderEvent, Order> stateMachine = builder.build(MACHINE_ID);
@@ -76,8 +73,7 @@ public class StateMachineTest {
     
     private Action<OrderState, OrderEvent, Order> doAction() {
         return (from, to, event, ctx) -> {
-            System.out.println(
-                    ctx.operator + " is operating " + ctx.orderId + " from:" + from + " to:" + to + " on:" + event);
+            System.out.println(ctx.operator + " is operating " + ctx.orderId + " from:" + from + " to:" + to + " on:" + event);
         };
     }
     

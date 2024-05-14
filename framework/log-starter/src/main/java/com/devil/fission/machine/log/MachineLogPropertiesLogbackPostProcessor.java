@@ -17,7 +17,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class MachineLogPropertiesLogbackPostProcessor implements BeanPostProcessor, ApplicationContextAware {
     
-    private static final Logger log = LoggerFactory.getLogger(MachineLogPropertiesLogbackPostProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MachineLogPropertiesLogbackPostProcessor.class);
     
     private final LoggingSystem loggingSystem;
     
@@ -34,7 +34,7 @@ public class MachineLogPropertiesLogbackPostProcessor implements BeanPostProcess
             // 更新LoggerSystem的level
             if (machineLogProperties.getLevel() != null) {
                 String levelProperty = machineLogProperties.getLevel().toUpperCase();
-                log.info("fission machine log level: {}", levelProperty);
+                LOGGER.info("fission machine log level: {}", levelProperty);
                 // pre和pro环境不允许修改日志级别为DEBUG和TRACE
                 String activeProfile = applicationContext.getEnvironment().getActiveProfiles()[0];
                 boolean isPreOrPro = "pre".equals(activeProfile) || "pro".equals(activeProfile);
@@ -48,7 +48,8 @@ public class MachineLogPropertiesLogbackPostProcessor implements BeanPostProcess
                     }
                 }
             }
-        } return bean;
+        }
+        return bean;
     }
     
     @Override
