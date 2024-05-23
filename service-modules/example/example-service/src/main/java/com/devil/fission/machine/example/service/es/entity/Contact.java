@@ -13,13 +13,15 @@ import org.dromara.easyes.annotation.rely.FieldType;
  */
 @Data
 public class Contact {
+    
     /**
-     * 联系人id
+     * 联系人id.
      */
     @IndexId
     private String contactId;
+    
     /**
-     * 地址
+     * 地址.
      */
     @IndexField(fieldType = FieldType.TEXT)
     private String address;

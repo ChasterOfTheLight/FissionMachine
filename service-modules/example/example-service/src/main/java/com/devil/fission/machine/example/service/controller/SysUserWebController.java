@@ -60,8 +60,8 @@ public class SysUserWebController {
     
     private final RedissonClient redissonClient;
     
-    public SysUserWebController(ISysUserService sysUserService, SysUserServiceImplManager sysUserServiceImplManager,
-            SysUserFeignClient sysUserFeignClient, NacosFlagService nacosFlagService, ExampleService exampleService, RedissonClient redissonClient) {
+    public SysUserWebController(ISysUserService sysUserService, SysUserServiceImplManager sysUserServiceImplManager, SysUserFeignClient sysUserFeignClient,
+            NacosFlagService nacosFlagService, ExampleService exampleService, RedissonClient redissonClient) {
         this.sysUserService = sysUserService;
         this.sysUserServiceImplManager = sysUserServiceImplManager;
         this.sysUserFeignClient = sysUserFeignClient;
@@ -90,8 +90,8 @@ public class SysUserWebController {
         log.info(new Gson().toJson(sysUserQueryVo));
         
         return Response.success(
-                new PageData<>(queryPage.getRecords().stream().map(SysUserEntity::convert2Vo).collect(Collectors.toList()), queryPage.getTotal(),
-                        queryPage.getSize(), queryPage.getCurrent()));
+                new PageData<>(queryPage.getRecords().stream().map(SysUserEntity::convert2Vo).collect(Collectors.toList()), queryPage.getTotal(), queryPage.getSize(),
+                        queryPage.getCurrent()));
     }
     
     /**
@@ -146,8 +146,7 @@ public class SysUserWebController {
     @PostMapping(value = "/infos", produces = {"application/json"})
     @ApiOperation(value = "运营用户表批量详情查询", notes = "运营用户表批量详情查询")
     public Response<List<SysUserQueryVo>> infos(@Valid @RequestBody List<SysUserDto> dtoList) {
-        List<SysUserEntity> sysUserEntities = sysUserServiceImplManager.queryByIds(
-                dtoList.stream().map(SysUserDto::getUserId).collect(Collectors.toList()));
+        List<SysUserEntity> sysUserEntities = sysUserServiceImplManager.queryByIds(dtoList.stream().map(SysUserDto::getUserId).collect(Collectors.toList()));
         List<SysUserQueryVo> voList = sysUserEntities.stream().filter(Objects::nonNull).map(SysUserEntity::convert2Vo).collect(Collectors.toList());
         return Response.success(voList);
     }

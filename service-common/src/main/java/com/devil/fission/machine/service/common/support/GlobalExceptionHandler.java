@@ -8,6 +8,7 @@ import com.devil.fission.machine.service.common.feign.MachineFeignInterceptor;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
@@ -210,12 +211,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (e.getCode() != ResponseCode.INTERNAL_SERVER_ERROR.getCode()) {
             errorMsg = Optional.ofNullable(e.getMessage()).orElse("请求地址" + requestUri + ",发生业务异常(非阻断)");
             LOGGER.warn(errorMsg, e);
-            printHeaderInfo(request, "WARN");
+            printHeaderInfo(request, Level.WARN.toString());
             response = Response.other(e.getCode(), errorMsg, null);
         } else {
             errorMsg = Optional.ofNullable(e.getMessage()).orElse("请求地址" + requestUri + ",发生业务异常");
             LOGGER.error(errorMsg, e);
-            printHeaderInfo(request, "ERROR");
+            printHeaderInfo(request, Level.ERROR.toString());
             response = Response.error(errorMsg, null);
         }
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -279,7 +280,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 headerInfo.append("    ").append(headerName).append(": ").append(headerValue).append(" \r\n");
             }
         }
-        if ("ERROR".equals(level)) {
+        if (Level.ERROR.toString().equals(level)) {
             LOGGER.error("Request Header In Exception: {}", headerInfo);
         } else {
             LOGGER.warn("Request Header In Exception: {}", headerInfo);

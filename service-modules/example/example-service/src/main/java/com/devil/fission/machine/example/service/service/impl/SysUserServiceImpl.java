@@ -11,12 +11,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.devil.fission.machine.common.Constants;
 import com.devil.fission.machine.example.service.entity.SysUserEntity;
+import com.devil.fission.machine.example.service.event.ExampleEvent;
 import com.devil.fission.machine.example.service.mapper.SysUserMapper;
 import com.devil.fission.machine.example.service.service.ISysUserService;
+import com.lmax.disruptor.RingBuffer;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +38,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
     
     @CreateCache(name = CACHE_PREFIX, expire = CACHE_EXPIRE)
     private Cache<String, SysUserEntity> cache;
+    
+    @Resource(name = "exampleEventRingBuffer")
+    private RingBuffer<ExampleEvent> ringBuffer;
     
     @Override
     public Page<SysUserEntity> queryPage(Integer page, Integer size, SysUserEntity entity) {
@@ -71,6 +77,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         if (userId == null) {
             return null;
         }
+        
+        // 发送队列消息，异步处理
+        // 获取下一个Event槽的下标
+        long sequence = ringBuffer.next();
+        try {
+            // 给Event填充数据
+            ExampleEvent event = ringBuffer.get(sequence);
+            event.setValue("666");
+        } catch (Exception e) {
+            log.error("error", e);
+        } finally {
+            // 发布Event，激活观察者去消费，将sequence传递给该消费者
+            // 注意最后的publish方法必须放在finally中以确保必须得到调用；如果某个请求的sequence未被提交将会堵塞后续的发布操作或者其他的producer
+            ringBuffer.publish(sequence);
+        }
+        
         return super.getById(userId);
     }
     

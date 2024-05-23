@@ -31,6 +31,9 @@ public class SearchController {
         this.documentMapper = documentMapper;
     }
     
+    /**
+     * 索引创建.
+     */
     @PostMapping(value = "/indexCreate", produces = {"application/json"})
     public Response<Boolean> indexCreate() {
         // 复杂场景使用
@@ -39,8 +42,7 @@ public class SearchController {
         wrapper.indexName("fission_document_202405111621");
         
         // 此处将文章标题映射为keyword类型(不支持分词),文档内容映射为text类型(支持分词查询)
-        wrapper.mapping(Document::getTitle, FieldType.KEYWORD, 2.0f)
-                .mapping(Document::getContent, FieldType.TEXT, Analyzer.IK_SMART, Analyzer.IK_MAX_WORD);
+        wrapper.mapping(Document::getTitle, FieldType.KEYWORD, 2.0f).mapping(Document::getContent, FieldType.TEXT, Analyzer.IK_SMART, Analyzer.IK_MAX_WORD);
         
         // 设置分片及副本信息,可缺省
         wrapper.settings(3, 2);
@@ -49,14 +51,14 @@ public class SearchController {
         String aliasName = "FissionDocument";
         wrapper.createAlias(aliasName);
         
-        // 设置父子信息,若无父子文档关系则无需设置
-//        wrapper.join("joinField", "document", "comment");
-        
         // 创建索引
         boolean isOk = documentMapper.createIndex(wrapper);
         return Response.success(isOk);
     }
     
+    /**
+     * 索引数据插入.
+     */
     @PostMapping(value = "/indexDataInsert", produces = {"application/json"})
     public Response<Boolean> indexDataInsert() {
         // 测试插入数据
@@ -70,6 +72,9 @@ public class SearchController {
         return Response.success(true);
     }
     
+    /**
+     * 索引搜索.
+     */
     @PostMapping(value = "/indexSearch", produces = {"application/json"})
     public Response<Boolean> indexSearch() {
         // 测试根据条件查询
@@ -83,6 +88,9 @@ public class SearchController {
         return Response.success(true);
     }
     
+    /**
+     * 索引数据更新.
+     */
     @PostMapping(value = "/indexDataUpdate", produces = {"application/json"})
     public Response<Boolean> indexDataUpdate() {
         String id = "1788506275212845058";
@@ -96,6 +104,9 @@ public class SearchController {
         return Response.success(true);
     }
     
+    /**
+     * 索引数据删除.
+     */
     @PostMapping(value = "/indexDataDelete", produces = {"application/json"})
     public Response<Boolean> indexDataDelete() {
         LambdaEsQueryWrapper<Document> wrapper = new LambdaEsQueryWrapper<>();

@@ -567,7 +567,7 @@
     </codeStyleSettings>
     <codeStyleSettings language="protobuf">
         <!--    强制换行位置    -->
-        <option name="RIGHT_MARGIN" value="150"/>
+        <option name="RIGHT_MARGIN" value="180"/>
         <indentOptions>
             <option name="INDENT_SIZE" value="2"/>
             <option name="CONTINUATION_INDENT_SIZE" value="2"/>

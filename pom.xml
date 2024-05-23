@@ -500,6 +500,12 @@
                 <artifactId>elasticsearch</artifactId>
                 <version>7.14.0</version>
             </dependency>
+            <!-- easy-rule -->
+            <dependency>
+                <groupId>org.jeasy</groupId>
+                <artifactId>easy-rules-core</artifactId>
+                <version>4.1.0</version>
+            </dependency>
             
             <!-- ================================ 共有依赖 (以上) ===================================================== -->
             
@@ -549,6 +555,16 @@
             <dependency>
                 <groupId>com.devil.fission</groupId>
                 <artifactId>fission-machine-sentinel-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-example-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-auth-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             
