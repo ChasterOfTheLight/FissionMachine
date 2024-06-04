@@ -647,3 +647,16 @@ redissonDelayedUtil.remove("345", "123");
 ```text
 RedissonDelayedUtil一般会晚于项目当前包的bean的初始化，如果遇到初始化有问题，需要加入@Lazy延迟util初始化
 ```
+
+## Elasticsearch Use
+
+- 引入依赖
+
+```xml
+<dependency>
+    <groupId>com.devil.fission</groupId>
+    <artifactId>fission-machine-elasticsearch-stater</artifactId>
+</dependency>
+```
+
+> see https://en.easy-es.cn/pages/7ead0d/
