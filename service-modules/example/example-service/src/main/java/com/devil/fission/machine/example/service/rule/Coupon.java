@@ -14,17 +14,17 @@ import lombok.Data;
 public class Coupon {
     
     /**
-     * 优惠券描述
+     * 优惠券描述.
      */
     private String description;
     
     /**
-     * 门槛
+     * 门槛.
      */
     private Integer threshold;
     
     /**
-     * 减免（单位：分）
+     * 减免（单位：分）.
      */
     private Integer discount;
     

@@ -14,17 +14,17 @@ import lombok.Data;
 public class Product {
     
     /**
-     * 商品编号
+     * 商品编号.
      */
     private String sku;
     
     /**
-     * 商品名称
+     * 商品名称.
      */
     private String name;
     
     /**
-     * 销售价（单位：分）
+     * 销售价（单位：分）.
      */
     private Integer price;
     

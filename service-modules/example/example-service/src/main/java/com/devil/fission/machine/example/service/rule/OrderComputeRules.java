@@ -20,7 +20,7 @@ import java.util.function.BinaryOperator;
 public class OrderComputeRules {
     
     /**
-     * 构造订单计算规则
+     * 构造订单计算规则.
      *
      * @return 规则集合
      */
@@ -35,15 +35,20 @@ public class OrderComputeRules {
         return rules;
     }
     
-    
     @Rule(name = "ProductAmountComputeRule", description = "商品金额计算规则", priority = 1)
     public static class ProductAmountRule {
         
+        /**
+         * 规则执行条件.
+         */
         @Condition
         public boolean when() {
             return true;
         }
         
+        /**
+         * 规则执行方法.
+         */
         @Action
         public void then(Facts facts) throws Exception {
             Bill bill = facts.get("bill");
@@ -57,11 +62,17 @@ public class OrderComputeRules {
     @Rule(name = "FreightComputeRule", description = "运费金额计算规则", priority = 2)
     public static class FreightRule {
         
+        /**
+         * 规则执行条件.
+         */
         @Condition
         public boolean when(@Fact("bill") Bill bill) {
             return bill.getProductAmount() < 99 * 100;
         }
         
+        /**
+         * 规则执行方法.
+         */
         @Action
         public void then(Facts facts) throws Exception {
             Bill bill = facts.get("bill");
@@ -72,11 +83,17 @@ public class OrderComputeRules {
     @Rule(name = "PayableComputeRule", description = "应付金额计算规则", priority = 3)
     public static class PayableRule {
         
+        /**
+         * 规则执行条件.
+         */
         @Condition
         public boolean when() {
             return true;
         }
         
+        /**
+         * 规则执行方法.
+         */
         @Action
         public void then(Facts facts) throws Exception {
             Bill bill = facts.get("bill");
@@ -87,11 +104,17 @@ public class OrderComputeRules {
     @Rule(name = "CouponComputeRule", description = "计算优惠券优惠券", priority = 4)
     public static class CouponRule {
         
+        /**
+         * 规则执行条件.
+         */
         @Condition
         public boolean when(@Fact("coupons") List<Coupon> coupons) {
             return Objects.nonNull(coupons) && !coupons.isEmpty();
         }
         
+        /**
+         * 规则执行方法.
+         */
         @Action
         public void then(Facts facts) throws Exception {
             Bill bill = facts.get("bill");
@@ -109,16 +132,23 @@ public class OrderComputeRules {
     @Rule(name = "ScoreCashComputeRule", description = "积分抵现计算规则", priority = 5)
     public static class ScoreCashRule {
         
+        /**
+         * 规则执行条件.
+         */
         @Condition
         public boolean when(@Fact("score") Integer score) {
             return score >= 100;
         }
         
+        /**
+         * 规则执行方法.
+         */
         @Action
         public void then(Facts facts) throws Exception {
             Bill bill = facts.get("bill");
             Integer score = facts.get("score");
-            int cash = score / 100; //单位：元
+            // 单位：元
+            int cash = score / 100;
             bill.setScoreCash(cash * 100);
         }
     }
@@ -126,11 +156,17 @@ public class OrderComputeRules {
     @Rule(name = "PaymentComputeRule", description = "应支付金额计算规则", priority = 6)
     public static class PaymentRule {
         
+        /**
+         * 规则执行条件.
+         */
         @Condition
         public boolean when() {
             return true;
         }
         
+        /**
+         * 规则执行方法.
+         */
         @Action
         public void then(Facts facts) throws Exception {
             Bill bill = facts.get("bill");

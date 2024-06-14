@@ -71,9 +71,9 @@ public class SearchController {
     }
     
     private Map<String, Object> esProperty() {
-        Map<String, Object> property = new HashMap<>(16);
-        Map<String, Object> fields = new HashMap<>(16);
-        Map<String, Object> keyword = new HashMap<>(16);
+        final Map<String, Object> property = new HashMap<>(16);
+        final Map<String, Object> fields = new HashMap<>(16);
+        final Map<String, Object> keyword = new HashMap<>(16);
         keyword.put("type", FieldType.KEYWORD.getType());
         keyword.put("ignore_above", 256);
         Map<String, Object> ik = new HashMap<>(16);

@@ -15,29 +15,29 @@ import java.util.List;
 public class Order {
     
     /**
-     * 订单号
+     * 订单号.
      */
     private String orderNo;
     
     /**
-     * 商品清单
+     * 商品清单.
      */
     private List<ProductItem> productItems;
     
     /**
-     * 商品项
+     * 商品项.
      */
     @Data
     @AllArgsConstructor
     public static class ProductItem {
         
         /**
-         * 商品
+         * 商品.
          */
         private Product product;
         
         /**
-         * 数量
+         * 数量.
          */
         private Integer number;
     }

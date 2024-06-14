@@ -22,7 +22,7 @@ public class OrderComputeRulesTest {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     
     /**
-     * 商品信息
+     * 商品信息.
      */
     public static final Product P1 = new Product("P1001", "Milk 12*220ML", 40 * 100);
     
@@ -31,14 +31,14 @@ public class OrderComputeRulesTest {
     public static final Product P3 = new Product("P1003", "Pod 2022", 200 * 100);
     
     /**
-     * 优惠券
+     * 优惠券.
      */
     public static final Coupon C1 = new Coupon("满200减10", 200 * 100, 10 * 100);
     
     public static final Coupon C2 = new Coupon("满300减20", 300 * 100, 20 * 100);
     
     /**
-     * 积分
+     * 积分.
      */
     public static final Integer S1 = 100;
     
@@ -46,10 +46,10 @@ public class OrderComputeRulesTest {
     
     @Test
     public void testRules() {
-        /**
-         * 构造数据
+        /*
+          构造数据.
          */
-        Facts facts = new Facts();
+        final Facts facts = new Facts();
         
         //构造订单： 2种商品，共3件，总价200
         Order order = new Order();
@@ -71,19 +71,19 @@ public class OrderComputeRulesTest {
         //构建积分
         facts.put("score", S1);
         
-        /**
-         * 构造规则
+        /*
+          构造规则.
          */
         Rules rules = OrderComputeRules.buildOrderComputeRules();
         
-        /**
-         * 执行规则计算
+        /*
+          执行规则计算.
          */
         RulesEngine rulesEngine = new DefaultRulesEngine();
         rulesEngine.fire(rules, facts);
         
-        /**
-         * 输出结果
+        /*
+          输出结果.
          */
         System.out.println("facts :");
         System.out.println(GSON.toJson(facts));
