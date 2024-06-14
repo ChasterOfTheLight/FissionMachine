@@ -5,6 +5,8 @@ import lombok.Data;
 import org.dromara.easyes.annotation.IndexField;
 import org.dromara.easyes.annotation.IndexId;
 import org.dromara.easyes.annotation.IndexName;
+import org.dromara.easyes.annotation.InnerIndexField;
+import org.dromara.easyes.annotation.MultiIndexField;
 import org.dromara.easyes.annotation.Settings;
 import org.dromara.easyes.annotation.rely.Analyzer;
 import org.dromara.easyes.annotation.rely.FieldType;
@@ -31,7 +33,9 @@ public class Document {
     /**
      * 文档标题.
      */
-    @IndexField(fieldType = FieldType.TEXT, analyzer = Analyzer.IK_SMART, searchAnalyzer = Analyzer.IK_SMART)
+    @MultiIndexField(mainIndexField = @IndexField(fieldType = FieldType.KEYWORD_TEXT), otherIndexFields = {
+            @InnerIndexField(suffix = "standard", fieldType = FieldType.TEXT, analyzer = Analyzer.STANDARD),
+            @InnerIndexField(suffix = "ik", fieldType = FieldType.TEXT, analyzer = Analyzer.IK_MAX_WORD)})
     private String title;
     
     /**

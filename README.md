@@ -623,9 +623,14 @@ public class DemoDelayedHandler implements RedissonDelayedHandler {
     
     @Override
     public <String> void execute(String s) {
-        String arg = s.toString();
-        // 具体的业务逻辑，参数类型可根据业务需要自行替换
-        LOGGER.info("参数 = {}", arg);
+        // 需要用try catch包围，否则队列消费会在jvm层停止
+        try {
+            String arg = s.toString();
+            // 具体的业务逻辑，参数类型可根据业务需要自行替换
+            LOGGER.info("参数 = {}", arg);
+        } catch (Exception e) {
+            LOGGER.error("执行延迟消息失败", e);
+        }
     }
 
 }

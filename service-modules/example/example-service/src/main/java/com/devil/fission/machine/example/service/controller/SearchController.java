@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 搜索接口.
  *
@@ -32,6 +35,14 @@ public class SearchController {
     }
     
     /**
+     * 索引自动创建.
+     */
+    @PostMapping(value = "/indexAutoCreate", produces = {"application/json"})
+    public Response<Boolean> indexAutoCreate() {
+        return Response.success(documentMapper.createIndex());
+    }
+    
+    /**
      * 索引创建.
      */
     @PostMapping(value = "/indexCreate", produces = {"application/json"})
@@ -40,20 +51,43 @@ public class SearchController {
         LambdaEsIndexWrapper<Document> wrapper = new LambdaEsIndexWrapper<>();
         // 此处简单起见 索引名称须保持和实体类名称一致,字母小写 后面章节会教大家更如何灵活配置和使用索引
         wrapper.indexName("fission_document_202405111621");
-        
-        // 此处将文章标题映射为keyword类型(不支持分词),文档内容映射为text类型(支持分词查询)
-        wrapper.mapping(Document::getTitle, FieldType.KEYWORD, 2.0f).mapping(Document::getContent, FieldType.TEXT, Analyzer.IK_SMART, Analyzer.IK_MAX_WORD);
-        
+        // 设置mapping  使用自定义方式
+        Map<String, Object> map = new HashMap<>(16);
+        Map<String, Object> properties = new HashMap<>(16);
+        properties.put("orderTitle", esProperty());
+        properties.put("customerName", esProperty());
+        map.put("properties", properties);
+        wrapper.mapping(map);
         // 设置分片及副本信息,可缺省
         wrapper.settings(3, 2);
-        
+
         // 设置别名信息,可缺省
         String aliasName = "FissionDocument";
         wrapper.createAlias(aliasName);
-        
+
         // 创建索引
         boolean isOk = documentMapper.createIndex(wrapper);
         return Response.success(isOk);
+    }
+    
+    private Map<String, Object> esProperty() {
+        final Map<String, Object> property = new HashMap<>(16);
+        final Map<String, Object> fields = new HashMap<>(16);
+        final Map<String, Object> keyword = new HashMap<>(16);
+        keyword.put("type", FieldType.KEYWORD.getType());
+        keyword.put("ignore_above", 256);
+        Map<String, Object> ik = new HashMap<>(16);
+        ik.put("type", FieldType.TEXT.getType());
+        ik.put("analyzer", Analyzer.IK_MAX_WORD);
+        Map<String, Object> standard = new HashMap<>(16);
+        standard.put("type", FieldType.TEXT.getType());
+        standard.put("analyzer", Analyzer.STANDARD);
+        fields.put("keyword", keyword);
+        fields.put("ik", ik);
+        fields.put("standard", standard);
+        property.put("type", FieldType.TEXT.getType());
+        property.put("fields", fields);
+        return property;
     }
     
     /**
