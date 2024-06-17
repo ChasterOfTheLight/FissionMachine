@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RedissonAntiRepeatLock implements AntiRepeatLock {
     
-    private String prefix = "antirepeat:key:";
+    private final String prefix = "antirepeat:key:";
     
     private final RedissonClient redissonClient;
     

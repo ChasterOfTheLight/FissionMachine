@@ -1,5 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.devil.fission.machine.redis.config.RedisConfig,\
-  com.devil.fission.machine.redis.config.JetCacheConfig
+  com.devil.fission.machine.redis.config.JetCacheConfig,\
+  com.devil.fission.machine.redis.antirepeat.config.AntiRepeatConfiguration
 
   
