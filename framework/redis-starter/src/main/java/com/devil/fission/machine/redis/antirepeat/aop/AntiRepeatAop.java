@@ -36,7 +36,7 @@ public class AntiRepeatAop {
     @Resource
     private AntiRepeatLock antiRepeatLock;
     
-    @Pointcut("@annotation(com.tojoy.core.antirepeat.annotation.AntiRepeat)")
+    @Pointcut("@annotation(com.devil.fission.machine.redis.antirepeat.annotation.AntiRepeat)")
     public void aopAntiRepeat() {
     }
     

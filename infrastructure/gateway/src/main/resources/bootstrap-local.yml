@@ -14,8 +14,8 @@ spring:
             refresh: true
       # 服务发现可以也可以放在application中
       discovery:
-        # 网关设置为true时，会从nacos默认拉取服务列表作为路由信息，同时合并路由配置信息; false时则只依赖路由配置信息
-        enabled: false
+        # 设置为true时，会启动服务发现
+        enabled: true
         namespace: ${spring.cloud.nacos.config.namespace}
         server-addr: ${spring.cloud.nacos.config.server-addr}
         group: ${spring.cloud.nacos.config.group}
