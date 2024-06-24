@@ -24,6 +24,6 @@ public class TestController {
     
     @PostMapping(value = "/genOrderNo")
     public Response<String> genOrderNo() {
-        return Response.success(noGenUtils.genOrderNo(1));
+        return Response.success(noGenUtils.genOrderNo());
     }
 }

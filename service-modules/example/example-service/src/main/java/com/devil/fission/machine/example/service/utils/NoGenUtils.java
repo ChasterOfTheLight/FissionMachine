@@ -27,7 +27,6 @@ public class NoGenUtils {
         this.redissonClient = redissonClient;
     }
     
-    
     /**
      * 生成订单号.
      *
@@ -43,8 +42,9 @@ public class NoGenUtils {
             // 加分布式锁处理（先这样处理，后期看业务量改为批量发号）
             orderNumberLock.lock(1L, TimeUnit.SECONDS);
             RAtomicLong noAtomicLong = redissonClient.getAtomicLong("NoAtomicLong");
-            if (noAtomicLong.get() < 168L) {
-                noAtomicLong.set(168);
+            long min = 168L;
+            if (noAtomicLong.get() < min) {
+                noAtomicLong.set(min);
             }
             Date currentDate = new Date();
             // 获取当前日期时间字符串，确保始终为12位   每次都需要是最新时间
@@ -52,9 +52,10 @@ public class NoGenUtils {
             // 获取并增加序列号
             long seq = noAtomicLong.getAndIncrement();
             // 当序列号马上到1000时，重置序列号并增加秒数
-            if (seq == 999) {
+            long max = 999L;
+            if (seq == max) {
                 // 重置序列号
-                noAtomicLong.set(168);
+                noAtomicLong.set(min);
                 // 强制睡1秒
                 Thread.sleep(1000);
             }
@@ -71,30 +72,10 @@ public class NoGenUtils {
     }
     
     /**
-     * 生成主订单号 DD+年月日时分秒(12位）+递增序列号（168起）+类型（XSD/YSK)（备注“年月日时分秒都是两位起，168从此基础上加数，当并发递增序列超过3位时，秒数+1，类型XSD表示销售单，YSK表示预收款，预收款修改为销售单后单号不能进行调整）.
+     * 生成订单号.
      */
-    public String genOrderNo(int orderType) {
-        if (1 == orderType) {
-            return generateNumber("DD", "XSD");
-        } else if (2 == orderType) {
-            return generateNumber("DD", "YSK");
-        }
-        return null;
-    }
-    
-    /**
-     * 生成子订单号（支付单号）ZFD+年月日时分秒(12位）+递增序列号（068起）（备注“时分秒都是两位起，068从此基础上加数，当并发递增序列超过3位时，秒数+1）.
-     */
-    public String genSubOrderNo() {
-        return generateNumber("ZFD", "");
-    }
-    
-    
-    /**
-     * 生成退款单号 TKD+年月日时分秒(12位）+递增序列号（068起）（备注“时分秒都是两位起，068从此基础上加数，当并发递增序列超过3位时，秒数+1）.
-     */
-    public String genRefundOrderNo() {
-        return generateNumber("TKD", "");
+    public String genOrderNo() {
+        return generateNumber("DD", "");
     }
     
 }
