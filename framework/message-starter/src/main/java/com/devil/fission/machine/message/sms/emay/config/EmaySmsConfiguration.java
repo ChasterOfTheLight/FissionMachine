@@ -4,6 +4,7 @@ import com.devil.fission.machine.message.sms.emay.EmaySmsMessageService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 亿美短信配置.
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Bean;
  * @author Devil
  * @date Created in 2024/6/25 下午5:54
  */
+@Configuration
 @ConditionalOnProperty(prefix = "message.sms.emay", value = {"host", "appId", "secretKey"})
 @EnableConfigurationProperties(EmaySmsProperties.class)
 public class EmaySmsConfiguration {

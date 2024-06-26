@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
  * 发送消息dto.
  *
@@ -18,14 +20,29 @@ import lombok.NoArgsConstructor;
 public class SendMessageDto {
     
     /**
+     * 发送签名.
+     */
+    private String signName;
+    
+    /**
      * 发送目标.
      */
     private String sendTarget;
     
     /**
-     * 消息Id.
+     * 消息id.
      */
     private String msgId;
+    
+    /**
+     * 消息模板id.
+     */
+    private String templateId;
+    
+    /**
+     * 消息模板参数.
+     */
+    private Map<String, String> templateParams;
     
     /**
      * 消息内容.
