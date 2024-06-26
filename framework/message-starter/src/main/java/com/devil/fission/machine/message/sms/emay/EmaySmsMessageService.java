@@ -60,7 +60,7 @@ public class EmaySmsMessageService extends AbstractMessageService {
             String mobile = sendMessageDto.getSendTarget();
             String msgId = sendMessageDto.getMsgId();
             String content = sendMessageDto.getMsgContent();
-            String extendCode = sendMessageDto.getExtendCode();
+            String extendCode = sendMessageDto.getMsgExtra();
             // 设置请求体
             SmsSingleRequest smsSingleRequest = new SmsSingleRequest();
             smsSingleRequest.setContent(content);
@@ -97,14 +97,15 @@ public class EmaySmsMessageService extends AbstractMessageService {
                     log.info("发送亿美单条短信成功，亿美响应: {} 发送手机号:{} 发送请求: {}", smsResponse.toString(), mobile, requestJson);
                     return SendMessageResult.builder().sendSuccess(true).build();
                 } else {
+                    log.error("发送亿美单条短信失败，亿美响应: {} 发送手机号:{}", emayResponseCode, mobile);
                     return SendMessageResult.builder().sendSuccess(false).failReason(emayResponseCode).build();
                 }
             } else {
-                log.warn("发送亿美单条短信失败，请求码:{} 发送手机号:{} 发送请求: {}", statusCode, mobile, requestJson);
-                return SendMessageResult.builder().sendSuccess(false).failReason("网络错误：" + statusCode).build();
+                log.error("发送亿美单条短信失败，请求码:{} 发送手机号:{} 发送请求: {}", statusCode, mobile, requestJson);
+                return SendMessageResult.builder().sendSuccess(false).failReason("异常码：" + statusCode).build();
             }
         } catch (Exception e) {
-            throw new ServiceException(ResponseCode.FAIL, "亿美单条短信发送失败", e);
+            throw new ServiceException(ResponseCode.FAIL, "亿美短信发送异常", e);
         } finally {
             httpPost.releaseConnection();
         }

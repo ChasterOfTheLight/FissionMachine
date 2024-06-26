@@ -45,17 +45,17 @@ public class AliyunSmsMessageService extends AbstractMessageService {
         SendSmsRequest sendSmsRequest = new SendSmsRequest().setSignName(sendMessageDto.getSignName()).setTemplateCode(sendMessageDto.getTemplateId())
                 .setTemplateParam(JSONUtil.toJsonStr(sendMessageDto.getTemplateParams())).setPhoneNumbers(sendMessageDto.getSendTarget());
         RuntimeOptions runtime = new RuntimeOptions();
-        SendSmsResponse response;
         try {
-            response = client.sendSmsWithOptions(sendSmsRequest, runtime);
+            SendSmsResponse response = client.sendSmsWithOptions(sendSmsRequest, runtime);
             String successCode = "OK";
             String aliyunResponseCode = response.getBody().getCode();
             if (aliyunResponseCode != null && !successCode.equals(aliyunResponseCode)) {
+                log.error("阿里云短信发送失败, aliyunResponseCode: {}", aliyunResponseCode);
                 return SendMessageResult.builder().sendSuccess(false).failReason(aliyunResponseCode).build();
             }
             return SendMessageResult.builder().sendSuccess(true).build();
         } catch (Exception e) {
-            throw new ServiceException(ResponseCode.FAIL, "阿里云短信发送失败", e);
+            throw new ServiceException(ResponseCode.FAIL, "阿里云短信发送异常", e);
         }
     }
     

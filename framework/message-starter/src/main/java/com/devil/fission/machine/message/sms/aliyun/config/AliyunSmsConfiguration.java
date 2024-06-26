@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
  * @date Created in 2024/6/26 上午11:09
  */
 @Configuration
-@ConditionalOnProperty(prefix = "message.sms.aliyun", value = {"endpoint", "accessKeyId", "accessKeySecret"})
+@ConditionalOnProperty(prefix = "message.sms.aliyun", value = {"endpoint", "regionId", "accessKeyId", "accessKeySecret"})
 @EnableConfigurationProperties(AliyunSmsProperties.class)
 public class AliyunSmsConfiguration {
     

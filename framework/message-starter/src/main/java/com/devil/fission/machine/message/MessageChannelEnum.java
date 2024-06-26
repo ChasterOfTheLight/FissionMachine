@@ -19,6 +19,11 @@ public enum MessageChannelEnum {
     SMS_ALIYUN(1002, "阿里云短信"),
     
     /**
+     * 短信通道-腾讯云.
+     */
+    SMS_TENCENT(1003, "腾讯云短信"),
+    
+    /**
      * 邮件通道-阿里云.
      */
     EMAIL_ALIYUN(2001, "阿里云邮件"),

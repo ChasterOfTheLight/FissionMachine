@@ -52,7 +52,7 @@ public class SendMessageDto {
     /**
      * 透传信息.
      */
-    private String extendCode;
+    private String msgExtra;
     
     /**
      * 消息类型.

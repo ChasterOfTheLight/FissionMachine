@@ -1,22 +1,27 @@
-package com.devil.fission.machine.message.sms.aliyun.config;
+package com.devil.fission.machine.message.sms.tencent.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 阿里云短信配置.
+ * 腾讯云短信配置.
  *
  * @author Devil
- * @date Created in 2024/6/26 上午10:55
+ * @date Created in 2024/6/26 下午1:53
  */
 @Data
-@ConfigurationProperties(prefix = "message.sms.aliyun")
-public class AliyunSmsProperties {
+@ConfigurationProperties(prefix = "message.sms.tencent")
+public class TencentProperties {
     
     /**
      * 访问域名.
      */
     private String endpoint;
+    
+    /**
+     * sdk appid.
+     */
+    private String sdkAppId;
     
     /**
      * 地域ID.
@@ -26,11 +31,11 @@ public class AliyunSmsProperties {
     /**
      * 访问密钥ID.
      */
-    private String accessKeyId;
+    private String secretId;
     
     /**
      * 访问密钥.
      */
-    private String accessKeySecret;
-    
+    private String secretKey;
+
 }
