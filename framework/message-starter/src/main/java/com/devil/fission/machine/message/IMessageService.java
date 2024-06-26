@@ -11,11 +11,8 @@ public interface IMessageService {
     /**
      * 发送消息.
      *
-     * @param customMsgId 自定义消息id
-     * @param target      发送目标 （手机号、邮件等）
-     * @param message     消息
-     * @param extendCode  扩展码
+     * @param sendMessageDto sendMessageDto
      */
-    void sendMessage(String customMsgId, String target, String message, String extendCode);
+    void sendMessage(SendMessageDto sendMessageDto);
     
 }

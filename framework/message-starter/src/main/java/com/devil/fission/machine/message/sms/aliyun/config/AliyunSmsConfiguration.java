@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * .
+ * 阿里云sms配置.
  *
  * @author Devil
  * @date Created in 2024/6/26 上午11:09

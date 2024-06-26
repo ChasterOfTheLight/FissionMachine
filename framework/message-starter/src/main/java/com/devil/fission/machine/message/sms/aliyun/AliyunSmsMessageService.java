@@ -7,6 +7,7 @@ import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
 import com.aliyun.teautil.models.RuntimeOptions;
 import com.devil.fission.machine.common.exception.ServiceException;
 import com.devil.fission.machine.common.response.ResponseCode;
+import com.devil.fission.machine.common.util.StringUtils;
 import com.devil.fission.machine.message.AbstractMessageService;
 import com.devil.fission.machine.message.MessageChannelEnum;
 import com.devil.fission.machine.message.MessageTypeEnum;
@@ -31,6 +32,15 @@ public class AliyunSmsMessageService extends AbstractMessageService {
     
     @Override
     protected SendMessageResult sendChannelMessage(SendMessageDto sendMessageDto) {
+        if (StringUtils.isEmpty(sendMessageDto.getSignName())) {
+            throw new ServiceException(ResponseCode.FAIL, "阿里云短信签名不能为空");
+        }
+        if (StringUtils.isEmpty(sendMessageDto.getTemplateId())) {
+            throw new ServiceException(ResponseCode.FAIL, "阿里云短信模板id不能为空");
+        }
+        if (sendMessageDto.getTemplateParams() == null || sendMessageDto.getTemplateParams().isEmpty()) {
+            throw new ServiceException(ResponseCode.FAIL, "阿里云短信模板参数不能为空");
+        }
         // 实现阿里云短信模板发送逻辑
         SendSmsRequest sendSmsRequest = new SendSmsRequest().setSignName(sendMessageDto.getSignName()).setTemplateCode(sendMessageDto.getTemplateId())
                 .setTemplateParam(JSONUtil.toJsonStr(sendMessageDto.getTemplateParams())).setPhoneNumbers(sendMessageDto.getSendTarget());

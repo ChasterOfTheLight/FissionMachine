@@ -14,8 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractMessageService implements IMessageService {
     
     @Override
-    public void sendMessage(String customMsgId, String target, String message, String extendCode) {
-        if (StringUtils.isEmpty(target) || StringUtils.isEmpty(message)) {
+    public void sendMessage(SendMessageDto sendMessageDto) {
+        if (sendMessageDto == null) {
+            log.warn("发送消息参数不能为空！");
+            return;
+        }
+        if (StringUtils.isEmpty(sendMessageDto.getSendTarget()) || StringUtils.isEmpty(sendMessageDto.getMsgContent())) {
             log.warn("发送消息目标或消息不能为空！");
             return;
         }
@@ -25,11 +29,10 @@ public abstract class AbstractMessageService implements IMessageService {
             log.warn("发送消息类型或消息渠道不能为空！");
             return;
         }
-        if (StringUtils.isEmpty(customMsgId)) {
-            customMsgId = IdUtil.fastSimpleUUID();
+        if (StringUtils.isEmpty(sendMessageDto.getMsgId())) {
+            sendMessageDto.setMsgId(IdUtil.fastSimpleUUID());
         }
-        SendMessageDto sendMessageDto = SendMessageDto.builder().msgId(customMsgId).sendTarget(target).msgType(messageType).msgChannel(messageChannel).msgContent(message)
-                .extendCode(extendCode).build();
+        // 发送具体渠道消息
         sendChannelMessage(sendMessageDto);
     }
     
