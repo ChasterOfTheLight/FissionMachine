@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.devil.fission.machine.message.sms.emay.config.EmaySmsConfiguration,\
+  com.devil.fission.machine.message.sms.aliyun.config.AliyunSmsConfiguration,\
+  com.devil.fission.machine.message.sms.tencent.config.TencentSmsConfiguration
+

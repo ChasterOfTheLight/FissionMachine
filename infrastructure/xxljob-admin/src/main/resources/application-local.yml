@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+
+xxl:
+  job:
+    ### 调度中心通讯TOKEN [选填]：非空时启用；
+    accessToken: 'FissionMachineXxlJobAccessToken'

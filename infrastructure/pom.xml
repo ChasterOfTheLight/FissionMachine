@@ -12,6 +12,7 @@
     <modules>
         <module>auth</module>
         <module>gateway</module>
+        <module>xxljob-admin</module>
     </modules>
 
 </project>

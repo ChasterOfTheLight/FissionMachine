@@ -36,6 +36,11 @@
             <groupId>com.alicp.jetcache</groupId>
             <artifactId>jetcache-starter-redis-lettuce</artifactId>
         </dependency>
+        <!-- aspectj -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
         
         <!-- fission -->
         <dependency>

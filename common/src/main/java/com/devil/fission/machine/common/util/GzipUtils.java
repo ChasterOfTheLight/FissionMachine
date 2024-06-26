@@ -1,9 +1,11 @@
 package com.devil.fission.machine.common.util;
 
 import com.devil.fission.machine.common.exception.ServiceException;
+import com.devil.fission.machine.common.response.ResponseCode;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -25,6 +27,34 @@ public class GzipUtils {
      */
     public static final String GZIP_ENCODE_ISO_8859_1 = "ISO-8859-1";
     
+    /**
+     * 数据压缩.
+     */
+    public static byte[] compress(byte[] bytes) {
+        ByteArrayOutputStream out = null;
+        GZIPOutputStream gos = null;
+        try {
+            out = new ByteArrayOutputStream();
+            gos = new GZIPOutputStream(out);
+            gos.write(bytes);
+            gos.finish();
+            gos.flush();
+        } catch (Exception e) {
+            throw new ServiceException(ResponseCode.FAIL, "gzip数据压缩失败", e);
+        } finally {
+            try {
+                if (gos != null) {
+                    gos.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                throw new ServiceException(ResponseCode.FAIL, "gzip数据压缩失败", e);
+            }
+        }
+        return out.toByteArray();
+    }
     
     /**
      * "utf-8"编码压缩.
