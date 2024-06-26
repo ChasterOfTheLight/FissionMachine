@@ -7,7 +7,7 @@
         <version>${revision}</version>
     </parent>
     
-    <artifactId>fission-xxljob-admin</artifactId>
+    <artifactId>fission-machine-xxljob-admin</artifactId>
     
     <properties>
         <spring-boot.version>2.4.2</spring-boot.version>

@@ -19,6 +19,7 @@
         <module>seata-starter</module>
         <module>sentinel-starter</module>
         <module>elasticsearch-starter</module>
+        <module>message-starter</module>
     </modules>
 
 </project>
