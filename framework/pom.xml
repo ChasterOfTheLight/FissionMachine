@@ -20,6 +20,7 @@
         <module>sentinel-starter</module>
         <module>elasticsearch-starter</module>
         <module>message-starter</module>
+        <module>security-starter</module>
     </modules>
 
 </project>

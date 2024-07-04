@@ -18,8 +18,7 @@ import java.util.regex.Pattern;
  * <p/>
  * This code is a Java port of the original work in PHP by Cal Hendersen. http://code.iamcal.com/php/lib_filter/
  * <p/>
- * The trickiest part of the translation was handling the differences in regex handling between PHP and Java.  These resources were helpful in the
- * process:
+ * The trickiest part of the translation was handling the differences in regex handling between PHP and Java.  These resources were helpful in the process:
  * <p/>
  * http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html http://us2.php.net/manual/en/reference.pcre.pattern.modifiers.php
  * http://www.regular-expressions.info/modifiers.html
@@ -30,8 +29,8 @@ import java.util.regex.Pattern;
  * <p/>
  * The class is not thread safe. Create a new instance if in doubt.
  * <p/>
- * If you find bugs or have suggestions on improvement (especially regarding performance), please contact us.  The latest version of this source, and
- * our contact details, can be found at http://xss-html-filter.sf.net
+ * If you find bugs or have suggestions on improvement (especially regarding performance), please contact us.  The latest version of this source, and our contact details, can be
+ * found at http://xss-html-filter.sf.net
  *
  * @author Joseph O'Connell
  * @author Cal Hendersen

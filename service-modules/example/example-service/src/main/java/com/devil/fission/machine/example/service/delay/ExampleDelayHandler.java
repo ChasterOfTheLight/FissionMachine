@@ -16,9 +16,11 @@ public class ExampleDelayHandler implements RedissonDelayedHandler {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ExampleDelayHandler.class);
     
+    public static final String DELAY_QUEUE = "exampleDelayQueue";
+    
     @Override
     public String getQueueName() {
-        return "exampleDelayQueue";
+        return DELAY_QUEUE;
     }
     
     @Override

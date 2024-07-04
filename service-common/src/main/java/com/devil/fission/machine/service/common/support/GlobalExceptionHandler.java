@@ -50,8 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final Gson gson = new Gson();
     
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]不支持方法:%s", requestUri, ex.getMethod());
         LOGGER.warn(errorMsg);
@@ -60,8 +59,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]不支持类型:%s", requestUri, ex.getContentType());
         LOGGER.warn(errorMsg);
@@ -70,8 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]不接受类型:%s", requestUri, gson.toJson(ex.getSupportedMediaTypes()));
         LOGGER.warn(errorMsg);
@@ -80,8 +77,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]缺少地址参数:%s", requestUri, ex.getVariableName());
         LOGGER.warn(errorMsg);
@@ -90,8 +86,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]缺少servlet参数:%s", requestUri, ex.getParameterName());
         LOGGER.warn(errorMsg);
@@ -100,8 +95,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleServletRequestBindingException(ServletRequestBindingException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleServletRequestBindingException(ServletRequestBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]参数异常:%s", requestUri, ex.getLocalizedMessage());
         LOGGER.warn(errorMsg);
@@ -110,8 +104,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleConversionNotSupported(ConversionNotSupportedException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleConversionNotSupported(ConversionNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]不支持会话%s", requestUri, ex.getPropertyName());
         LOGGER.warn(errorMsg);
@@ -129,8 +122,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]消息不可读:%s", requestUri, ex.getLocalizedMessage());
         LOGGER.warn(errorMsg);
@@ -139,8 +131,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]消息不可写:%s", requestUri, ex.getLocalizedMessage());
         LOGGER.warn(errorMsg);
@@ -149,8 +140,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String message = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         String errorMsg = String.format("请求地址%s,[参数错误]参数异常:%s", requestUri, message);
@@ -160,8 +150,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestPart(MissingServletRequestPartException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestPart(MissingServletRequestPartException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[参数错误]请求体异常:%s", requestUri, ex.getLocalizedMessage());
         LOGGER.warn(errorMsg);
@@ -180,8 +169,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[404]没有处理器:%s", requestUri, ex.getHttpMethod());
         LOGGER.warn(errorMsg);
@@ -190,8 +178,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<Object> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String errorMsg = String.format("请求地址%s,[500]异步请求超时:%s", requestUri, ex.getLocalizedMessage());
         LOGGER.error(errorMsg);

@@ -107,8 +107,10 @@ public class CommonTest {
     @Test
     public void dateBetweenTest() {
         Date now = new Date();
-        Date before = DateUtil.offsetHour(now, -30);
-        System.out.println(DateUtil.between(before, now, DateUnit.SECOND, false));
+        Date before = DateUtil.offsetSecond(now, -30);
+        System.out.println("now: " + DateUtil.formatDateTime(now));
+        System.out.println("before: " + DateUtil.formatDateTime(before));
+        System.out.println("delay: " + DateUtil.between(before, now, DateUnit.SECOND, false));
     }
     
 }

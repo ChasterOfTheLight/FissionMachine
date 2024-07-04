@@ -25,8 +25,7 @@ public class GzipFilter extends OncePerRequestFilter {
     private static final String GZIP_CONTENT_ENCODING = "gzip";
     
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         
         // 检查请求头是否包含gzip压缩
         String contentEncoding = request.getHeader("Content-Encoding");
@@ -39,6 +38,7 @@ public class GzipFilter extends OncePerRequestFilter {
     }
     
     private static class GzipRequestWrapper extends HttpServletRequestWrapper {
+        
         private final byte[] requestBody;
         
         GzipRequestWrapper(HttpServletRequest request) throws IOException {
@@ -65,6 +65,7 @@ public class GzipFilter extends OncePerRequestFilter {
     }
     
     private static class CustomServletInputStream extends ServletInputStream {
+        
         private final ByteArrayInputStream byteArrayInputStream;
         
         CustomServletInputStream(byte[] bytes) {

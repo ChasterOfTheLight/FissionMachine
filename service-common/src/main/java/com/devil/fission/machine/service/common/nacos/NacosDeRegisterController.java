@@ -39,8 +39,7 @@ public class NacosDeRegisterController {
         String clusterName = nacosDiscoveryProperties.getClusterName();
         String ip = nacosDiscoveryProperties.getIp();
         int port = nacosDiscoveryProperties.getPort();
-        LOGGER.info("deregister from nacos, serviceName:{}, groupName:{}, clusterName:{}, ip:{}, port:{}", serviceName, groupName, clusterName, ip,
-                port);
+        LOGGER.info("deregister from nacos, serviceName:{}, groupName:{}, clusterName:{}, ip:{}, port:{}", serviceName, groupName, clusterName, ip, port);
         try {
             NamingService namingService = nacosServiceManager.getNamingService();
             namingService.deregisterInstance(serviceName, groupName, ip, port, clusterName);

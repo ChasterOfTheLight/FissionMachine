@@ -66,8 +66,8 @@ public class ServiceSwaggerConfig {
         
         // 处理全局响应码
         List<Response> responseList = new ArrayList<>();
-        Arrays.stream(ResponseCode.values()).forEach(resultCode -> responseList.add(
-                new ResponseBuilder().code(String.valueOf(resultCode.getCode())).description(resultCode.getMsg()).build()));
+        Arrays.stream(ResponseCode.values())
+                .forEach(resultCode -> responseList.add(new ResponseBuilder().code(String.valueOf(resultCode.getCode())).description(resultCode.getMsg()).build()));
         
         return new Docket(DocumentationType.SWAGGER_2).pathMapping("/")
                 // 定义是否开启swagger，false为关闭，可以通过变量控制，线上关闭
@@ -80,15 +80,14 @@ public class ServiceSwaggerConfig {
                 // RequestHandlerSelectors.any() 所有都暴露
                 // RequestHandlerSelectors.basePackage("net.xdclass.*")  指定包位置
                 // withMethodAnnotation(ApiOperation.class)标记有这个注解 ApiOperation
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)).paths(PathSelectors.any()).build()
-                .globalRequestParameters(getGlobalRequestParameters()).globalResponses(HttpMethod.GET, responseList)
-                .globalResponses(HttpMethod.POST, responseList).globalResponses(HttpMethod.PUT, responseList)
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)).paths(PathSelectors.any()).build().globalRequestParameters(getGlobalRequestParameters())
+                .globalResponses(HttpMethod.GET, responseList).globalResponses(HttpMethod.POST, responseList).globalResponses(HttpMethod.PUT, responseList)
                 .globalResponses(HttpMethod.DELETE, responseList);
     }
     
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title(applicationName).description(applicationDescription)
-                .contact(new Contact("接口文档", "www.devil.com", "devil@devil.com")).version(applicationVersion).build();
+        return new ApiInfoBuilder().title(applicationName).description(applicationDescription).contact(new Contact("接口文档", "www.devil.com", "devil@devil.com"))
+                .version(applicationVersion).build();
     }
     
     /**
