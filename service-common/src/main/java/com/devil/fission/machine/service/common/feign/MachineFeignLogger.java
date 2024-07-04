@@ -128,8 +128,7 @@ public class MachineFeignLogger extends feign.Logger {
     protected IOException logIOException(String configKey, Level logLevel, IOException ioe, long elapsedTime) {
         StringBuilder stringBuilder = new StringBuilder();
         // 返回日志拼装
-        stringBuilder.append(String.format("<--- Feign ERROR %s: %s (%sms)", ioe.getClass().getSimpleName(), ioe.getMessage(), elapsedTime))
-                .append("\r\n");
+        stringBuilder.append(String.format("<--- Feign ERROR %s: %s (%sms)", ioe.getClass().getSimpleName(), ioe.getMessage(), elapsedTime)).append("\r\n");
         if (logLevel.ordinal() >= Level.FULL.ordinal()) {
             StringWriter sw = new StringWriter();
             ioe.printStackTrace(new PrintWriter(sw));

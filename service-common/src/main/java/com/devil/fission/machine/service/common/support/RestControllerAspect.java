@@ -56,11 +56,9 @@ public class RestControllerAspect implements Ordered {
             HttpServletRequest request = attributes.getRequest();
             String paramsJson = getParams(args);
             // 开始打印请求日志拼装
-            String requestFormat = "[Request Info] >>>> [Request Id]: %s [URL]: %s \r\n     [HTTP Method]: %s [Class Method]: %s.%s "
-                    + "[IP]: %s \r\n     [Request Args]: %s";
-            aspectLog.append(String.format(requestFormat, requestId, request.getRequestURL().toString(), request.getMethod(),
-                            joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), request.getRemoteAddr(), paramsJson))
-                    .append("\r\n");
+            String requestFormat = "[Request Info] >>>> [Request Id]: %s [URL]: %s \r\n     [HTTP Method]: %s [Class Method]: %s.%s " + "[IP]: %s \r\n     [Request Args]: %s";
+            aspectLog.append(String.format(requestFormat, requestId, request.getRequestURL().toString(), request.getMethod(), joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(), request.getRemoteAddr(), paramsJson)).append("\r\n");
             // 打印requestParam参数
             Map<String, String[]> parameterMap = request.getParameterMap();
             if (!parameterMap.isEmpty()) {
@@ -114,8 +112,7 @@ public class RestControllerAspect implements Ordered {
         if (args != null) {
             // 如果
             for (Object arg : args) {
-                if ((arg instanceof HttpServletResponse) || (arg instanceof HttpServletRequest) || (arg instanceof MultipartFile)
-                        || (arg instanceof MultipartFile[])) {
+                if ((arg instanceof HttpServletResponse) || (arg instanceof HttpServletRequest) || (arg instanceof MultipartFile) || (arg instanceof MultipartFile[])) {
                     continue;
                 }
                 try {

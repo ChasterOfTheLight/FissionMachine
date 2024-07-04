@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tojoy.mall.job.admin.dao.XxlJobInfoDao">
+<mapper namespace="com.devil.fission.machine.job.admin.dao.XxlJobInfoDao">
     
-    <resultMap id="XxlJobInfo" type="com.tojoy.mall.job.admin.core.model.XxlJobInfo">
+    <resultMap id="XxlJobInfo" type="com.devil.fission.machine.job.admin.core.model.XxlJobInfo">
         <result column="id" property="id"/>
         
         <result column="job_group" property="jobGroup"/>
@@ -112,7 +112,7 @@
         </trim>
     </select>
     
-    <insert id="save" parameterType="com.tojoy.mall.job.admin.core.model.XxlJobInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.devil.fission.machine.job.admin.core.model.XxlJobInfo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO xxl_job_info (
         job_group,
         job_desc,
@@ -175,7 +175,7 @@
         WHERE t.id = #{id}
     </select>
     
-    <update id="update" parameterType="com.tojoy.mall.job.admin.core.model.XxlJobInfo">
+    <update id="update" parameterType="com.devil.fission.machine.job.admin.core.model.XxlJobInfo">
         UPDATE xxl_job_info
         SET job_group                 = #{jobGroup},
             job_desc                  = #{jobDesc},
@@ -231,7 +231,7 @@
         LIMIT #{pagesize}
     </select>
     
-    <update id="scheduleUpdate" parameterType="com.tojoy.mall.job.admin.core.model.XxlJobInfo">
+    <update id="scheduleUpdate" parameterType="com.devil.fission.machine.job.admin.core.model.XxlJobInfo">
         UPDATE xxl_job_info
         SET trigger_last_time = #{triggerLastTime},
             trigger_next_time = #{triggerNextTime},

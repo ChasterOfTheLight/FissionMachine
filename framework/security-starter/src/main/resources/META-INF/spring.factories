@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.devil.fission.machine.authorization.config.FissionMachineAuthorizationConfig
+
+  

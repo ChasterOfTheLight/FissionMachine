@@ -834,7 +834,7 @@
                     </rulesets>
                     <printFailingErrors>true</printFailingErrors>
                     <excludes>
-                        <exclude>**/com/tojoy/mall/job/admin/**</exclude>
+                        <exclude>**/com/devil/fission/machine/job/admin/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -867,7 +867,7 @@
                     <failsOnError>true</failsOnError>
                     <!-- 排除部分目录风格检查 -->
                     <excludes>
-                        **/common/util/**,**/redis/service/**,**/com/tojoy/mall/job/admin/**
+                        **/common/util/**,**/redis/service/**,**/com/devil/fission/machine/job/admin/**
                     </excludes>
                 </configuration>
                 <executions>
