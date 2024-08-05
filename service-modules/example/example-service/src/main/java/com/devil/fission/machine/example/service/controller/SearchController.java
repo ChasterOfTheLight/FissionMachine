@@ -152,4 +152,19 @@ public class SearchController {
         return Response.success(true);
     }
     
+    /**
+     * 复杂查询.
+     */
+    @PostMapping(value = "/complexQuery", produces = {"application/json"})
+    public Response<Boolean> complexQuery() {
+        LambdaEsQueryWrapper<Document> queryWrapper = new LambdaEsQueryWrapper<>();
+        queryWrapper.and(i -> {
+            i.eq(Document::getTitle, "老汉");
+            i.eq(Document::getContent, "人才");
+            i.or().match(Document::getTitle, "隔壁老王");
+        });
+        log.info("查询条件: {}", documentMapper.getSource(queryWrapper));
+        return Response.success(true);
+    }
+    
 }

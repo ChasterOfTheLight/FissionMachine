@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -111,6 +112,18 @@ public class CommonTest {
         System.out.println("now: " + DateUtil.formatDateTime(now));
         System.out.println("before: " + DateUtil.formatDateTime(before));
         System.out.println("delay: " + DateUtil.between(before, now, DateUnit.SECOND, false));
+    }
+    
+    @Test
+    public void stringFormatTest() {
+        String s = "系统异常[%s]";
+        System.out.println(String.format(s, "test"));
+    }
+    
+    @Test
+    public void bigDecimalTest() {
+        BigDecimal a = new BigDecimal("0.01");
+        System.out.println(a.compareTo(BigDecimal.ZERO));
     }
     
 }
