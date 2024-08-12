@@ -42,4 +42,9 @@ public class TestController {
         redissonDelayedUtil.offer("123", 5, TimeUnit.SECONDS, ExampleDelayHandler.DELAY_QUEUE);
         return Response.success("success");
     }
+    
+    @PostMapping(value = "/testTrx")
+    public Response<String> testTrx() {
+        return Response.success("success");
+    }
 }

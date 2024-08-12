@@ -7,6 +7,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.util.StringUtils;
+import com.devil.fission.machine.example.service.es.entity.Author;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
@@ -124,6 +125,32 @@ public class CommonTest {
     public void bigDecimalTest() {
         BigDecimal a = new BigDecimal("0.01");
         System.out.println(a.compareTo(BigDecimal.ZERO));
+    }
+    
+    @Test
+    public void computeTest() {
+        System.out.println(1F / 2);
+        System.out.println(1F * 2);
+        float f = (float) 1 / 2;
+        System.out.println(f);
+        System.out.println((long) (f * 60));
+    }
+    
+    @Test
+    public void streamPeekTest() {
+        Author author = new Author();
+        author.setAuthorId("666");
+        author.setAuthorName("777");
+        List<String> s = new ArrayList<>();
+        s.add("1");
+        s.add("2");
+        s.add("3");
+        s.add("4");
+        List<String> list = s.stream().filter("1"::equals).peek(e -> {
+            System.out.println(author.getAuthorId());
+            System.out.println(e);
+        }).map(e -> "tyui").collect(Collectors.toList());
+        System.out.println(list);
     }
     
 }
