@@ -8,6 +8,8 @@ import cn.hutool.json.JSONUtil;
 import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.util.StringUtils;
 import com.devil.fission.machine.example.service.es.entity.Author;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
@@ -151,6 +153,23 @@ public class CommonTest {
             System.out.println(e);
         }).map(e -> "tyui").collect(Collectors.toList());
         System.out.println(list);
+    }
+    
+    @Test
+    public void jsonTest() throws JsonProcessingException {
+        String s = "{\"type\":\"1\",\"data\":[{\"pro_no\":\"3456\"}]}";
+        JsonPojo s1 = JsonPojo.builder().data(s).build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(s);
+        String json1 = JSONUtil.toJsonStr(s1);
+        String json2 = JSONUtil.toJsonStr(json1);
+        System.out.println(json);
+        System.out.println(json1);
+        System.out.println(json2);
+        TCallbackPojo<CallbackPojo> callbackPojo1 = objectMapper.readValue(s, TCallbackPojo.class);
+        TCallbackPojo<CallbackPojo> callbackPojo = JSONUtil.toBean(s, TCallbackPojo.class);
+        System.out.println(callbackPojo1.getData());
+        System.out.println(callbackPojo.getData());
     }
     
 }
