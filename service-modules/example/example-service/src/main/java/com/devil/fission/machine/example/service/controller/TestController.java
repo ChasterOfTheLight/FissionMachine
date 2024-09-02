@@ -1,9 +1,12 @@
 package com.devil.fission.machine.example.service.controller;
 
+import cn.hutool.core.util.IdUtil;
 import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.example.service.delay.ExampleDelayHandler;
 import com.devil.fission.machine.example.service.utils.NoGenUtils;
 import com.devil.fission.machine.redis.delay.RedissonDelayedUtil;
+import com.fission.machine.rocketmq.sender.RocketMqMessage;
+import com.fission.machine.rocketmq.sender.RocketMqMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +27,15 @@ public class TestController {
     
     private final NoGenUtils noGenUtils;
     
+    private final RocketMqMessageSender messageSender;
+    
     @Autowired
     @Lazy
     private RedissonDelayedUtil redissonDelayedUtil;
     
-    public TestController(NoGenUtils noGenUtils) {
+    public TestController(NoGenUtils noGenUtils, RocketMqMessageSender messageSender) {
         this.noGenUtils = noGenUtils;
+        this.messageSender = messageSender;
     }
     
     @PostMapping(value = "/genOrderNo")
@@ -40,6 +46,16 @@ public class TestController {
     @PostMapping(value = "/delayMsg")
     public Response<String> delayMsg() {
         redissonDelayedUtil.offer("123", 5, TimeUnit.SECONDS, ExampleDelayHandler.DELAY_QUEUE);
+        return Response.success("success");
+    }
+    
+    @PostMapping(value = "/testTrx")
+    public Response<String> testTrx() {
+        String topicName = "machine";
+        boolean result = messageSender.sendMq(RocketMqMessage.builder().bizId(String.valueOf(IdUtil.getSnowflakeNextId())).topicName(topicName).data("123").build());
+        if (!result) {
+            return Response.error("发送失败");
+        }
         return Response.success("success");
     }
 }

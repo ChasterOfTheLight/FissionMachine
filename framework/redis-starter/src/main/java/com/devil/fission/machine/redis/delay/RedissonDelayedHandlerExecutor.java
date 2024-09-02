@@ -67,7 +67,7 @@ public class RedissonDelayedHandlerExecutor implements ApplicationContextAware {
      */
     @Async(value = "redissonDelayedProcessTaskExecutor")
     public void execute() {
-        boolean flag = true;
+        boolean flag = !handlerNames.isEmpty();
         LOGGER.info("Start Redisson Delayed Handler");
         while (flag) {
             try {
@@ -88,6 +88,7 @@ public class RedissonDelayedHandlerExecutor implements ApplicationContextAware {
                 flag = false;
             }
         }
+        LOGGER.info("Finish Redisson Delayed Handler");
     }
     
     @Override

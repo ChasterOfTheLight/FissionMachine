@@ -51,6 +51,10 @@
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-rocketmq-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-example-api</artifactId>
         </dependency>
         <dependency>
