@@ -9,6 +9,7 @@ import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.util.StringUtils;
 import com.devil.fission.machine.example.service.es.entity.Author;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -170,6 +171,10 @@ public class CommonTest {
         TCallbackPojo<CallbackPojo> callbackPojo = JSONUtil.toBean(s, TCallbackPojo.class);
         System.out.println(callbackPojo1.getData());
         System.out.println(callbackPojo.getData());
+        
+        String array = "[{\"pro_no\":\"3456\"},{\"pro_no\":\"4444\"}]";
+        List<CallbackPojo> callbackPojos = objectMapper.readValue(array, new TypeReference<List<CallbackPojo>>(){});
+        System.out.println(callbackPojos);
     }
     
 }
