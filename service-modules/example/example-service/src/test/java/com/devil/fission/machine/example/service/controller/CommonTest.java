@@ -173,7 +173,8 @@ public class CommonTest {
         System.out.println(callbackPojo.getData());
         
         String array = "[{\"pro_no\":\"3456\"},{\"pro_no\":\"4444\"}]";
-        List<CallbackPojo> callbackPojos = objectMapper.readValue(array, new TypeReference<List<CallbackPojo>>(){});
+        List<CallbackPojo> callbackPojos = objectMapper.readValue(array, new TypeReference<List<CallbackPojo>>() {
+        });
         System.out.println(callbackPojos);
     }
     

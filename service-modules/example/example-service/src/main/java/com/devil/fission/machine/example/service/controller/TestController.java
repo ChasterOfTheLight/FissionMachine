@@ -33,22 +33,43 @@ public class TestController {
     @Lazy
     private RedissonDelayedUtil redissonDelayedUtil;
     
+    /**
+     * TestController.
+     *
+     * @param noGenUtils      noGenUtils
+     * @param messageSender messageSender
+     */
     public TestController(NoGenUtils noGenUtils, RocketMqMessageSender messageSender) {
         this.noGenUtils = noGenUtils;
         this.messageSender = messageSender;
     }
     
+    /**
+     * 生成订单号.
+     *
+     * @return Response
+     */
     @PostMapping(value = "/genOrderNo")
     public Response<String> genOrderNo() {
         return Response.success(noGenUtils.genOrderNo());
     }
     
+    /**
+     * 测试延迟队列.
+     *
+     * @return Response
+     */
     @PostMapping(value = "/delayMsg")
     public Response<String> delayMsg() {
         redissonDelayedUtil.offer("123", 5, TimeUnit.SECONDS, ExampleDelayHandler.DELAY_QUEUE);
         return Response.success("success");
     }
     
+    /**
+     * 测试事务消息.
+     *
+     * @return Response
+     */
     @PostMapping(value = "/testTrx")
     public Response<String> testTrx() {
         String topicName = "machine";
