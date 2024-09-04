@@ -1,5 +1,7 @@
 package com.devil.fission.machine.example.service.controller;
 
+import cn.dev33.satoken.stp.SaLoginConfig;
+import cn.dev33.satoken.stp.StpUtil;
 import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.example.service.delay.ExampleDelayHandler;
 import com.devil.fission.machine.example.service.utils.NoGenUtils;
@@ -31,7 +33,7 @@ public class TestController {
     /**
      * TestController.
      *
-     * @param noGenUtils    noGenUtils
+     * @param noGenUtils noGenUtils
      */
     public TestController(NoGenUtils noGenUtils) {
         this.noGenUtils = noGenUtils;
@@ -72,4 +74,16 @@ public class TestController {
     //        }
     //        return Response.success("success");
     //    }
+    
+    /**
+     * 测试token.
+     *
+     * @return Response
+     */
+    @PostMapping(value = "/saToken")
+    public Response<String> saToken() {
+        StpUtil.login(10001, SaLoginConfig.setExtra("name", "zhangsan").setExtra("age", 18).setExtra("role", "超级管理员"));
+        return Response.success("success");
+    }
+    
 }
