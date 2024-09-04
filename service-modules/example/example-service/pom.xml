@@ -49,9 +49,13 @@
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-elasticsearch-starter</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-rocketmq-starter</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-aliyun-rocketmq-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>

@@ -67,6 +67,7 @@
         <aliyun.sdk.push.version>3.13.11</aliyun.sdk.push.version>
         <aliyun.java.sdk.dysmsapi.version>2.2.1</aliyun.java.sdk.dysmsapi.version>
         <aliyun.java.sdk.dypnsapi.version>1.2.6</aliyun.java.sdk.dypnsapi.version>
+        <aliyun.ons.version>1.8.8.8.Final</aliyun.ons.version>
         <alibaba.cola.version>4.3.2</alibaba.cola.version>
         <tencent-cos.version>5.6.74</tencent-cos.version>
         <tencent-cos-sts.version>3.1.1</tencent-cos-sts.version>
@@ -270,6 +271,11 @@
                 <groupId>com.aliyun</groupId>
                 <artifactId>aliyun-java-sdk-dypnsapi</artifactId>
                 <version>${aliyun.java.sdk.dypnsapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun.openservices</groupId>
+                <artifactId>ons-client</artifactId>
+                <version>${aliyun.ons.version}</version>
             </dependency>
             <!-- seata -->
             <dependency>
@@ -571,6 +577,11 @@
             <dependency>
                 <groupId>com.devil.fission</groupId>
                 <artifactId>fission-machine-rocketmq-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.devil.fission</groupId>
+                <artifactId>fission-machine-aliyun-rocketmq-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

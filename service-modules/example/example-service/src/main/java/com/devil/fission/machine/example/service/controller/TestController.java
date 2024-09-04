@@ -1,12 +1,9 @@
 package com.devil.fission.machine.example.service.controller;
 
-import cn.hutool.core.util.IdUtil;
 import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.example.service.delay.ExampleDelayHandler;
 import com.devil.fission.machine.example.service.utils.NoGenUtils;
 import com.devil.fission.machine.redis.delay.RedissonDelayedUtil;
-import com.fission.machine.rocketmq.sender.RocketMqMessage;
-import com.fission.machine.rocketmq.sender.RocketMqMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +24,6 @@ public class TestController {
     
     private final NoGenUtils noGenUtils;
     
-    private final RocketMqMessageSender messageSender;
-    
     @Autowired
     @Lazy
     private RedissonDelayedUtil redissonDelayedUtil;
@@ -36,12 +31,10 @@ public class TestController {
     /**
      * TestController.
      *
-     * @param noGenUtils      noGenUtils
-     * @param messageSender messageSender
+     * @param noGenUtils    noGenUtils
      */
-    public TestController(NoGenUtils noGenUtils, RocketMqMessageSender messageSender) {
+    public TestController(NoGenUtils noGenUtils) {
         this.noGenUtils = noGenUtils;
-        this.messageSender = messageSender;
     }
     
     /**
@@ -65,18 +58,18 @@ public class TestController {
         return Response.success("success");
     }
     
-    /**
-     * 测试事务消息.
-     *
-     * @return Response
-     */
-    @PostMapping(value = "/testTrx")
-    public Response<String> testTrx() {
-        String topicName = "machine";
-        boolean result = messageSender.sendMq(RocketMqMessage.builder().bizId(String.valueOf(IdUtil.getSnowflakeNextId())).topicName(topicName).data("123").build());
-        if (!result) {
-            return Response.error("发送失败");
-        }
-        return Response.success("success");
-    }
+    //    /**
+    //     * 测试事务消息.
+    //     *
+    //     * @return Response
+    //     */
+    //    @PostMapping(value = "/testTrx")
+    //    public Response<String> testTrx() {
+    //        String topicName = "machine";
+    //        boolean result = messageSender.sendMq(RocketMqMessage.builder().bizId(String.valueOf(IdUtil.getSnowflakeNextId())).topicName(topicName).data("123").build());
+    //        if (!result) {
+    //            return Response.error("发送失败");
+    //        }
+    //        return Response.success("success");
+    //    }
 }
