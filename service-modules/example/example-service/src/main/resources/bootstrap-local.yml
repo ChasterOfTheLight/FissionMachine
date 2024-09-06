@@ -18,3 +18,133 @@ spring:
         namespace: ${spring.cloud.nacos.config.namespace}
         server-addr: ${spring.cloud.nacos.config.server-addr}
         group: ${spring.cloud.nacos.config.group}
+
+## spring
+#spring:
+#  datasource:
+#    dynamic:
+#      primary: master #设置默认的数据源或者数据源组,默认值即为master
+#      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+#      datasource:
+#        master:
+#          url: jdbc:mysql://localhost:3306/sample?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+#          username: root
+#          password: root
+#          driver-class-name: com.mysql.cj.jdbc.Driver # 3.2.0开始支持SPI可省略此配置
+#        slave_1:
+#          url: jdbc:mysql://localhost:3306/sample_slave1?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+#          username: root
+#          password: root
+#          driver-class-name: com.mysql.cj.jdbc.Driver
+#  # redis
+#  redis:
+#    database: 5
+#    host: localhost
+#    password: 123456
+#    port: 6379
+#    lettuce:
+#      pool:
+#        max-active: 1000
+#        max-idle: 10
+#        max-wait: -1
+#        min-idle: 5
+#    timeout: 6000
+## example
+#example:
+#  configFlag: everyBody99
+## swagger
+#swagger:
+#  enable: true
+#  application-name: 示例服务接口
+#  application-version: 2.0
+#  application-description: 示例服务接口
+## easy-es
+#easy-es:
+#  enable: false #默认为true,若为false则认为不启用本框架
+#  global-config:
+#    process_index_mode: manual # 手动挡模式
+#  banner: false #是否显示easy-es的banner
+#  address: 127.0.0.1:9200 # es的连接地址,必须含端口 若为集群,则可以用逗号隔开 例如:127.0.0.1:9200,127.0.0.2:9200
+#  username: elastic #若无 则可省略此行配置
+#  password: 123456 #若无 则可省略此行配置
+## rocketmq
+#rocketmq:
+#  name-server: localhost:9876
+#  producer:
+#    group: FISSION_MACHINE
+#    sendMessageTimeout: 10000
+#    tls-enable: false
+## aliyun rocketmq
+#aliyun-rocketmq:
+#  nameSrvAddr: xxxx
+#  accessKey: xxxx
+#  secretKey: xxxx
+#  topic: xxxx
+#  groupId: xxxx
+## sa-token
+#sa-token:
+#  # token 名称（同时也是 cookie 名称）
+#  token-name: machineToken
+#  # token 有效期（单位：秒） 默认1小时，-1 代表永久有效
+#  timeout: 3600
+#  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
+#  active-timeout: -1
+#  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+#  is-concurrent: true
+#  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
+#  is-share: true
+#  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+#  token-style: uuid
+#  # 是否在初始化配置时在控制台打印版本字符画
+#  is-print: false
+#  # 是否输出操作日志
+#  is-log: false
+#  # jwt秘钥
+#  jwt-secret-key: fissionmachineverygood
+
+
+#server:
+#  compression:
+#    enabled: true
+#    mime-types:
+#      - text/xml
+#      - application/xml
+#      - application/json
+#    min-response-size: 20
+## feign
+#feign:
+#  # use okhttp client pool
+#  okhttp:
+#    enabled: false
+#  sentinel:
+#    enabled: true
+#  client:
+#    config:
+#      default:
+#        # 连接超时时间
+#        connectTimeout: 5000
+#        readTimeout: 5000
+#  compression:
+#    request:
+#      enabled: true
+#      mime-types:
+#        - text/xml
+#        - application/xml
+#        - application/json
+#      min-request-size: 20
+#    response:
+#      enabled: true
+#      useGzipDecoder: true
+## management
+#management:
+#  endpoint:
+#    health:
+#      cache:
+#        time-to-live: 5000
+#      enabled: true
+##mybatis-plus
+#mybatis-plus:
+#  mapper-locations: classpath*:mapper/**/*.xml
+#  # configuration:
+#  #   # 开启打印sql，不配置不打印
+#  #   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
