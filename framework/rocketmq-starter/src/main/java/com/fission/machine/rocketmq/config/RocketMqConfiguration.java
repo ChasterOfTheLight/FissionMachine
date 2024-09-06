@@ -19,7 +19,6 @@ public class RocketMqConfiguration {
 
     @Bean
     public RocketMqMessageSender messageSender(RocketMQTemplate rocketMqTemplate) {
-        log.info("RocketMqMessageSender init =======");
         return new RocketMqMessageSender(rocketMqTemplate);
     }
     

@@ -28,6 +28,18 @@
             <artifactId>easy-rules-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
             <scope>test</scope>
@@ -49,9 +61,13 @@
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-elasticsearch-starter</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-rocketmq-starter</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-aliyun-rocketmq-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>

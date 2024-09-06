@@ -22,6 +22,7 @@
         <module>elasticsearch-starter</module>
         <module>message-starter</module>
         <module>security-starter</module>
+        <module>aliyun-rocketmq-starter</module>
     </modules>
 
 </project>

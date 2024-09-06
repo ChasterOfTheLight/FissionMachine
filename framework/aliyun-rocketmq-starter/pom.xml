@@ -9,29 +9,16 @@
         <version>${revision}</version>
     </parent>
     
-    <artifactId>fission-machine-rocketmq-starter</artifactId>
-    
+    <artifactId>fission-machine-aliyun-rocketmq-starter</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <!-- rocketmq -->
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-acl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>ons-client</artifactId>
         </dependency>
         
         <dependency>
@@ -39,5 +26,5 @@
             <artifactId>fission-machine-common</artifactId>
         </dependency>
     </dependencies>
-
+    
 </project>
