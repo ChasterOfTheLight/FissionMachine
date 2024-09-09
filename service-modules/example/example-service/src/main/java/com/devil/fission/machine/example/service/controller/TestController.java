@@ -1,6 +1,7 @@
 package com.devil.fission.machine.example.service.controller;
 
 import cn.dev33.satoken.stp.SaLoginConfig;
+import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.devil.fission.machine.common.response.Response;
@@ -84,14 +85,37 @@ public class TestController {
     //    }
     
     /**
-     * 测试token.
+     * 测试token生成.
      *
      * @return Response
      */
     @PostMapping(value = "/saToken")
     public Response<String> saToken() {
         StpUtil.login(10001, SaLoginConfig.setExtra("name", "zhangsan").setExtra("age", 18).setExtra("role", "超级管理员"));
-        log.info("token: {}", StpUtil.getTokenInfo());
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+        log.info("saToken: {}", tokenInfo);
+        return Response.success(tokenInfo.getTokenValue());
+    }
+    
+    /**
+     * 测试token踢人下线.
+     *
+     * @return Response
+     */
+    @PostMapping(value = "/saTokenKickout")
+    public Response<String> saTokenKickout() {
+        StpUtil.kickout(10001);
+        return Response.success("success");
+    }
+    
+    /**
+     * 测试token退出登录.
+     *
+     * @return Response
+     */
+    @PostMapping(value = "/saTokenLogout")
+    public Response<String> saTokenLogout() {
+        StpUtil.logout(10001);
         return Response.success("success");
     }
     

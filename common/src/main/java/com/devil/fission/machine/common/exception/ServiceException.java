@@ -15,7 +15,7 @@ public class ServiceException extends RuntimeException {
     /**
      * 错误码.
      */
-    private int code = 500;
+    private int code = ResponseCode.FAIL.getCode();
     
     /**
      * 错误信息.
