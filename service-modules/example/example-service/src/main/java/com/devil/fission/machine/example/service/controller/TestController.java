@@ -126,7 +126,7 @@ public class TestController {
      */
     @PostMapping(value = "/sqlPrint")
     public Response<String> sqlPrint() {
-        sysUserService.queryPage(3, 10, SysUserEntity.builder().isEnabled(1).build());
+        sysUserService.queryPage(1, 10, SysUserEntity.builder().isEnabled(1).build());
         sysUserService.queryList(null);
         sysUserService.insert(
                 SysUserEntity.builder().userName(RandomUtil.randomString(5)).isEnabled(1).userPassword("123").lastLoginIp("127.0.0.1").createdBy(1L).updatedBy(1L).build());
