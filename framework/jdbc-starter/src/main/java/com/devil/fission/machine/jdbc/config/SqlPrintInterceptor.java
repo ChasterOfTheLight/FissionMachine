@@ -45,8 +45,13 @@ public class SqlPrintInterceptor implements Interceptor {
         Object proceed = invocation.proceed();
         long endTime = System.currentTimeMillis();
         String printSql = null;
+        String executeSqlMethod = null;
         try {
+            // 执行sql
             printSql = generateSql(invocation);
+            // 执行方法
+            MappedStatement statement = (MappedStatement) invocation.getArgs()[0];
+            executeSqlMethod = statement.getId();
         } catch (Exception e) {
             log.error("Execute SQL Error: {}, SQL: {}", e.getMessage(), printSql, e);
         } finally {
@@ -61,6 +66,8 @@ public class SqlPrintInterceptor implements Interceptor {
                         effectLines = (Integer) o;
                     } else if (o instanceof Long) {
                         effectLines = (Long) o;
+                    } else {
+                        effectLines = size;
                     }
                 } else if (size > 1) {
                     effectLines = size;
@@ -70,7 +77,8 @@ public class SqlPrintInterceptor implements Interceptor {
             } else if (proceed instanceof Integer) {
                 effectLines = (Integer) proceed;
             }
-            log.info("========== Sql Print ==========\n    Execute SQL：{}\n    Total: {}\n    Execute Time：{}ms", printSql, effectLines, costTime);
+            log.info("========== Sql Print ==========\n    Execute Method：{}\n    Execute SQL：{}\n    Total: {}\n    Execute Time：{}ms", executeSqlMethod, printSql, effectLines,
+                    costTime);
         }
         return proceed;
     }
@@ -136,7 +144,7 @@ public class SqlPrintInterceptor implements Interceptor {
             RowBounds rowBounds = (RowBounds) invocation.getArgs()[2];
             int limit = rowBounds.getLimit();
             int offset = rowBounds.getOffset();
-
+            
             if (limit != RowBounds.NO_ROW_LIMIT || offset != RowBounds.NO_ROW_OFFSET) {
                 sql += " LIMIT ";
                 if (offset != RowBounds.NO_ROW_OFFSET) {
