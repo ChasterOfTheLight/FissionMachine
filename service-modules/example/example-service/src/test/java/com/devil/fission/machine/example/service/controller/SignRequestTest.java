@@ -1,5 +1,6 @@
 package com.devil.fission.machine.example.service.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.devil.fission.machine.auth.api.AuthConstants;
 import com.devil.fission.machine.common.util.HttpClientUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,6 +15,7 @@ import org.springframework.util.DigestUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -25,15 +27,17 @@ import java.util.stream.Collectors;
  */
 public class SignRequestTest {
     
-    private String generateSign(String timestamp) {
+    private String generateSign(String timestamp, String param) {
         // 对参数排序
         TreeMap<String, String> treeMap = new TreeMap<>();
         treeMap.put("accessKey", "qsbnmjuiytrddsa");
         treeMap.put("nonce", timestamp);
         treeMap.put("timestamp", timestamp);
+        treeMap.putAll(JSON.parseObject(param, Map.class));
         String argStr = treeMap.entrySet().stream().map(Object::toString).collect(Collectors.joining("&"));
         String accessSecret = "e6a4222df2f006977ee0efad050fb471";
         String secretStr = argStr + "&accessSecret=" + accessSecret;
+        System.out.println(secretStr);
         return DigestUtils.md5DigestAsHex(secretStr.getBytes(StandardCharsets.UTF_8)).toUpperCase(Locale.ROOT);
     }
     
@@ -49,11 +53,12 @@ public class SignRequestTest {
         httpPost.setHeader(AuthConstants.AUTH_ACCESS_KEY, key);
         httpPost.setHeader(AuthConstants.AUTH_TIMESTAMP, currentTimeMillis);
         httpPost.setHeader(AuthConstants.AUTH_NONCE, currentTimeMillis);
-        String sign = generateSign(currentTimeMillis);
+//        String param = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
+        String param = "{}";
+        String sign = generateSign(currentTimeMillis, param);
         httpPost.setHeader(AuthConstants.AUTH_SIGN, sign);
         CloseableHttpResponse httpResponse;
         try {
-            String param = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
             httpPost.setEntity(new StringEntity(param, StandardCharsets.UTF_8));
             httpResponse = httpClient.execute(httpPost);
             if (httpResponse.getStatusLine().getStatusCode() == 200) {

@@ -25,6 +25,9 @@ public class EnableCachedBodyConfiguration {
     @Resource
     private GatewayProperties gatewayProperties;
     
+    /**
+     * 初始化.
+     */
     @PostConstruct
     public void init() {
         gatewayProperties.getRoutes().forEach(routeDefinition -> {

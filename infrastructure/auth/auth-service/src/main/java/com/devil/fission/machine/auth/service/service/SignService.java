@@ -47,9 +47,10 @@ public class SignService {
      * @param nonce       随机数
      * @param requestSign 请求的sign
      * @param requestUri  请求uri
+     * @param bodyMap     请求参数
      * @return 认证结果
      */
-    public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String requestSign, String requestUri) {
+    public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String requestSign, String requestUri, Map<String, Object> bodyMap) {
         String nonceFormatPrefix = "FISSION-NONCE:" + accessKey + ":" + requestUri + ":%s";
         VerifySignDto verifySignDto = VerifySignDto.builder().build();
         if (Objects.nonNull(redisService.getAsString(String.format(nonceFormatPrefix, nonce)))) {
@@ -57,10 +58,11 @@ public class SignService {
         }
         
         // 校验标签
-        TreeMap<String, String> treeMap = new TreeMap<>();
+        TreeMap<String, Object> treeMap = new TreeMap<>();
         treeMap.put("accessKey", accessKey);
         treeMap.put("nonce", nonce);
         treeMap.put("timestamp", timestamp);
+        treeMap.putAll(bodyMap);
         String argStr = treeMap.entrySet().stream().map(Object::toString).collect(Collectors.joining("&"));
         // 通过accessKey获取accessSecret
         Map<String, AccessProperties.Access> accessMap = accessProperties.getAccessMap();
