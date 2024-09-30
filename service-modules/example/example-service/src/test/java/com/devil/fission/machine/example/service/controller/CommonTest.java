@@ -156,26 +156,4 @@ public class CommonTest {
         System.out.println(list);
     }
     
-    @Test
-    public void jsonTest() throws JsonProcessingException {
-        String s = "{\"type\":\"1\",\"data\":[{\"pro_no\":\"3456\"}]}";
-        JsonPojo s1 = JsonPojo.builder().data(s).build();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(s);
-        String json1 = JSONUtil.toJsonStr(s1);
-        String json2 = JSONUtil.toJsonStr(json1);
-        System.out.println(json);
-        System.out.println(json1);
-        System.out.println(json2);
-        TCallbackPojo<CallbackPojo> callbackPojo1 = objectMapper.readValue(s, TCallbackPojo.class);
-        TCallbackPojo<CallbackPojo> callbackPojo = JSONUtil.toBean(s, TCallbackPojo.class);
-        System.out.println(callbackPojo1.getData());
-        System.out.println(callbackPojo.getData());
-        
-        String array = "[{\"pro_no\":\"3456\"},{\"pro_no\":\"4444\"}]";
-        List<CallbackPojo> callbackPojos = objectMapper.readValue(array, new TypeReference<List<CallbackPojo>>() {
-        });
-        System.out.println(callbackPojos);
-    }
-    
 }

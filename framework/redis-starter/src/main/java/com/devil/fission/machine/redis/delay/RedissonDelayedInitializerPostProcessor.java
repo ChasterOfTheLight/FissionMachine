@@ -1,5 +1,6 @@
 package com.devil.fission.machine.redis.delay;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.core.Ordered;
  * @author devil
  * @date Created in 2022/10/31 18:19
  */
+@Slf4j
 public class RedissonDelayedInitializerPostProcessor implements BeanPostProcessor, Ordered {
     
     @Autowired
@@ -26,6 +28,7 @@ public class RedissonDelayedInitializerPostProcessor implements BeanPostProcesso
                 throw new RuntimeException("已存在延时队列处理器" + beanName);
             }
             handlerExecutor.addHandler(beanName);
+            log.info("Add Redission Delay Handler: {}", beanName);
         }
         return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
     }

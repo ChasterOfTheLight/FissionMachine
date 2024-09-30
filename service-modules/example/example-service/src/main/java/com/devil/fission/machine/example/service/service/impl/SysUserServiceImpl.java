@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,7 +66,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         return page(mybatisPage, queryWrapper);
     }
     
-    @DS("slave_1")
+    @DS("master")
     @Override
     public List<SysUserEntity> queryList(SysUserEntity entity) {
         return super.list((assemblyWrapper(entity)));
@@ -102,6 +103,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         if (entity == null) {
             return false;
         }
+        entity.setCreatedTime(new Date());
         return super.save(entity);
     }
     
@@ -112,6 +114,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         if (entity == null || entity.getUserId() == null) {
             return false;
         }
+        entity.setUpdatedTime(new Date());
         return super.updateById(entity);
     }
     
@@ -122,6 +125,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         SysUserEntity entity = new SysUserEntity();
         entity.setUserId(userId);
         entity.setIsEnabled(0);
+        entity.setUpdatedTime(new Date());
         return super.updateById(entity);
     }
     
