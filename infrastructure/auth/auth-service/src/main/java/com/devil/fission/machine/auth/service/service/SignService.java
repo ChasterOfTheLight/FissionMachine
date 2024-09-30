@@ -8,6 +8,7 @@ import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.util.CollectionUtils;
 import com.devil.fission.machine.common.util.StringUtils;
 import com.devil.fission.machine.redis.service.RedisService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  * @author devil
  * @date Created in 2023/5/4 13:53
  */
+@Slf4j
 @Service
 public class SignService {
     
@@ -70,6 +72,7 @@ public class SignService {
         String secretStr = argStr + "&accessSecret=" + accessSecret;
         String serverSign = DigestUtils.md5DigestAsHex(secretStr.getBytes(StandardCharsets.UTF_8)).toUpperCase(Locale.ROOT);
         if (!Objects.equals(serverSign, requestSign)) {
+            log.warn("签名错误，serverSign：{}，requestSign：{}", serverSign, requestSign);
             return Response.other(ResponseCode.UN_AUTHORIZED, "签名错误", verifySignDto);
         }
         

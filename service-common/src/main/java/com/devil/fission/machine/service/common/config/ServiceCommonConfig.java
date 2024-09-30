@@ -2,6 +2,7 @@ package com.devil.fission.machine.service.common.config;
 
 import com.devil.fission.machine.service.common.filter.GzipFilter;
 import com.devil.fission.machine.service.common.filter.MachineServletFilter;
+import com.devil.fission.machine.service.common.filter.RepeatableFilter;
 import com.devil.fission.machine.service.common.filter.XssFilter;
 import com.devil.fission.machine.service.common.support.MachineRestTemplateInterceptor;
 import com.devil.fission.machine.service.common.support.RestControllerAspect;
@@ -28,18 +29,23 @@ public class ServiceCommonConfig {
     
     @Bean
     public FilterRegistrationBean<Filter> gzipFilterRegistration(GzipFilter filter) {
-        return createFilterRegistration(filter, 5);
+        return createFilterRegistration(filter, 4);
     }
     
     @Bean
     @ConditionalOnMissingBean
     public FilterRegistrationBean<Filter> xssFilterRegistration(XssFilter filter) {
-        return createFilterRegistration(filter, 6);
+        return createFilterRegistration(filter, 5);
+    }
+    
+    @Bean
+    public FilterRegistrationBean<Filter> repeatableFilterRegistration(RepeatableFilter filter) {
+        return createFilterRegistration(filter, 7);
     }
     
     @Bean
     public FilterRegistrationBean<Filter> machineServletFilterRegistration(MachineServletFilter filter) {
-        return createFilterRegistration(filter, 7);
+        return createFilterRegistration(filter, 8);
     }
     
     private FilterRegistrationBean<Filter> createFilterRegistration(Filter filter, int order) {
@@ -58,6 +64,11 @@ public class ServiceCommonConfig {
     @Bean
     public XssFilter xssFilter() {
         return new XssFilter();
+    }
+    
+    @Bean
+    public RepeatableFilter repeatableFilter() {
+        return new RepeatableFilter();
     }
     
     @Bean
