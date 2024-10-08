@@ -53,7 +53,7 @@ public class SignRequestTest {
         httpPost.setHeader(AuthConstants.AUTH_ACCESS_KEY, key);
         httpPost.setHeader(AuthConstants.AUTH_TIMESTAMP, currentTimeMillis);
         httpPost.setHeader(AuthConstants.AUTH_NONCE, currentTimeMillis);
-//        String param = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
+        //        String param = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
         String param = "{}";
         String sign = generateSign(currentTimeMillis, param);
         httpPost.setHeader(AuthConstants.AUTH_SIGN, sign);
