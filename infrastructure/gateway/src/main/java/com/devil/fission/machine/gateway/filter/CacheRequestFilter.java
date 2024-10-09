@@ -8,17 +8,16 @@ import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
  * 缓存请求拦截器.
+ * 可以忽略，具体使用参照`org.springframework.cloud.gateway.filter.AdaptCachedBodyGlobalFilter`
  *
  * @author Devil
  * @date Created in 2024/9/30 16:09
  */
-@Component
 public class CacheRequestFilter implements GlobalFilter, Ordered {
     
     @Override

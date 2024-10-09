@@ -44,7 +44,7 @@ public class SignRequestTest {
     @Test
     public void requestTest() {
         CloseableHttpClient httpClient = HttpClientUtils.getConnection();
-        String url = "http://localhost:8080/example/test/saTokenLogout";
+        String url = "http://localhost:8080/example/test/saTokenLogout?id=777";
         // 替换真实的请求地址
         HttpPost httpPost = new HttpPost(url);
         String currentTimeMillis = String.valueOf(System.currentTimeMillis());
@@ -53,8 +53,7 @@ public class SignRequestTest {
         httpPost.setHeader(AuthConstants.AUTH_ACCESS_KEY, key);
         httpPost.setHeader(AuthConstants.AUTH_TIMESTAMP, currentTimeMillis);
         httpPost.setHeader(AuthConstants.AUTH_NONCE, currentTimeMillis);
-        //        String param = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
-        String param = "{}";
+        String param = "{\"id\":\"1\",\"name\":\"test\",\"age\":\"56\",\"address\":\"77778888\"}";
         String sign = generateSign(currentTimeMillis, param);
         httpPost.setHeader(AuthConstants.AUTH_SIGN, sign);
         CloseableHttpResponse httpResponse;
