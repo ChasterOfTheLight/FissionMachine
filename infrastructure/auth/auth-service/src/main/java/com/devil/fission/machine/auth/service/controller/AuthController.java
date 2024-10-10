@@ -77,6 +77,6 @@ public class AuthController {
     @PostMapping(value = "/verifySign")
     public Response<VerifySignDto> verifySign(@Valid @RequestBody VerifySignParam verifySignParam) {
         return authService.verifySign(verifySignParam.getAccessKey(), verifySignParam.getTimestamp(), verifySignParam.getNonce(),
-                verifySignParam.getSign(), verifySignParam.getRequestUri());
+                verifySignParam.getSign(), verifySignParam.getRequestUri(), verifySignParam.getRequestParams());
     }
 }

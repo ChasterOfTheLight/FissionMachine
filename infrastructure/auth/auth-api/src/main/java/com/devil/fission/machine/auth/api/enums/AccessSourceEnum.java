@@ -37,7 +37,7 @@ public enum AccessSourceEnum {
      */
     public static AccessSourceEnum getByValue(String value) {
         for (AccessSourceEnum scopeEnum : AccessSourceEnum.values()) {
-            if (Objects.equals(scopeEnum.toString(), value)) {
+            if (Objects.equals(scopeEnum.getValue(), value)) {
                 return scopeEnum;
             }
         }

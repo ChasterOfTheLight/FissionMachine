@@ -6,13 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * 请求时间拦截器.
@@ -59,11 +63,17 @@ public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactor
             
             // 配置开关  比如：RequestTime=true开启参数打印
             if (config.isWithParams()) {
-                // 只打印地址栏请求参数，body请求参数见服务侧的advice（RestControllerAspect）
+                // 打印地址栏请求参数
                 if (!serverHttpRequest.getURI().getRawPath().contains(SwaggerProvider.API_URI)) {
                     if (!CollectionUtils.isEmpty(serverHttpRequest.getQueryParams())) {
-                        startStringBuilder.append("    ").append(String.format("请求参数: %s", serverHttpRequest.getQueryParams()));
+                        startStringBuilder.append("    ").append(String.format("请求地址栏参数: %s", serverHttpRequest.getQueryParams()));
                     }
+                }
+                // 打印body参数
+                DataBuffer body = exchange.getAttributeOrDefault(CACHED_REQUEST_BODY_ATTR, null);
+                String bodyContent = body.toString(StandardCharsets.UTF_8);
+                if (!bodyContent.isEmpty()) {
+                    startStringBuilder.append("    ").append(String.format("请求body参数: %s", bodyContent));
                 }
             }
             

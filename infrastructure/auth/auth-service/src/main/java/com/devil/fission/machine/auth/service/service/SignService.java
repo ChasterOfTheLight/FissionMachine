@@ -8,6 +8,7 @@ import com.devil.fission.machine.common.response.ResponseCode;
 import com.devil.fission.machine.common.util.CollectionUtils;
 import com.devil.fission.machine.common.util.StringUtils;
 import com.devil.fission.machine.redis.service.RedisService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  * @author devil
  * @date Created in 2023/5/4 13:53
  */
+@Slf4j
 @Service
 public class SignService {
     
@@ -45,9 +47,10 @@ public class SignService {
      * @param nonce       随机数
      * @param requestSign 请求的sign
      * @param requestUri  请求uri
+     * @param bodyMap     请求参数
      * @return 认证结果
      */
-    public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String requestSign, String requestUri) {
+    public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String requestSign, String requestUri, Map<String, Object> bodyMap) {
         String nonceFormatPrefix = "FISSION-NONCE:" + accessKey + ":" + requestUri + ":%s";
         VerifySignDto verifySignDto = VerifySignDto.builder().build();
         if (Objects.nonNull(redisService.getAsString(String.format(nonceFormatPrefix, nonce)))) {
@@ -55,10 +58,11 @@ public class SignService {
         }
         
         // 校验标签
-        TreeMap<String, String> treeMap = new TreeMap<>();
+        TreeMap<String, Object> treeMap = new TreeMap<>();
         treeMap.put("accessKey", accessKey);
         treeMap.put("nonce", nonce);
         treeMap.put("timestamp", timestamp);
+        treeMap.putAll(bodyMap);
         String argStr = treeMap.entrySet().stream().map(Object::toString).collect(Collectors.joining("&"));
         // 通过accessKey获取accessSecret
         Map<String, AccessProperties.Access> accessMap = accessProperties.getAccessMap();
@@ -70,6 +74,7 @@ public class SignService {
         String secretStr = argStr + "&accessSecret=" + accessSecret;
         String serverSign = DigestUtils.md5DigestAsHex(secretStr.getBytes(StandardCharsets.UTF_8)).toUpperCase(Locale.ROOT);
         if (!Objects.equals(serverSign, requestSign)) {
+            log.warn("签名错误，serverSign：{}，requestSign：{}", serverSign, requestSign);
             return Response.other(ResponseCode.UN_AUTHORIZED, "签名错误", verifySignDto);
         }
         

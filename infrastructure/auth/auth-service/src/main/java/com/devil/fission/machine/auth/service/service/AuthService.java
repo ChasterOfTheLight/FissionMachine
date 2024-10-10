@@ -7,6 +7,8 @@ import com.devil.fission.machine.auth.service.entity.TokenEntity;
 import com.devil.fission.machine.common.response.Response;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * 认证服务.
  *
@@ -58,8 +60,8 @@ public class AuthService {
     /**
      * 校验sign.
      */
-    public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String sign, String requestUri) {
-        return signService.verifySign(accessKey, timestamp, nonce, sign, requestUri);
+    public Response<VerifySignDto> verifySign(String accessKey, String timestamp, String nonce, String sign, String requestUri, Map<String, Object> bodyMap) {
+        return signService.verifySign(accessKey, timestamp, nonce, sign, requestUri, bodyMap);
     }
     
 }

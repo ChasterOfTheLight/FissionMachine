@@ -1,5 +1,6 @@
 package com.devil.fission.machine.gateway.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.devil.fission.machine.auth.api.AuthConstants;
 import com.devil.fission.machine.auth.api.dto.VerifySignDto;
 import com.devil.fission.machine.auth.api.dto.VerifyTokenDto;
@@ -27,6 +28,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -41,6 +43,8 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * 认证过滤器.
@@ -65,6 +69,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     @Trace
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        // 从缓存中获取请求
         ServerHttpRequest serverHttpRequest = exchange.getRequest();
         ServerHttpResponse serverHttpResponse = exchange.getResponse();
         URI requestUri = serverHttpRequest.getURI();
@@ -136,6 +141,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         String sign = serverHttpRequest.getHeaders().getFirst(AuthConstants.AUTH_SIGN);
         AuthResult authResult;
         if (StringUtils.isNotEmpty(sign)) {
+            // 只有json类型才支持sign认证
+            if (!StringUtils.startsWithIgnoreCase(serverHttpRequest.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE), MediaType.APPLICATION_JSON_VALUE)) {
+                return unAuthorizedResponse(serverHttpResponse, Response.other(ResponseCode.UN_AUTHORIZED, "请求类型有误，只支持json请求类型", null), path);
+            }
             authResult = authSign(exchange, sign, path);
         } else {
             // token认证
@@ -148,8 +157,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             if (authResult.isRefreshToken()) {
                 Map<String, Object> refreshToken = new HashMap<>(2);
                 refreshToken.put("newToken", authResult.getNewToken());
-                return unAuthorizedResponse(serverHttpResponse,
-                        Response.other(ResponseCode.REFRESH_TOKEN, authResult.getUnPassedInfo(), refreshToken), path);
+                return unAuthorizedResponse(serverHttpResponse, Response.other(ResponseCode.REFRESH_TOKEN, authResult.getUnPassedInfo(), refreshToken), path);
             }
         }
         if (!authResult.isPassed()) {
@@ -186,8 +194,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return AuthResult.builder().unPassedInfo("请求超时").build();
         }
         
+        // sign认证需要携带参数一同校验
+        DataBuffer body = exchange.getAttributeOrDefault(CACHED_REQUEST_BODY_ATTR, null);
+        String bodyContent = body.toString(StandardCharsets.UTF_8);
+        // 将json字符串转map
+        Map<String, Object> bodyMap = JSON.parseObject(bodyContent, Map.class);
+        
         Response<VerifySignDto> verifySignDtoResponse = authFeignClient.verifySign(
-                VerifySignParam.builder().accessKey(accessKey).sign(sign).nonce(nonce).timestamp(timestamp).requestUri(path).build());
+                VerifySignParam.builder().accessKey(accessKey).sign(sign).nonce(nonce).timestamp(timestamp).requestUri(path).requestParams(bodyMap).build());
         if (ResponseCode.SUCCESS.getCode() != verifySignDtoResponse.getCode()) {
             return AuthResult.builder().unPassedInfo(verifySignDtoResponse.getMsg()).build();
         }
@@ -218,8 +232,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         VerifyTokenDto verifyTokenDto = verifyTokenResponse.getData();
         // 先判断是否需要刷新token
         if (ResponseCode.REFRESH_TOKEN.getCode() == verifyTokenResponse.getCode()) {
-            return AuthResult.builder().isRefreshToken(true).newToken(verifyTokenDto.getNewToken()).unPassedInfo(verifyTokenResponse.getMsg())
-                    .build();
+            return AuthResult.builder().isRefreshToken(true).newToken(verifyTokenDto.getNewToken()).unPassedInfo(verifyTokenResponse.getMsg()).build();
         }
         if (ResponseCode.SUCCESS.getCode() != verifyTokenResponse.getCode()) {
             return AuthResult.builder().unPassedInfo(verifyTokenResponse.getMsg()).build();

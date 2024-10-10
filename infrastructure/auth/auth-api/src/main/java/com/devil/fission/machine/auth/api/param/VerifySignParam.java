@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 校验sign参数.
@@ -36,4 +38,7 @@ public class VerifySignParam implements Serializable {
     
     @NotBlank(message = "访问uri不能为空")
     private String requestUri;
+    
+    @NotNull(message = "请求参数map")
+    private Map<String, Object> requestParams;
 }
