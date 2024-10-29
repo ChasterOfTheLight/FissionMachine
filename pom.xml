@@ -81,6 +81,7 @@
         <p3c-pmd.version>2.1.1</p3c-pmd.version>
         <rocketmq.version>4.9.8</rocketmq.version>
         <sa-token.version>1.39.0</sa-token.version>
+        <minio.version>8.5.12</minio.version>
     </properties>
     
     <dependencyManagement>
@@ -546,6 +547,12 @@
                 <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-redis-jackson</artifactId>
                 <version>${sa-token.version}</version>
+            </dependency>
+            <!-- minio -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
             </dependency>
             
             <!-- ================================ 共有依赖 (以上) ===================================================== -->

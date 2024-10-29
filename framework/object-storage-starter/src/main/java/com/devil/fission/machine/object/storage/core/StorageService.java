@@ -73,7 +73,8 @@ public interface StorageService<T> {
      * @param permission 文件权限（StorablePermission）
      * @throws StorageException 存储异常
      */
-    void setPermission(String path, int permission) throws StorageException;
+    default void setPermission(String path, int permission) throws StorageException {
+    }
     
     /**
      * 根据文件相对路径判断文件是否存在.
