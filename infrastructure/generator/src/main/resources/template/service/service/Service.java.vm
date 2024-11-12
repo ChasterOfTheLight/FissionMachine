@@ -1,0 +1,83 @@
+package ${package}.${moduleName}.service.service;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import ${package}.${moduleName}.service.entity.${className}Entity;
+
+import java.util.List;
+
+/**
+ * ${comments}服务接口.
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface I${className}Service {
+
+    /**
+     * 分页查询${className}Entity列表.
+     *
+     * @param page 查询页码
+     * @param size 查询行数
+     * @param entity 查询实体
+     * @return 数据分页集合
+     */
+    Page<${className}Entity> queryPage(Integer page, Integer size, ${className}Entity entity);
+
+    /**
+     * 不分页查询${className}Entity列表.
+     *
+     * @param entity 查询实体
+     * @return 列表
+     */
+    List<${className}Entity> queryList(${className}Entity entity);
+
+    /**
+     * 根据主键查询${className}详情.
+     *
+     * @param ${pk.attrname} 主键
+     * @return 实体
+     */
+    ${className}Entity queryById(${pk.attrType} ${pk.attrname});
+
+    /**
+     * 根据主键集合查询${className}列表.
+     *
+     * @param ${pk.attrname}s 主键集合
+     * @return 列表
+     */
+    List<${className}Entity> queryByIds(List<${pk.attrType}> ${pk.attrname}s);
+
+    /**
+     * 新增一条${className}Entity记录.
+     *
+     * @param entity 新增实体
+     * @return 是否成功
+     */
+    boolean insert(${className}Entity entity);
+
+    /**
+     * 根据主键更新一条${className}Entity记录（空值不处理）.
+     *
+     * @param entity 更新实体
+     * @return 是否成功
+     */
+    boolean update(${className}Entity entity);
+
+    /**
+     * 删除一条${className}Entity记录.
+     *
+     * @param id 主键
+     * @return 是否成功
+     */
+    boolean deleteById(${pk.attrType} id);
+
+    /**
+     * 批量删除.
+     *
+     * @param ${pk.attrname}s 主键集合
+     * @return 是否成功
+     */
+    boolean deleteByIds(List<${pk.attrType}> ${pk.attrname}s);
+
+}
+

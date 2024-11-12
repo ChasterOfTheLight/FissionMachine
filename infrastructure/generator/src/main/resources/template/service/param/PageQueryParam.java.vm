@@ -1,0 +1,18 @@
+package ${package}.${moduleName}.api.param;
+
+import ${mainPath}.common.param.CommonPageParam;
+import io.swagger.annotations.ApiModel;
+
+/**
+ * ${comments}分页数据参数.
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@ApiModel(value = "${comments}分页数据参数")
+public class ${className}PageQueryParam extends CommonPageParam {
+
+    public ${className}PageQueryParam() {
+    }
+
+}

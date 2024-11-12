@@ -44,6 +44,27 @@
             <artifactId>spring-boot-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/commons-logging-1.1.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>fastjson</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.48</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/fastjson-1.2.48.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>ocean</groupId>
+            <artifactId>ocean.client.java.biz</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ocean.client.java.biz-1.0.jar</systemPath>
+        </dependency>
         
         <dependency>
             <groupId>com.devil.fission</groupId>
@@ -72,6 +93,10 @@
         <dependency>
             <groupId>com.devil.fission</groupId>
             <artifactId>fission-machine-aliyun-rocketmq-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.devil.fission</groupId>
+            <artifactId>fission-machine-object-storage-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.devil.fission</groupId>

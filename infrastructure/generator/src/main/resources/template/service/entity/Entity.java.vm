@@ -1,0 +1,88 @@
+package ${package}.${moduleName}.service.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+import ${package}.${moduleName}.service.param.${className}InsertParam;
+import ${package}.${moduleName}.service.param.${className}UpdateParam;
+import ${package}.${moduleName}.api.vo.${className}QueryVo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
+
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+import java.io.Serializable;
+import java.util.Date;
+import java.util.LinkedHashMap;
+
+/**
+ * ${comments}实体
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@TableName("${tableName}")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ${className}Entity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+    /**
+     * $column.comments.
+     */
+#if($column.columnName == $pk.columnName)
+    @TableId(type = IdType.AUTO)
+#end
+    private $column.attrType $column.attrname;
+    #end
+
+    /**
+	 * 排序参数（只参与查询  key：排序字段  value：是否是asc）.
+	 */
+    @TableField(exist = false)
+    private LinkedHashMap<String, Boolean> orderBy;
+
+    /**
+    * entity转换成vo.
+    */
+    public static ${className}QueryVo convert2Vo(${className}Entity entity) {
+        ${className}QueryVo vo = ${className}QueryVo.builder().build();
+        if (entity != null) {
+            BeanUtils.copyProperties(entity, vo);
+        }
+        return vo;
+    }
+
+    /**
+    * 从insertParam转换成entity.
+    */
+    public static ${className}Entity convertFromInsertParam(${className}InsertParam insertParam) {
+        ${className}Entity entity = ${className}Entity.builder().build();
+        if (insertParam != null) {
+            BeanUtils.copyProperties(insertParam, entity);
+        }
+        return entity;
+    }
+
+    /**
+    * 从updateParam转换成entity.
+    */
+    public static ${className}Entity convertFromUpdateParam(${className}UpdateParam updateParam) {
+        ${className}Entity entity = ${className}Entity.builder().build();
+        if (updateParam != null) {
+            BeanUtils.copyProperties(updateParam, entity);
+        }
+        return entity;
+    }
+
+}

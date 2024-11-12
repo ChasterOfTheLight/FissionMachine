@@ -1,0 +1,33 @@
+package ${package}.${moduleName}.api.param;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * ${comments}插入数据请求参数.
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@ApiModel(value = "${comments}插入数据请求参数")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ${className}InsertParam {
+
+#foreach($column in $columns)
+#if(${pk.attrname} != ${column.attrname})
+    /**
+     * ${column.comments}.
+     */
+    @ApiModelProperty(value = "${column.comments}")
+    private ${column.attrType} ${column.attrname};
+#end
+#end
+
+}

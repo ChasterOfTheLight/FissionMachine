@@ -1,0 +1,14 @@
+package ${package}.${moduleName}.service.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import ${package}.${moduleName}.service.entity.${className}Entity;
+
+/**
+ * ${comments}数据操作mapper.
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${className}Mapper extends BaseMapper<${className}Entity> {
+
+}
