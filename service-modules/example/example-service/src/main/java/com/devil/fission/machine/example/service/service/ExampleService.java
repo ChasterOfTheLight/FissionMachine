@@ -6,6 +6,7 @@ import com.devil.fission.machine.common.util.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class ExampleService {
     public String queryExample(String key) {
         String url = "https://www.baidu.com";
         HttpPost httpPost = new HttpPost(url);
+        httpPost.setEntity(new StringEntity("你好", "UTF-8"));
         return httpRequest(httpPost, responseString -> {
             try {
                 return responseString;
