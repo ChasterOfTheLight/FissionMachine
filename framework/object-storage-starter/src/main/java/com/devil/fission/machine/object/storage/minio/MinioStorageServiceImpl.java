@@ -9,6 +9,9 @@ import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
+import io.minio.StatObjectArgs;
+import io.minio.StatObjectResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -19,6 +22,7 @@ import java.io.InputStream;
  * @author Devil
  * @date Created in 2024/10/25 13:59
  */
+@Slf4j
 public class MinioStorageServiceImpl implements StorageService<String> {
     
     private final MinioClient minioClient;
@@ -94,7 +98,7 @@ public class MinioStorageServiceImpl implements StorageService<String> {
                 return true;
             }
         } catch (Exception e) {
-            throw new StorageException(StorageErrorCode.OSS_FILE_IS_EXIST_FAIL, e);
+            log.warn(e.getLocalizedMessage(), e);
         }
         return false;
     }
