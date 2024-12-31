@@ -1,0 +1,26 @@
+package ${package}.${moduleName}.api.client;
+
+import com.fission.machine.common.response.Response;
+import ${package}.${moduleName}.api.vo.${className}QueryVo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+/**
+ * ${comments}接口(供外部feign调用).
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${className}ServiceClient {
+
+    /**
+     * 查询${className}详情.
+     *
+     * @param id 主键
+     * @return 实体
+     */
+    @PostMapping("/${pathName}/info")
+    Response<${className}QueryVo> info(@RequestParam(value = "id", required = false) ${pk.attrType} id);
+
+}
+

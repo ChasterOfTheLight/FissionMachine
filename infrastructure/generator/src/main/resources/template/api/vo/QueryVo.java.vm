@@ -1,0 +1,39 @@
+package ${package}.${moduleName}.api.vo;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * ${comments}响应实体.
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@ApiModel(value = "${comments}响应实体")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ${className}QueryVo {
+
+#foreach($column in $columns)
+#if (${column.attrType}=="Long" || ${column.attrType}=="Date")
+    /**
+     * ${column.comments}.
+     */
+    @ApiModelProperty("${column.comments}")
+    private ${column.attrType} ${column.attrname};
+#else
+    /**
+     * ${column.comments}.
+     */
+    @ApiModelProperty("${column.comments}")
+    private ${column.attrType} ${column.attrname};
+#end
+#end
+
+}

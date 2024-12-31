@@ -22,6 +22,9 @@ public class RedissonDelayedInitializerPostProcessor implements BeanPostProcesso
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof RedissonDelayedHandler) {
+            // 放入队列缓存
+            RedissonDelayedUtil redissonDelayedUtil = this.beanFactory.getBean(RedissonDelayedUtil.class);
+            redissonDelayedUtil.addHandler((RedissonDelayedHandler) bean);
             // 放入runner
             RedissonDelayedHandlerExecutor handlerExecutor = this.beanFactory.getBean(RedissonDelayedHandlerExecutor.class);
             if (handlerExecutor.existHandler(beanName)) {

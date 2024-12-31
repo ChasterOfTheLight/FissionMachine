@@ -1,0 +1,151 @@
+package ${package}.${moduleName}.service.service.impl;
+
+import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.anno.CacheInvalidate;
+import com.alicp.jetcache.anno.Cached;
+import com.alicp.jetcache.anno.CreateCache;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ${package}.${moduleName}.service.entity.${className}Entity;
+import ${package}.${moduleName}.service.mapper.${className}Mapper;
+import ${package}.${moduleName}.service.service.I${className}Service;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * ${comments}服务接口实现.
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+public class ${className}ServiceImpl extends ServiceImpl<${className}Mapper, ${className}Entity> implements I${className}Service {
+
+    private static final String CACHE_PREFIX = "${className}:id:";
+
+    @CreateCache(name = CACHE_PREFIX, expire = 3600)
+    private Cache<String, ${className}Entity> cache;
+
+    @Override
+    public Page<${className}Entity> queryPage(Integer page, Integer size, ${className}Entity entity) {
+        if (page == 0) {
+            page = 1;
+        }
+        // 默认10条
+        if (size == 0 || size > 10) {
+            size = 10;
+        }
+        Page<${className}Entity> mybatisPage = new Page<>(page, size);
+        // 查询实体处理
+        QueryWrapper<${className}Entity> queryWrapper = assemblyWrapper(entity);
+        // 排序处理
+        if (entity.getOrderBy() != null && !entity.getOrderBy().isEmpty()) {
+            entity.getOrderBy().forEach((key, value) -> {
+                mybatisPage.addOrder(new OrderItem(key, value));
+            });
+        }
+        return super.page(mybatisPage, queryWrapper);
+    }
+
+    @Override
+    public List<${className}Entity> queryList(${className}Entity entity) {
+        return super.list((assemblyWrapper(entity)));
+    }
+
+    @Cached(name = CACHE_PREFIX, key = "#${pk.attrname}", expire = 3600)
+    @Override
+    public ${className}Entity queryById(${pk.attrType} ${pk.attrname}) {
+        if (${pk.attrname} == null) {
+            return null;
+        }
+        return super.getById(${pk.attrname});
+    }
+
+    @Override
+    public List<${className}Entity> queryByIds(List<${pk.attrType}> ids) {
+        List<${className}Entity> list = new ArrayList<>();
+        if (ids != null && !ids.isEmpty()) {
+            for (${pk.attrType} id: ids) {
+                // 从缓存中拿
+                ${className}Entity cachedEntity = cache.get(String.valueOf(id));
+                if (cachedEntity != null) {
+                    list.add(cachedEntity);
+                } else {
+                    list.add(queryById(id));
+                }
+            }
+        } return list;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean insert(${className}Entity entity) {
+        if (entity == null) {
+            return false;
+        }
+        return super.save(entity);
+    }
+
+    @CacheInvalidate(name = CACHE_PREFIX, key = "#entity.${pk.attrname}", condition = "#result==true")
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean update(${className}Entity entity) {
+        if (entity == null || entity.get${pk.attrName}() == null) {
+            return false;
+        }
+        return super.updateById(entity);
+    }
+
+    @CacheInvalidate(name = CACHE_PREFIX, key = "#${pk.attrname}", condition = "#result==true")
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean deleteById(${pk.attrType} ${pk.attrname}) {
+        ${className}Entity entity = new ${className}Entity();
+        entity.set${pk.attrName}(${pk.attrname});
+        entity.setIsDeleted(1);
+        return super.updateById(entity);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean deleteByIds(List<${pk.attrType}> ids) {
+        boolean result = false;
+        if (ids != null && !ids.isEmpty()) {
+            result = true;
+            for (${pk.attrType} id: ids) {
+                result = result && deleteById(id);
+                if (result) {
+                    // 删除缓存
+                    cache.REMOVE(String.valueOf(id));
+                }
+            }
+        } return result;
+    }
+
+    /**
+    * 封装查询实体.
+    */
+    private QueryWrapper<${className}Entity> assemblyWrapper(${className}Entity entity) {
+        QueryWrapper<${className}Entity> entityWrapper = new QueryWrapper<>();
+        if (null != entity) {
+#foreach($column in $columns)
+#if(${column.attrType} != 'Date')
+    #if(${column.attrType} == 'String')
+        entityWrapper.eq(StringUtils.isNotBlank(entity.get${column.attrName}()), "${column.columnName}", entity.get${column.attrName}());
+    #else
+        entityWrapper.eq(Objects.nonNull(entity.get${column.attrName}()), "${column.columnName}", entity.get${column.attrName}());
+    #end
+#end
+#end
+        }
+        return entityWrapper;
+    }
+
+}

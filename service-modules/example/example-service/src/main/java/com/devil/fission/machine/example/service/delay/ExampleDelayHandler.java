@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 /**
  * 实例延迟消息处理.
  *
@@ -16,7 +18,12 @@ public class ExampleDelayHandler implements RedissonDelayedHandler {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ExampleDelayHandler.class);
     
-    public static final String DELAY_QUEUE = "exampleDelayQueue";
+    public static final String DELAY_QUEUE = "exampleQueue";
+    
+    @PostConstruct
+    public void init() {
+        LOGGER.info("============= init");
+    }
     
     @Override
     public String getQueueName() {
@@ -24,11 +31,12 @@ public class ExampleDelayHandler implements RedissonDelayedHandler {
     }
     
     @Override
-    public <T> void execute(T t) {
+    public <T> void execute(T msg) {
         try {
-            String arg = t.toString();
-            // 具体的业务逻辑，参数类型可根据业务需要自行替换
-            LOGGER.info("参数 = {}", arg);
+            if (msg instanceof String) {
+                // 具体的业务逻辑，参数类型可根据业务需要自行替换
+                LOGGER.info("参数 = {}", msg);
+            }
         } catch (Exception e) {
             LOGGER.error("执行延迟消息失败", e);
         }
