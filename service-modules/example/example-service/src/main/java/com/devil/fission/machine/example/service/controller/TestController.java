@@ -3,10 +3,11 @@ package com.devil.fission.machine.example.service.controller;
 import cn.dev33.satoken.stp.SaLoginConfig;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.devil.fission.machine.common.response.Response;
 import com.devil.fission.machine.common.util.FileUtils;
+import com.devil.fission.machine.example.api.vo.SysUserQueryVo;
+import com.devil.fission.machine.example.service.delay.Example2DelayHandler;
 import com.devil.fission.machine.example.service.delay.ExampleDelayHandler;
 import com.devil.fission.machine.example.service.entity.SysUserEntity;
 import com.devil.fission.machine.example.service.service.ISysUserService;
@@ -15,16 +16,14 @@ import com.devil.fission.machine.object.storage.core.StorableObject;
 import com.devil.fission.machine.object.storage.local.LocalFileStorableObject;
 import com.devil.fission.machine.object.storage.minio.MinioStorageServiceImpl;
 import com.devil.fission.machine.redis.delay.RedissonDelayedUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -38,6 +37,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RequestMapping(value = "/test")
+@RequiredArgsConstructor
 @RestController
 public class TestController {
     
@@ -47,20 +47,7 @@ public class TestController {
     
     private final MinioStorageServiceImpl minioStorageService;
     
-    @Autowired
-    @Lazy
-    private RedissonDelayedUtil redissonDelayedUtil;
-    
-    /**
-     * TestController.
-     *
-     * @param noGenUtils noGenUtils
-     */
-    public TestController(NoGenUtils noGenUtils, ISysUserService sysUserService, MinioStorageServiceImpl minioStorageService) {
-        this.noGenUtils = noGenUtils;
-        this.sysUserService = sysUserService;
-        this.minioStorageService = minioStorageService;
-    }
+    private final RedissonDelayedUtil redissonDelayedUtil;
     
     /**
      * 生成订单号.
@@ -80,6 +67,10 @@ public class TestController {
     @PostMapping(value = "/delayMsg")
     public Response<String> delayMsg() {
         redissonDelayedUtil.offer("123", 5, TimeUnit.SECONDS, ExampleDelayHandler.DELAY_QUEUE);
+        SysUserQueryVo vo = SysUserQueryVo.builder().build();
+        vo.setUserId(100L);
+        vo.setUserName("666");
+        redissonDelayedUtil.offer(vo, 10, TimeUnit.SECONDS, Example2DelayHandler.DELAY_QUEUE);
         return Response.success("success");
     }
     
@@ -149,6 +140,11 @@ public class TestController {
         return Response.success("success");
     }
     
+    /**
+     * 测试minio上传.
+     *
+     * @return Response
+     */
     @PostMapping(value = "/minioPut")
     public Response<String> minioPut() {
         // 创建临时文件
@@ -171,6 +167,11 @@ public class TestController {
         return Response.success();
     }
     
+    /**
+     * 测试minio下载.
+     *
+     * @return Response
+     */
     @PostMapping(value = "/minioGet")
     public Response<String> minioGet() {
         StorableObject storableObject = minioStorageService.get("test/tmp.txt");

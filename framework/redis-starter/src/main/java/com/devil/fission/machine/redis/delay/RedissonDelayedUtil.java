@@ -7,10 +7,7 @@ import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
 
 import java.util.LinkedHashMap;
@@ -23,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author devil
  * @date Created in 2022/10/31 16:07
  */
-public class RedissonDelayedUtil implements ApplicationContextAware, InitializingBean {
+public class RedissonDelayedUtil implements InitializingBean {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(RedissonDelayedUtil.class);
     
@@ -32,8 +29,6 @@ public class RedissonDelayedUtil implements ApplicationContextAware, Initializin
     private Map<String, RBlockingDeque> blockingDequeMap;
     
     private Map<String, RDelayedQueue> delayedQueueMap;
-    
-    private ApplicationContext applicationContext;
     
     public RedissonDelayedUtil(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
@@ -98,24 +93,20 @@ public class RedissonDelayedUtil implements ApplicationContextAware, Initializin
     }
     
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    public void afterPropertiesSet() throws Exception {
+        blockingDequeMap = new LinkedHashMap<>();
+        delayedQueueMap = new LinkedHashMap<>();
     }
     
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        Map<String, RedissonDelayedHandler> beansOfType = applicationContext.getBeansOfType(RedissonDelayedHandler.class);
-        if (!beansOfType.isEmpty()) {
-            blockingDequeMap = new LinkedHashMap<>();
-            delayedQueueMap = new LinkedHashMap<>();
-            for (Map.Entry<String, RedissonDelayedHandler> entry : beansOfType.entrySet()) {
-                RedissonDelayedHandler handler = entry.getValue();
-                String key = handler.getQueueName();
-                RBlockingDeque blockingDeque = this.redissonClient.getBlockingDeque(key);
-                RDelayedQueue delayedQueue = this.redissonClient.getDelayedQueue(blockingDeque);
-                blockingDequeMap.put(key, blockingDeque);
-                delayedQueueMap.put(key, delayedQueue);
-            }
-        }
+    /**
+     * 增加队列缓存.
+     */
+    public void addHandler(RedissonDelayedHandler handler) {
+        String key = handler.getQueueName();
+        RBlockingDeque blockingDeque = this.redissonClient.getBlockingDeque(key);
+        RDelayedQueue delayedQueue = this.redissonClient.getDelayedQueue(blockingDeque);
+        blockingDequeMap.put(key, blockingDeque);
+        delayedQueueMap.put(key, delayedQueue);
     }
+    
 }
