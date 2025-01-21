@@ -1,5 +1,6 @@
 package com.devil.fission.machine.common.util;
 
+import cn.hutool.core.util.StrUtil;
 import com.devil.fission.machine.common.Constants;
 
 import java.io.UnsupportedEncodingException;
@@ -418,4 +419,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
     }
     
+    /**
+     * 获取参数不为空值.
+     *
+     * @param str defaultValue 要判断的value
+     * @return value 返回值
+     */
+    public static String blankToDefault(String str, String defaultValue) {
+        return StrUtil.blankToDefault(str, defaultValue);
+    }
 }

@@ -665,3 +665,51 @@ RedissonDelayedUtil一般会晚于项目当前包的bean的初始化，如果遇
 ```
 
 > see https://en.easy-es.cn/pages/7ead0d/
+
+## Mail Use
+
+### config
+
+```yaml
+mail:
+  # 过滤开关.
+  enabled: false
+
+  # SMTP服务器域名.
+  host: smtp.example.com
+
+  # SMTP服务端口.
+  port: 587
+
+  # 是否需要用户名密码验证.
+  auth: true
+
+  # 用户名.
+  user: your-username
+
+  # 密码.
+  pass: your-password
+
+  # 发送方，遵循RFC-822标准.
+  from: sender@example.com
+
+  # 使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口.
+  starttlsEnable: true
+
+  # 使用 SSL安全连接.
+  sslEnable: false
+
+  # SMTP超时时长，单位毫秒，缺省值不超时.
+  timeout: 0
+
+  # Socket连接超时值，单位毫秒，缺省值不超时.
+  connectionTimeout: 0
+```
+
+### demo
+
+```java
+public void sendSimpleMessage(String to, String subject, String text) {
+    MailUtils.sendText(to, subject, text);
+}
+```
