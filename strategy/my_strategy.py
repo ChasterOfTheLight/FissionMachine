@@ -14,9 +14,9 @@ logging.basicConfig(
 )
 
 # 邮件发送者和接收者
-sender_email = "your email"
-receiver_email = "email"
-password = "xxxxx"  # QQ邮箱的授权码
+sender_email = "562157205@qq.com"
+receiver_email = "zhuifeng_668@qq.com"
+password = "tlbvoblptlrwbdfi"  # QQ邮箱的授权码
 
 
 def stock_recommendation_strategy(stock_data):
@@ -112,7 +112,7 @@ def job():
             logging.info(f"stockName: {stock}" +
                          f"  index: {stock_list.index(stock)}")
             # 将开始日期提前10天
-            stock_data = get_stock_data(stock, "20241223", "20250214")
+            stock_data = get_stock_data(stock, "20241223", "20250218")
             # 数据不为空
             if stock_data.empty:
                 continue
