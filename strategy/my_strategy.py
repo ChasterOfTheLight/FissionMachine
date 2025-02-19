@@ -50,9 +50,19 @@ def convert_to_number(value):
 
 
 def stock_recommendation_strategy(stock_data):
+    if len(stock_data) < 11:
+        logging.warning("数据量不足以计算移动平均线")
+        return None
+
     # 计算移动平均线
     stock_data["MA5"] = stock_data["收盘"].rolling(window=5).mean()
     stock_data["MA10"] = stock_data["收盘"].rolling(window=10).mean()
+
+    # 如果最新的MA值为NaN，返回None
+    latest_data = stock_data.iloc[-1]
+    if pd.isna(latest_data['MA5']) or pd.isna(latest_data['MA10']):
+        logging.warning("移动平均线计算结果无效")
+        return None
 
     # 因子1：收盘价在5日线上
     stock_data["Factor1"] = (stock_data["收盘"] > stock_data["MA5"]).astype(int)
@@ -67,6 +77,9 @@ def stock_recommendation_strategy(stock_data):
         window=3).mean() > stock_data["Volume_MA10"]).astype(int)
 
     global global_fund_flow_data
+    if global_fund_flow_data.empty:
+        logging.info("初始化资金流向数据...")
+        global_fund_flow_data = stock_fund_flow_individual()
 
     try:
         if not global_fund_flow_data.empty:
