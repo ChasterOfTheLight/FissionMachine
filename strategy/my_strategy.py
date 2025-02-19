@@ -18,6 +18,36 @@ sender_email = "562157205@qq.com"
 receiver_email = "zhuifeng_668@qq.com"
 password = "tlbvoblptlrwbdfi"  # QQ邮箱的授权码
 
+# 全局变量存储主力净流入数据
+global_fund_flow_data = pd.DataFrame()  # 改为空DataFrame而不是字典
+
+
+def stock_fund_flow_individual():
+    global global_fund_flow_data
+    three_day_ranking = ak.stock_fund_flow_individual("3日排行")
+    # 股票代码不足6位的补0
+    three_day_ranking["股票代码"] = three_day_ranking["股票代码"].apply(lambda x: str(x).zfill(6))
+    # 股票代码转换为字符串
+    three_day_ranking["股票代码"] = three_day_ranking["股票代码"].apply(str)
+    # 资金流入净额转换为float数字
+    three_day_ranking["资金流入净额"] = three_day_ranking["资金流入净额"].apply(
+        convert_to_number)
+    # 以资金流入净额为排序依据，降序排列
+    global_fund_flow_data = three_day_ranking.sort_values(
+        by="资金流入净额", ascending=False)
+    return global_fund_flow_data
+
+
+def convert_to_number(value):
+    try:
+        if '亿' in str(value):
+            return float(str(value).replace('亿', '')) * 10000
+        elif '万' in str(value):
+            return float(str(value).replace('万', ''))
+        return float(value)
+    except:
+        return 0
+
 
 def stock_recommendation_strategy(stock_data):
     # 计算移动平均线
@@ -28,17 +58,44 @@ def stock_recommendation_strategy(stock_data):
     stock_data["Factor1"] = (stock_data["收盘"] > stock_data["MA5"]).astype(int)
 
     # 因子2：5日线上穿10日线
-    stock_data["Factor2"] = (stock_data["MA5"] > stock_data["MA10"]).astype(int)
+    stock_data["Factor2"] = (
+        stock_data["MA5"] > stock_data["MA10"]).astype(int)
 
     # 因子3：最近3天的成交量大于前10天的平均成交量
     stock_data["Volume_MA10"] = stock_data["成交量"].rolling(window=10).mean()
-    stock_data["Factor3"] = (stock_data["成交量"].rolling(window=3).mean() > stock_data["Volume_MA10"]).astype(int)
+    stock_data["Factor3"] = (stock_data["成交量"].rolling(
+        window=3).mean() > stock_data["Volume_MA10"]).astype(int)
+
+    global global_fund_flow_data
+
+    try:
+        if not global_fund_flow_data.empty:
+            # 获取并格式化股票代码
+            stock_code = str(stock_data["股票代码"].iloc[0])
+
+            # 检查股票代码是否存在
+            matching_stocks = global_fund_flow_data[global_fund_flow_data["股票代码"] == stock_code]
+            
+            if not matching_stocks.empty:
+                net_inflow = matching_stocks["资金流入净额"].values[0]
+                stock_data.loc[:, "主力净流入"] = net_inflow
+            else:
+                logging.info(f"未找到股票 {stock_code} 的主力净流入数据")
+        else:
+            logging.warning("global_fund_flow_data 是空的")
+    except Exception as e:
+        logging.error(f"处理主力净流入数据时出错: {e}")
+        logging.error(traceback.format_exc())
+
+    # 因子4：3日主力净流入为正
+    stock_data["Factor4"] = (stock_data["主力净流入"] > 0).astype(int)
 
     # 计算综合评分（调整权重）
     stock_data["Score"] = (
-        0.4 * stock_data["Factor1"] +  # 因子1，权重40%
-        0.4 * stock_data["Factor2"] +  # 因子2，权重40%
-        0.2 * stock_data["Factor3"]    # 因子3，权重20%
+        0.3 * stock_data["Factor1"] +  # 因子1，权重30%
+        0.3 * stock_data["Factor2"] +  # 因子2，权重30%
+        0.2 * stock_data["Factor3"] +  # 因子3，权重20%
+        0.2 * stock_data["Factor4"]  # 因子4，权重20%
     )
 
     recommendations = stock_data.copy()
@@ -104,6 +161,7 @@ def send_email(subject, body):
 def job():
     try:
         logging.info("开始获取股票数据并推荐股票")
+        stock_fund_flow_individual()
         stock_list = filter_stocks()
         logging.info(f"共获取到{len(stock_list)}只股票数据")
         all_recommendations = pd.DataFrame(columns=["股票代码", "依据日期", "评分"])
@@ -133,7 +191,7 @@ def job():
             # 暂停200ms
             time.sleep(0.2)
             # 筛选score > 0.8的股票
-            all_recommendations = all_recommendations[all_recommendations["评分"] >= 0.8]
+            all_recommendations = all_recommendations[all_recommendations["评分"] > 0.8]
             # 打印目前的推荐股票数量
             logging.info(len(all_recommendations))
             # 如果all_recommendations已经有了20条，结束
