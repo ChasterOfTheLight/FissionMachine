@@ -133,11 +133,11 @@ def job():
             # 暂停200ms
             time.sleep(0.2)
             # 筛选score > 0.8的股票
-            all_recommendations = all_recommendations[all_recommendations["评分"] > 0.8]
+            all_recommendations = all_recommendations[all_recommendations["评分"] >= 0.8]
             # 打印目前的推荐股票数量
             logging.info(len(all_recommendations))
-            # 如果all_recommendations已经有了10条，结束
-            if len(all_recommendations) >= 10:
+            # 如果all_recommendations已经有了20条，结束
+            if len(all_recommendations) >= 20:
                 break
         if all_recommendations.empty:
             logging.info("没有推荐的股票")
