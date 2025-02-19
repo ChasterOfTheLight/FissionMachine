@@ -103,12 +103,18 @@ def stock_recommendation_strategy(stock_data):
     # 因子4：3日主力净流入为正
     stock_data["Factor4"] = (stock_data["主力净流入"] > 0).astype(int)
 
-    # 计算综合评分（调整权重）
+    # 新增因子5：非涨停股（假设涨停幅度为9.8%以上）
+    # 计算涨跌幅
+    stock_data["涨跌幅"] = stock_data["涨跌幅"].astype(float)  # 确保数据类型为float
+    stock_data["Factor5"] = (stock_data["涨跌幅"] < 9.8).astype(int)
+
+    # 重新调整综合评分权重
     stock_data["Score"] = (
-        0.3 * stock_data["Factor1"] +  # 因子1，权重30%
-        0.3 * stock_data["Factor2"] +  # 因子2，权重30%
-        0.2 * stock_data["Factor3"] +  # 因子3，权重20%
-        0.2 * stock_data["Factor4"]  # 因子4，权重20%
+        0.25 * stock_data["Factor1"] +  # 因子1，权重25%
+        0.25 * stock_data["Factor2"] +  # 因子2，权重25%
+        0.2 * stock_data["Factor3"] +   # 因子3，权重20%
+        0.15 * stock_data["Factor4"] +  # 因子4，权重15%
+        0.15 * stock_data["Factor5"]    # 因子5，权重15%
     )
 
     recommendations = stock_data.copy()
@@ -183,7 +189,7 @@ def job():
             logging.info(f"stockName: {stock}" +
                          f"  index: {stock_list.index(stock)}")
             # 将开始日期提前10天
-            stock_data = get_stock_data(stock, "20241223", "20250218")
+            stock_data = get_stock_data(stock, "20241223", "20250219")
             # 数据不为空
             if stock_data.empty:
                 continue
@@ -203,8 +209,8 @@ def job():
             recommended_stocks.add(stock_recommendation["股票代码"])
             # 暂停200ms
             time.sleep(0.2)
-            # 筛选score > 0.8的股票
-            all_recommendations = all_recommendations[all_recommendations["评分"] > 0.8]
+            # 筛选score > 0.85的股票
+            all_recommendations = all_recommendations[all_recommendations["评分"] > 0.85]
             # 打印目前的推荐股票数量
             logging.info(len(all_recommendations))
             # 如果all_recommendations已经有了20条，结束
