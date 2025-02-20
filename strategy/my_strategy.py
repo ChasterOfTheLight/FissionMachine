@@ -94,6 +94,7 @@ def stock_recommendation_strategy(stock_data):
                 stock_data.loc[:, "主力净流入"] = net_inflow
             else:
                 logging.info(f"未找到股票 {stock_code} 的主力净流入数据")
+                stock_data.loc[:, "主力净流入"] = 0
         else:
             logging.warning("global_fund_flow_data 是空的")
     except Exception as e:
@@ -188,8 +189,7 @@ def job():
         for stock in stock_list:
             logging.info(f"stockName: {stock}" +
                          f"  index: {stock_list.index(stock)}")
-            # 将开始日期提前10天
-            stock_data = get_stock_data(stock, "20241223", "20250219")
+            stock_data = get_stock_data(stock, "20241223", "20250220")
             # 数据不为空
             if stock_data.empty:
                 continue
