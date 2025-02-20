@@ -109,13 +109,28 @@ def stock_recommendation_strategy(stock_data):
     stock_data["涨跌幅"] = stock_data["涨跌幅"].astype(float)  # 确保数据类型为float
     stock_data["Factor5"] = (stock_data["涨跌幅"] < 9.8).astype(int)
 
-    # 重新调整综合评分权重
+    # 计算更多均线
+    stock_data["MA20"] = stock_data["收盘"].rolling(window=20).mean()
+    stock_data["MA30"] = stock_data["收盘"].rolling(window=30).mean()
+    
+    # 因子9：量价配合（放量上涨）
+    stock_data["成交额"] = stock_data["成交量"] * stock_data["收盘"]
+    stock_data["Volume_MA5"] = stock_data["成交额"].rolling(window=5).mean()
+    stock_data["Factor6"] = ((stock_data["成交额"] > stock_data["Volume_MA5"]) & 
+                            (stock_data["涨跌幅"] > 0)).astype(int)
+    
+    # 因子10：趋势确认（20日均线向上）
+    stock_data["Factor7"] = (stock_data["MA20"] > stock_data["MA20"].shift(1)).astype(int)
+
+    # 更新评分权重
     stock_data["Score"] = (
-        0.25 * stock_data["Factor1"] +  # 因子1，权重25%
-        0.25 * stock_data["Factor2"] +  # 因子2，权重25%
-        0.2 * stock_data["Factor3"] +   # 因子3，权重20%
-        0.15 * stock_data["Factor4"] +  # 因子4，权重15%
-        0.15 * stock_data["Factor5"]    # 因子5，权重15%
+        0.20 * stock_data["Factor1"] +  # 5日线突破
+        0.20 * stock_data["Factor2"] +  # 均线多头排列
+        0.10 * stock_data["Factor3"] +  # 放量确认
+        0.10 * stock_data["Factor4"] +  # 主力资金流入
+        0.10 * stock_data["Factor5"] +  # 非涨停
+        0.15 * stock_data["Factor6"] +  # 量价配合
+        0.15 * stock_data["Factor7"]   # 趋势确认
     )
 
     recommendations = stock_data.copy()
