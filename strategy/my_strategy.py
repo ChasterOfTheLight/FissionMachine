@@ -171,7 +171,12 @@ def filter_stocks():
     stock_info = stock_info[~stock_info["名称"].str.contains("退市")]
     # 过滤停牌股票（成交量为0的股票可能是停牌股票）
     stock_info = stock_info[stock_info["成交量"] != 0]
-    return stock_info["代码"].tolist()
+    stock_no_list = stock_info["代码"].tolist()
+    # 排除市值大于200亿的股票
+    stock_info = stock_info[stock_info["流通市值"] < 2e11]
+    # 排序
+    stock_no_list.sort()
+    return stock_no_list
 
 
 def send_email(subject, body):
@@ -204,7 +209,7 @@ def job():
         for stock in stock_list:
             logging.info(f"stockName: {stock}" +
                          f"  index: {stock_list.index(stock)}")
-            stock_data = get_stock_data(stock, "20241223", "20250220")
+            stock_data = get_stock_data(stock, "20241223", "20250221")
             # 数据不为空
             if stock_data.empty:
                 continue
@@ -225,7 +230,7 @@ def job():
             # 暂停200ms
             time.sleep(0.2)
             # 筛选score > 0.85的股票
-            all_recommendations = all_recommendations[all_recommendations["评分"] > 0.85]
+            all_recommendations = all_recommendations[all_recommendations["评分"] == 1.0]
             # 打印目前的推荐股票数量
             logging.info(len(all_recommendations))
             # 如果all_recommendations已经有了20条，结束
