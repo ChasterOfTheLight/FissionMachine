@@ -104,8 +104,7 @@ def stock_recommendation_strategy(stock_data):
     # 因子4：3日主力净流入为正
     stock_data["Factor4"] = (stock_data["主力净流入"] > 0).astype(int)
 
-    # 新增因子5：非涨停股（假设涨停幅度为9.8%以上）
-    # 计算涨跌幅
+    # 因子5：非涨停股（假设涨停幅度为9.8%以上）
     stock_data["涨跌幅"] = stock_data["涨跌幅"].astype(float)  # 确保数据类型为float
     stock_data["Factor5"] = (stock_data["涨跌幅"] < 9.8).astype(int)
 
@@ -113,24 +112,47 @@ def stock_recommendation_strategy(stock_data):
     stock_data["MA20"] = stock_data["收盘"].rolling(window=20).mean()
     stock_data["MA30"] = stock_data["收盘"].rolling(window=30).mean()
     
-    # 因子9：量价配合（放量上涨）
+    # 因子6：量价配合（放量上涨）
     stock_data["成交额"] = stock_data["成交量"] * stock_data["收盘"]
     stock_data["Volume_MA5"] = stock_data["成交额"].rolling(window=5).mean()
     stock_data["Factor6"] = ((stock_data["成交额"] > stock_data["Volume_MA5"]) & 
                             (stock_data["涨跌幅"] > 0)).astype(int)
     
-    # 因子10：趋势确认（20日均线向上）
+    # 因子7：趋势确认（20日均线向上）
     stock_data["Factor7"] = (stock_data["MA20"] > stock_data["MA20"].shift(1)).astype(int)
+
+    # 计算最近30天涨幅
+    stock_data['30日涨幅'] = (stock_data['收盘'] - stock_data['收盘'].shift(30)) / stock_data['收盘'].shift(30) * 100
+    # 因子8: 最近涨幅少于20%
+    stock_data["Factor8"] = (stock_data['30日涨幅'] < 20).astype(int)
+
+    # 计算MACD指标
+    exp12 = stock_data['收盘'].ewm(span=12, adjust=False).mean()
+    exp26 = stock_data['收盘'].ewm(span=26, adjust=False).mean()
+    stock_data['MACD'] = exp12 - exp26
+    stock_data['Signal'] = stock_data['MACD'].ewm(span=9, adjust=False).mean()
+
+    # 因子9：MACD金叉且在零轴以下（说明可能在底部）
+    stock_data["Factor9"] = ((stock_data["MACD"] > stock_data["Signal"]) & 
+                            (stock_data["MACD"].shift(1) <= stock_data["Signal"].shift(1)) &
+                            (stock_data["MACD"] < 0)).astype(int)
+    
+    # 因子10：连续上涨天数控制（避免追高）
+    stock_data['连续上涨'] = ((stock_data['涨跌幅'] > 0)).rolling(window=3).sum()
+    stock_data["Factor10"] = (stock_data['连续上涨'] < 3).astype(int)
 
     # 更新评分权重
     stock_data["Score"] = (
-        0.20 * stock_data["Factor1"] +  # 5日线突破
-        0.20 * stock_data["Factor2"] +  # 均线多头排列
+        0.15 * stock_data["Factor1"] +  # 5日线突破
+        0.15 * stock_data["Factor2"] +  # 均线多头排列
         0.10 * stock_data["Factor3"] +  # 放量确认
-        0.10 * stock_data["Factor4"] +  # 主力资金流入
-        0.10 * stock_data["Factor5"] +  # 非涨停
+        0.05 * stock_data["Factor4"] +  # 主力资金流入（最新日期）
+        0.05 * stock_data["Factor5"] +  # 非涨停
         0.15 * stock_data["Factor6"] +  # 量价配合
-        0.15 * stock_data["Factor7"]   # 趋势确认
+        0.15 * stock_data["Factor7"] +  # 趋势确认
+        0.10 * stock_data["Factor8"] +  # 涨幅控制
+        0.05 * stock_data["Factor9"] +  # MACD金叉
+        0.05 * stock_data["Factor10"]   # 连续上涨控制
     )
 
     recommendations = stock_data.copy()
@@ -209,7 +231,7 @@ def job():
         for stock in stock_list:
             logging.info(f"stockName: {stock}" +
                          f"  index: {stock_list.index(stock)}")
-            stock_data = get_stock_data(stock, "20241223", "20250221")
+            stock_data = get_stock_data(stock, "20241223", "20250224")
             # 数据不为空
             if stock_data.empty:
                 continue
@@ -230,7 +252,7 @@ def job():
             # 暂停200ms
             time.sleep(0.2)
             # 筛选score > 0.85的股票
-            all_recommendations = all_recommendations[all_recommendations["评分"] == 1.0]
+            all_recommendations = all_recommendations[all_recommendations["评分"] > 0.9]
             # 打印目前的推荐股票数量
             logging.info(len(all_recommendations))
             # 如果all_recommendations已经有了20条，结束
