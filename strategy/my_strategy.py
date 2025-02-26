@@ -197,9 +197,8 @@ def filter_stocks():
     # 过滤停牌股票（成交量为0的股票可能是停牌股票）
     stock_info = stock_info[stock_info["成交量"] != 0]
     stock_no_list = stock_info["代码"].tolist()
-    # 排除市值大于40亿小于200亿的股票
-    stock_info = stock_info[(stock_info["流通市值"] > 4e10)
-                            & (stock_info["流通市值"] < 2e11)]
+    # 市值大于40亿小于200亿的股票
+    stock_no_list = stock_info[(stock_info["总市值"] > 40e8) & (stock_info["总市值"] < 200e8)]["代码"].tolist()
     # 排序
     stock_no_list.sort()
     # 返回股票代码与名称两列
@@ -275,7 +274,7 @@ def job():
             all_recommendations["评分"] = pd.to_numeric(all_recommendations["评分"],
                                                       errors="coerce")
             top_recommendations = all_recommendations.sort_values(
-                by="评分", ascending=False).head(10)
+                by="评分", ascending=False)
             if not top_recommendations.empty:
                 body = top_recommendations.to_string(index=False)
                 subject = f"股票推荐 {time.strftime('%Y-%m-%d', time.localtime())}"
