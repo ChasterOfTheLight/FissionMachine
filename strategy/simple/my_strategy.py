@@ -238,7 +238,7 @@ def job():
             stock_code = row["代码"]
             stock_name = row["名称"]
             logging.info(f"处理股票：{stock_name}({stock_code})  index: {idx}")
-            stock_data = get_stock_data(stock_code, "20241223", "20250225")
+            stock_data = get_stock_data(stock_code, "20241223", "20250305")
             # 数据不为空
             if stock_data.empty:
                 continue
@@ -261,7 +261,7 @@ def job():
             time.sleep(0.2)
             # 筛选score > 0.9的股票
             all_recommendations = all_recommendations[all_recommendations["评分"]
-                                                      > 0.9]
+                                                      == 1.0]
             # 打印目前的推荐股票数量
             logging.info(len(all_recommendations))
             # 如果all_recommendations已经有了20条，结束

@@ -1,7 +1,7 @@
 import pandas as pd
 import akshare as ak
 import logging
-from my_strategy import stock_recommendation_strategy, filter_stocks, get_stock_data
+from simple.my_strategy import stock_recommendation_strategy, filter_stocks, get_stock_data
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 
