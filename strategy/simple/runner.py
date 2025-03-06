@@ -1,3 +1,3 @@
-import simple.my_strategy as ms
+import my_strategy as ms
 
 ms.job()

@@ -174,7 +174,7 @@ def get_stock_data(symbol, start_date, end_date):
         start_date=start_date,
         end_date=end_date,
         adjust="qfq",
-        timeout=10,
+        timeout=20,
     )
 
 
@@ -198,7 +198,8 @@ def filter_stocks():
     stock_info = stock_info[stock_info["成交量"] != 0]
     stock_no_list = stock_info["代码"].tolist()
     # 市值大于40亿小于200亿的股票
-    stock_no_list = stock_info[(stock_info["总市值"] > 40e8) & (stock_info["总市值"] < 200e8)]["代码"].tolist()
+    stock_no_list = stock_info[(stock_info["总市值"] > 40e8)
+                               & (stock_info["总市值"] < 200e8)]["代码"].tolist()
     # 排序
     stock_no_list.sort()
     # 返回股票代码与名称两列
@@ -238,7 +239,7 @@ def job():
             stock_code = row["代码"]
             stock_name = row["名称"]
             logging.info(f"处理股票：{stock_name}({stock_code})  index: {idx}")
-            stock_data = get_stock_data(stock_code, "20241223", "20250305")
+            stock_data = get_stock_data(stock_code, "20241223", "20250306")
             # 数据不为空
             if stock_data.empty:
                 continue
@@ -262,8 +263,9 @@ def job():
             # 筛选score > 0.9的股票
             all_recommendations = all_recommendations[all_recommendations["评分"]
                                                       == 1.0]
-            # 打印目前的推荐股票数量
-            logging.info(len(all_recommendations))
+            # 打印目前的推荐全部股票
+            logging.info(all_recommendations)
+
             # 如果all_recommendations已经有了20条，结束
             if len(all_recommendations) >= 20:
                 break

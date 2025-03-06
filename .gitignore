@@ -16,7 +16,7 @@ target/
 .flattened-pom.xml
 .env
 .history/
-/strategy/__pycache__/
+**/__pycache__/
 .ipynb_checkpoints
 /strategy/venv/
 

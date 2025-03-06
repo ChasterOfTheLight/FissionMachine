@@ -11,7 +11,7 @@ def interpret_news(news_content):
     messages = [{'role': 'system', 'content': '你是一个有股票推荐经验的投资专家。你基于专业的投资知识，一步步的思考，推演并判断每条新闻对该股票的利好程度。'},
                 {'role': 'user', 'content': f'请解读以下新闻内容：\n\n{news_content}'}]
     response = Generation.call(api_key='sk-b3d58dfb1c764cc5a84a0d75ca8f5a8a',
-                               model="qwen-turbo",
+                               model="qwen-plus",
                                messages=messages,
                                # 设置随机数种子seed，如果没有设置，则随机数种子默认为1234
                                seed=random.randint(1, 10000),
