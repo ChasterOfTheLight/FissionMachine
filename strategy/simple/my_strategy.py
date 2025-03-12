@@ -154,7 +154,7 @@ def stock_recommendation_strategy(stock_data, basic_info):
     stock_data["Score"] = (
         0.12 * stock_data["Factor1"] +  # 5日线突破
         0.12 * stock_data["Factor2"] +  # 均线多头排列
-        0.08 * stock_data["Factor3"] +  # 放量确认
+        0.23 * stock_data["Factor3"] +  # 放量确认
         0.04 * stock_data["Factor4"] +  # 主力资金流入（最新日期）
         0.04 * stock_data["Factor5"] +  # 非涨停
         0.12 * stock_data["Factor6"] +  # 量价配合
@@ -162,7 +162,7 @@ def stock_recommendation_strategy(stock_data, basic_info):
         0.08 * stock_data["Factor8"] +  # 涨幅控制
         0.04 * stock_data["Factor9"] +  # MACD金叉
         0.04 * stock_data["Factor10"] +  # 连续上涨控制
-        0.20 * stock_data["Factor11"]  # 基本面因子
+        0.05 * stock_data["Factor11"]  # 基本面因子
     )
 
     recommendations = stock_data.copy()
@@ -186,11 +186,6 @@ def get_stock_data(symbol, start_date, end_date):
     except KeyError as e:
         logging.error(f"获取股票数据时出错: {e}")
         return pd.DataFrame()  # 返回空的 DataFrame 以继续处理其他股票
-
-
-# def get_stock_info(symbol):
-#     stock_info = ak.stock_individual_info_em(symbol=symbol)
-#     return stock_info
 
 
 def filter_stocks():
@@ -249,7 +244,7 @@ def job():
             stock_code = row["代码"]
             stock_name = row["名称"]
             logging.info(f"处理股票：{stock_name}({stock_code})  index: {idx}")
-            stock_data = get_stock_data(stock_code, "20241223", "202503011")
+            stock_data = get_stock_data(stock_code, "20241223", "202503012")
             # 数据不为空
             if stock_data.empty:
                 continue
@@ -272,7 +267,7 @@ def job():
             time.sleep(0.2)
             # 筛选score > 0.9的股票
             all_recommendations = all_recommendations[all_recommendations["评分"]
-                                                      == 1.0]
+                                                      >= 0.95]
             # 打印目前的推荐全部股票
             logging.info(all_recommendations)
 
