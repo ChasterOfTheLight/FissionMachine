@@ -50,7 +50,7 @@ def convert_to_number(value):
         return 0
 
 
-def stock_recommendation_strategy(stock_data):
+def stock_recommendation_strategy(stock_data, basic_info):
     if len(stock_data) < 11:
         logging.warning("数据量不足以计算移动平均线")
         return None
@@ -145,18 +145,24 @@ def stock_recommendation_strategy(stock_data):
     stock_data['连续上涨'] = ((stock_data['涨跌幅'] > 0)).rolling(window=3).sum()
     stock_data["Factor10"] = (stock_data['连续上涨'] < 3).astype(int)
 
+    # 基本面因子：市盈率（PE）和市净率（PB）
+    stock_data["PE"] = basic_info["市盈率-动态"]
+    stock_data["PB"] = basic_info["市净率"]
+    stock_data["Factor11"] = ((stock_data["PE"] < 20) & (stock_data["PB"] < 3)).astype(int)
+
     # 更新评分权重
     stock_data["Score"] = (
-        0.15 * stock_data["Factor1"] +  # 5日线突破
-        0.15 * stock_data["Factor2"] +  # 均线多头排列
-        0.10 * stock_data["Factor3"] +  # 放量确认
-        0.05 * stock_data["Factor4"] +  # 主力资金流入（最新日期）
-        0.05 * stock_data["Factor5"] +  # 非涨停
-        0.15 * stock_data["Factor6"] +  # 量价配合
-        0.15 * stock_data["Factor7"] +  # 趋势确认
-        0.10 * stock_data["Factor8"] +  # 涨幅控制
-        0.05 * stock_data["Factor9"] +  # MACD金叉
-        0.05 * stock_data["Factor10"]  # 连续上涨控制
+        0.12 * stock_data["Factor1"] +  # 5日线突破
+        0.12 * stock_data["Factor2"] +  # 均线多头排列
+        0.08 * stock_data["Factor3"] +  # 放量确认
+        0.04 * stock_data["Factor4"] +  # 主力资金流入（最新日期）
+        0.04 * stock_data["Factor5"] +  # 非涨停
+        0.12 * stock_data["Factor6"] +  # 量价配合
+        0.12 * stock_data["Factor7"] +  # 趋势确认
+        0.08 * stock_data["Factor8"] +  # 涨幅控制
+        0.04 * stock_data["Factor9"] +  # MACD金叉
+        0.04 * stock_data["Factor10"] +  # 连续上涨控制
+        0.20 * stock_data["Factor11"]  # 基本面因子
     )
 
     recommendations = stock_data.copy()
@@ -168,19 +174,23 @@ def stock_recommendation_strategy(stock_data):
 
 
 def get_stock_data(symbol, start_date, end_date):
-    return ak.stock_zh_a_hist(
-        symbol=symbol,
-        period="daily",
-        start_date=start_date,
-        end_date=end_date,
-        adjust="qfq",
-        timeout=20,
-    )
+    try:
+        return ak.stock_zh_a_hist(
+            symbol=symbol,
+            period="daily",
+            start_date=start_date,
+            end_date=end_date,
+            adjust="qfq",
+            timeout=20,
+        )
+    except KeyError as e:
+        logging.error(f"获取股票数据时出错: {e}")
+        return pd.DataFrame()  # 返回空的 DataFrame 以继续处理其他股票
 
 
-def get_stock_info(symbol):
-    stock_info = ak.stock_individual_info_em(symbol=symbol)
-    return stock_info
+# def get_stock_info(symbol):
+#     stock_info = ak.stock_individual_info_em(symbol=symbol)
+#     return stock_info
 
 
 def filter_stocks():
@@ -203,7 +213,7 @@ def filter_stocks():
     # 排序
     stock_no_list.sort()
     # 返回股票代码与名称两列
-    return stock_info[["代码", "名称"]]
+    return stock_info[["代码", "名称", "市盈率-动态", "市净率"]]
 
 
 def send_email(subject, body):
@@ -239,11 +249,11 @@ def job():
             stock_code = row["代码"]
             stock_name = row["名称"]
             logging.info(f"处理股票：{stock_name}({stock_code})  index: {idx}")
-            stock_data = get_stock_data(stock_code, "20241223", "20250306")
+            stock_data = get_stock_data(stock_code, "20241223", "202503011")
             # 数据不为空
             if stock_data.empty:
                 continue
-            stock_recommendation = stock_recommendation_strategy(stock_data)
+            stock_recommendation = stock_recommendation_strategy(stock_data, row)
             if stock_recommendation is None:
                 continue
             new_recommendation = pd.DataFrame({
