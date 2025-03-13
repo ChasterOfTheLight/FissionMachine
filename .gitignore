@@ -20,6 +20,7 @@ target/
 .ipynb_checkpoints
 /strategy/venv/
 .pybrokercache
+data_cache
 
 # Idea
 .idea
