@@ -178,7 +178,7 @@ def rotate(ctx: ExecContext):
 
 # 创建策略
 strategy = Strategy(akshare,
-                    start_date='1/1/2024',
+                    start_date='1/7/2024',
                     end_date='1/1/2025',
                     config=config)
 
