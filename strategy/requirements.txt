@@ -1,7 +1,7 @@
 aiohappyeyeballs==2.4.8
 aiohttp==3.11.13
 aiosignal==1.3.2
-akshare==1.15.94
+akshare==1.16.44
 alpaca-py==0.39.0
 annotated-types==0.7.0
 anyio==4.8.0
@@ -49,7 +49,7 @@ isoduration==20.11.0
 jedi==0.19.2
 Jinja2==3.1.6
 jiter==0.8.2
-joblib==1.1.1
+joblib==1.4.2
 json5==0.10.0
 jsonpath==0.82.2
 jsonpointer==3.0.0
@@ -137,6 +137,7 @@ rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rpds-py==0.23.1
 schedule==1.2.2
+scikit-learn==1.6.1
 scipy==1.15.2
 seaborn==0.13.2
 Send2Trash==1.8.3
@@ -146,9 +147,11 @@ sniffio==1.3.1
 soupsieve==2.6
 sseclient-py==1.8.0
 stack-data==0.6.3
+ta-lib @ file:///D:/Projects/DevilProjects/FissionMachine/strategy/ta_lib-0.6.3-cp312-cp312-win_amd64.whl#sha256=fbf480e9e936ed983776c616f461f4d4511bb1d010424558db3f559aec10dcd4
 tabulate==0.9.0
 tangled-up-in-unicode==0.2.0
 terminado==0.18.1
+threadpoolctl==3.5.0
 tinycss2==1.4.0
 tornado==6.4.2
 tqdm==4.67.1
