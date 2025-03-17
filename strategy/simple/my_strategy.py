@@ -190,9 +190,9 @@ def get_stock_data(symbol, start_date, end_date):
 
 def filter_stocks():
     stock_info = ak.stock_zh_a_spot_em()
-    # 过滤创业板、科创板股票
+    # 过滤科创板股票
     stock_info = stock_info[~stock_info["代码"].str.startswith(
-        ("3", "4", "8", "9", "68", "bj"))]
+        ("4", "8", "9", "68", "bj"))]
     # 过滤新股，次新股
     stock_info = stock_info[~stock_info["代码"].str.startswith(("N", "C"))]
     # 过滤ST股票
@@ -244,7 +244,7 @@ def job():
             stock_code = row["代码"]
             stock_name = row["名称"]
             logging.info(f"处理股票：{stock_name}({stock_code})  index: {idx}")
-            stock_data = get_stock_data(stock_code, "20241223", "202503014")
+            stock_data = get_stock_data(stock_code, "20250101", "202503017")
             # 数据不为空
             if stock_data.empty:
                 continue
@@ -267,7 +267,7 @@ def job():
             time.sleep(0.2)
             # 筛选score > 0.9的股票
             all_recommendations = all_recommendations[all_recommendations["评分"]
-                                                      > 0.95]
+                                                      >= 0.95]
             # 打印目前的推荐全部股票
             logging.info(all_recommendations)
 
