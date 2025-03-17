@@ -9,6 +9,9 @@
 import re
 import requests
 from urllib.parse import urlparse, parse_qs
+from bs4 import BeautifulSoup
+import asyncio
+from pyppeteer import launch
 
 def convert_short_url(short_url):
     """将抖音短链接转换为长链接
@@ -83,11 +86,11 @@ def extract_video_id(url):
         print(f"提取视频ID时出错: {e}")
         return None
 
-def get_video_info(video_id):
+async def get_video_info(video_id):
     """获取视频信息
     
     Args:
-        video_id (str): 视频ID
+        video_id (str): 长连接地址
         
     Returns:
         dict: 视频信息
@@ -96,76 +99,26 @@ def get_video_info(video_id):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Referer': 'https://www.douyin.com/',
     }
-    
-    try:
-        # 构建API请求URL
-        api_url = f"https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={video_id}"
-        
-        # 发送请求
-        response = requests.get(api_url, headers=headers)
-        
-        # 检查响应
-        if response.status_code == 200:
-            data = response.json()
-            if 'item_list' in data and len(data['item_list']) > 0:
-                return data['item_list'][0]
-            else:
-                print(f"API响应中没有找到视频信息")
-        else:
-            print(f"API请求失败，状态码: {response.status_code}")
-        
-        return None
-    except Exception as e:
-        print(f"获取视频信息时出错: {e}")
-        return None
 
-def extract_download_url(video_info):
-    """从视频信息中提取下载URL
+    url = 'https://www.douyin.com/video/' + video_id  # 替换为实际抖音视频的URL
     
-    Args:
-        video_info (dict): 视频信息
-        
-    Returns:
-        str: 视频下载URL
-    """
-    try:
-        # 提取无水印视频URL
-        if 'video' in video_info and 'play_addr' in video_info['video']:
-            video_urls = video_info['video']['play_addr'].get('url_list', [])
-            if video_urls:
-                # 尝试获取无水印URL
-                for url in video_urls:
-                    if 'playwm' in url:  # 有水印
-                        # 将playwm替换为play以获取无水印版本
-                        no_watermark_url = url.replace('playwm', 'play')
-                        return no_watermark_url
-                    else:
-                        return url
-        
-        return None
-    except Exception as e:
-        print(f"提取下载URL时出错: {e}")
-        return None
+    browser = await launch()
 
-def get_real_download_url(url):
-    """获取真实的下载URL（处理重定向）
-    
-    Args:
-        url (str): 可能需要重定向的URL
-        
-    Returns:
-        str: 真实的下载URL
-    """
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    }
-    
-    try:
-        response = requests.head(url, headers=headers, allow_redirects=True)
-        return response.url
-    except Exception as e:
-        print(f"获取真实下载URL时出错: {e}")
-        return url
+    page = await browser.newPage()
+
+    await page.goto(url)
+
+    await asyncio.sleep(5)  # 等待页面加载完成
+
+    video_url = await page.evaluate('''() => {'
+         return document.querySelector('video').src;'
+    }''')
+
+    await browser.close()
+
+    return video_url
+
+
 
 def get_douyin_download_url(url):
     """从抖音链接获取视频下载URL
@@ -184,17 +137,13 @@ def get_douyin_download_url(url):
         video_id = extract_video_id(long_url)
         if not video_id:
             return {'error': '无法提取视频ID'}
-        
         print(f"提取的视频ID: {video_id}")
 
-        return {
-            'long_url': long_url
-        }
-        
-        # # 3. 获取视频信息
-        # video_info = get_video_info(video_id)
-        # if not video_info:
-        #     return {'error': '无法获取视频信息'}
+        # 3. 获取视频信息
+        video_url = asyncio.get_event_loop().run_until_complete(get_video_info(video_id))
+        if not video_url:
+            return {'error': '无法获取视频地址'}
+        print(f"获取到的视频地址: {video_url}")
         
         # # 4. 提取下载URL
         # download_url = extract_download_url(video_info)
@@ -221,10 +170,10 @@ def get_douyin_download_url(url):
 
 if __name__ == "__main__":
     # 获取用户输入的URL
-    url = input("请输入抖音短链接或视频链接: ").strip()
+    short_url = input("请输入抖音短链接或视频链接: ").strip()
     
     # 获取下载链接
-    result = get_douyin_download_url(url)
+    result = get_douyin_download_url(short_url)
     
     # 打印结果
     if 'error' in result:
