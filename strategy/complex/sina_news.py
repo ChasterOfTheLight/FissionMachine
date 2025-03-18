@@ -1,10 +1,41 @@
-import akshare as ak
 from http import HTTPStatus
 from dashscope import Generation
 import random
+import requests
+import pandas as pd
+
+def stock_info_global_sina() -> pd.DataFrame:
+    """
+    新浪财经-全球财经快讯
+    https://finance.sina.com.cn/7x24
+    :return: 全球财经快讯
+    :rtype: pandas.DataFrame
+    """
+    url = "https://zhibo.sina.com.cn/api/zhibo/feed"
+    params = {
+        "page": "1",
+        "page_size": "100",
+        "zhibo_id": "152",
+        "tag_id": "0",
+        "dire": "f",
+        "dpc": "1",
+        "pagesize": "100",
+        "type": "1",
+    }
+    r = requests.get(url, params=params)
+    data_json = r.json()
+    time_list = [
+        item["create_time"] for item in data_json["result"]["data"]["feed"]["list"]
+    ]
+    text_list = [
+        item["rich_text"] for item in data_json["result"]["data"]["feed"]["list"]
+    ]
+    temp_df = pd.DataFrame([time_list, text_list]).T
+    temp_df.columns = ["时间", "内容"]
+    return temp_df
 
 def get_sina_news():
-    news_df = ak.stock_info_global_sina()
+    news_df = stock_info_global_sina()
     return news_df
 
 def interpret_news(news_content):
@@ -30,5 +61,6 @@ if __name__ == "__main__":
     news_df = get_sina_news()
     for index, row in news_df.iterrows():
         news_content = row['内容']
-        interpretation = interpret_news(news_content)
-        print(f"新闻内容: {news_content}\n解读: {interpretation}\n")
+        print(f"序号: {index} 新闻内容: {news_content}")
+        # interpretation = interpret_news(news_content)
+        # print(f"\n解读: {interpretation}\n")
