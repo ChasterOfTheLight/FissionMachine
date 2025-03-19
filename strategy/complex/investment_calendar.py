@@ -65,8 +65,8 @@ class InvestmentCalendar:
                         
                         # 添加到结果中
                         events_data.append({
-                            'datetime': day_item.get('calendar_time', ''),
-                            'title': title
+                            '日历': day_item.get('calendar_time', ''),
+                            '事件': title
                         })
             except Exception as e:
                 print(f"解析事件失败: {str(e)}")
@@ -216,13 +216,13 @@ class InvestmentCalendar:
         if all_events:
             # 转换为DataFrame并排序
             df = pd.DataFrame(all_events)
-            df = df.sort_values(['datetime'])
+            df = df.sort_values(['日历'])
             
             # 格式化输出
             print("\n投资日历事件:")
             pd.set_option('display.max_columns', None)
             pd.set_option('display.width', None)
-            pd.set_option('display.max_colwidth', 50)  # 限制标题长度，避免输出过宽
+            pd.set_option('display.max_colwidth', 80)  # 限制标题长度，避免输出过宽
             print(df.to_string(index=False))
             
             print(f"\n共计 {len(df)} 条事件")
