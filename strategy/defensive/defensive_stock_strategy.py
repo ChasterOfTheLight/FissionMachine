@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO,
 class DefensiveStockStrategy:
     def __init__(self):
         self.defensive_sectors = [
-            "食品饮料", "医药生物", "公用事业", "银行", "消费", "电力", "保险"
+            "食品饮料", "有色金属", "公用事业", "银行", "电力行业", "保险"
         ]
         
     def get_stock_data(self, stock_code: str, days: int = 60) -> pd.DataFrame:
@@ -62,11 +62,11 @@ class DefensiveStockStrategy:
     def get_fundamental_indicators(self, stock_code: str) -> dict:
         """获取基本面指标"""
         try:
-            logging.info(f"正在获取股票 {stock_code} 的基本面指标...")
+            logging.debug(f"正在获取股票 {stock_code} 的基本面指标...")
             
             # 获取市场指标数据
             market_indicator = ak.stock_a_indicator_lg(symbol=stock_code)
-            logging.info(f"市场指标数据大小: {len(market_indicator)}")
+            logging.debug(f"市场指标数据大小: {len(market_indicator)}")
             
             if market_indicator.empty:
                 logging.warning(f"股票{stock_code}未获取到市场指标数据")
@@ -78,7 +78,7 @@ class DefensiveStockStrategy:
                 logging.warning(f"股票{stock_code}缺少必要的市场指标数据")
                 return {}
 
-            logging.info(f"市场指标: PE={latest_market.get('pe', 'N/A')}, PB={latest_market.get('pb', 'N/A')}")
+            logging.debug(f"市场指标: PE={latest_market.get('pe', 'N/A')}, PB={latest_market.get('pb', 'N/A')}")
             
             # 获取最新财务数据
             try:
@@ -88,7 +88,7 @@ class DefensiveStockStrategy:
                     return {}
                     
                 latest_finance = financial_indicator[['指标', financial_indicator.columns[2]]]  # 最新财务数据
-                logging.info(f"最新财务数据: {latest_finance}")
+                logging.debug(f"最新财务数据: {latest_finance}")
                 
                 # 处理财务指标
                 try:
@@ -146,7 +146,7 @@ class DefensiveStockStrategy:
             
             # 评分过程
             score = 0
-            logging.info("开始评分...")
+            logging.debug("开始评分...")
             
             if risk_metrics['volatility'] < 0.3:
                 score += 30
