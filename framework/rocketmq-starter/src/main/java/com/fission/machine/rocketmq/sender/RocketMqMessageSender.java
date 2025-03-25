@@ -64,6 +64,8 @@ public class RocketMqMessageSender {
             result = sr.getSendStatus().equals(SendStatus.SEND_OK);
             if (!result) {
                 LOGGER.error("[Rocket MQ Message Send fail] reason: {}", sr.getSendStatus());
+            } else {
+                LOGGER.info("[Rocket MQ Message Send success] result: {}", new Gson().toJson(sr));
             }
         } catch (Exception e) {
             LOGGER.error("[Rocket MQ Message Send fail error] reason: {}", e.getLocalizedMessage(), e);

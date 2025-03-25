@@ -9,8 +9,6 @@ import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
-import io.minio.StatObjectArgs;
-import io.minio.StatObjectResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;

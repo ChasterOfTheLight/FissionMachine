@@ -7,6 +7,7 @@ import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import com.devil.fission.machine.common.util.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,8 @@ public class AliyunRocketMqMessageSender {
             result = sendResult != null;
             if (!result) {
                 LOGGER.error("[Aliyun Rocket MQ Message Send fail]");
+            } else {
+                LOGGER.info("[Aliyun Rocket MQ Message Send success] result: {}", new Gson().toJson(sendResult));
             }
         } catch (Exception e) {
             LOGGER.error("[Aliyun Rocket MQ Message Send fail error] reason: {}", e.getLocalizedMessage(), e);
