@@ -14,6 +14,9 @@ class DefensiveStockStrategy:
         self.defensive_sectors = [
             "食品饮料", "有色金属", "公用事业", "银行", "电力行业", "保险"
         ]
+        # 在初始化时获取上证指数数据
+        self.index_data = ak.stock_zh_index_daily_em(symbol="sh000001")
+        self.index_returns = self.index_data['close'].pct_change()
         
     def get_stock_data(self, stock_code: str, days: int = 60) -> pd.DataFrame:
         """获取个股历史数据"""
@@ -45,9 +48,7 @@ class DefensiveStockStrategy:
             sharpe_ratio = excess_returns / volatility if volatility != 0 else 0
             
             # beta值（相对于上证指数）
-            index_data = ak.stock_zh_index_daily_em(symbol="sh000001")
-            index_returns = index_data['close'].pct_change()
-            beta = returns.cov(index_returns) / index_returns.var()
+            beta = returns.cov(self.index_returns) / self.index_returns.var()
             
             return {
                 'volatility': volatility,
@@ -80,36 +81,37 @@ class DefensiveStockStrategy:
 
             logging.debug(f"市场指标: PE={latest_market.get('pe', 'N/A')}, PB={latest_market.get('pb', 'N/A')}")
             
-            # 获取最新财务数据
+            # 使用同花顺接口获取财务数据
             try:
-                financial_indicator = ak.stock_financial_abstract(symbol=stock_code)
+                financial_indicator = ak.stock_financial_abstract_ths(symbol=stock_code)
                 if financial_indicator.empty:
                     logging.warning(f"股票{stock_code}未获取到财务数据")
                     return {}
                     
-                latest_finance = financial_indicator[['指标', financial_indicator.columns[2]]]  # 最新财务数据
+                # 提取最新一期的数据
+                latest_finance = financial_indicator.iloc[-1] # 取最新数据
                 logging.debug(f"最新财务数据: {latest_finance}")
                 
-                # 处理财务指标
                 try:
                     # 处理ROE (净资产收益率)
-                    roe_df = latest_finance[latest_finance['指标'] == '净资产收益率(ROE)']
-                    roe = roe_df.iloc[0][financial_indicator.columns[2]]
+                    roe_df = latest_finance['净资产收益率']
+                    roe = float(roe_df.strip('%'))  # 去除百分号并转为float
 
                     # 处理资产负债率
-                    debt_ratio_df = latest_finance[latest_finance['指标'] == '资产负债率']
-                    debt_ratio = debt_ratio_df.iloc[0][financial_indicator.columns[2]]
+                    debt_ratio_df = latest_finance['资产负债率']
+                    debt_ratio = float(debt_ratio_df.strip('%'))  # 去除百分号并转为float
                     
                     return {
                         'pe_ratio': float(latest_market['pe']),
                         'pb_ratio': float(latest_market['pb']),
                         'dividend_yield': float(latest_market['dv_ratio']),
-                        'roe': float(roe),
-                        'debt_ratio': float(debt_ratio)
+                        'roe': roe,
+                        'debt_ratio': debt_ratio
                     }
                 except (ValueError, TypeError) as e:
                     logging.error(f"转换财务数据时出错: {str(e)}")
-                    logging.error(f"ROE原始值: {roe}, 资产负债率原始值: {debt_ratio}")
+                    logging.error(f"ROE原始值: {roe_df.iloc[0, -1] if not roe_df.empty else 'N/A'}, "
+                                f"资产负债率原始值: {debt_ratio_df.iloc[0, -1] if not debt_ratio_df.empty else 'N/A'}")
                     return {}
                     
             except Exception as e:
