@@ -16,7 +16,8 @@ logging.basicConfig(level=logging.INFO,
 # 邮件发送者和接收者
 sender_email = "562157205@qq.com"
 receiver_email = "zhuifeng_668@qq.com"
-password = "tlbvoblptlrwbdfi"  # QQ邮箱的授权码
+# qq邮箱授权码tlbvoblptlrwbdfi
+password = "your_code"  # QQ邮箱的授权码
 
 # 全局变量存储主力净流入数据
 global_fund_flow_data = pd.DataFrame()  # 改为空DataFrame而不是字典
