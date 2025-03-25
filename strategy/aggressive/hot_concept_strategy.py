@@ -2,9 +2,8 @@ import akshare as ak
 import pandas as pd
 import numpy as np
 import logging
-import schedule
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO,
                    format="%(asctime)s - %(message)s", 
