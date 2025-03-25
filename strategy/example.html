@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点名小游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #name {
+            font-size: 2em;
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="name">张三</div>
+    <button id="startButton">开始</button>
+    <button id="pauseButton">暂停</button>
+
+    <script>
+        const names = ["张三", "李四", "王五"];
+        let intervalId;
+        let isRunning = false;
+
+        const nameElement = document.getElementById('name');
+        const startButton = document.getElementById('startButton');
+        const pauseButton = document.getElementById('pauseButton');
+
+        startButton.addEventListener('click', () => {
+            if (!isRunning) {
+                intervalId = setInterval(() => {
+                    const randomIndex = Math.floor(Math.random() * names.length);
+                    nameElement.textContent = names[randomIndex];
+                }, 100);
+                isRunning = true;
+            }
+        });
+
+        pauseButton.addEventListener('click', () => {
+            if (isRunning) {
+                clearInterval(intervalId);
+                isRunning = false;
+            }
+        });
+    </script>
+</body>
+</html>

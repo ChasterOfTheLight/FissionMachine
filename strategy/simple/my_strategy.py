@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO,
 # 邮件发送者和接收者
 sender_email = "562157205@qq.com"
 receiver_email = "zhuifeng_668@qq.com"
-password = "tlbvoblptlrwbdfi"  # QQ邮箱的授权码
+password = "your_code"  # QQ邮箱的授权码
 
 # 全局变量存储主力净流入数据
 global_fund_flow_data = pd.DataFrame()  # 改为空DataFrame而不是字典
@@ -50,7 +50,7 @@ def convert_to_number(value):
         return 0
 
 
-def stock_recommendation_strategy(stock_data):
+def stock_recommendation_strategy(stock_data, basic_info):
     if len(stock_data) < 11:
         logging.warning("数据量不足以计算移动平均线")
         return None
@@ -145,18 +145,24 @@ def stock_recommendation_strategy(stock_data):
     stock_data['连续上涨'] = ((stock_data['涨跌幅'] > 0)).rolling(window=3).sum()
     stock_data["Factor10"] = (stock_data['连续上涨'] < 3).astype(int)
 
+    # 基本面因子：市盈率（PE）和市净率（PB）
+    stock_data["PE"] = basic_info["市盈率-动态"]
+    stock_data["PB"] = basic_info["市净率"]
+    stock_data["Factor11"] = ((stock_data["PE"] < 20) & (stock_data["PB"] < 3)).astype(int)
+
     # 更新评分权重
     stock_data["Score"] = (
-        0.15 * stock_data["Factor1"] +  # 5日线突破
-        0.15 * stock_data["Factor2"] +  # 均线多头排列
-        0.10 * stock_data["Factor3"] +  # 放量确认
-        0.05 * stock_data["Factor4"] +  # 主力资金流入（最新日期）
-        0.05 * stock_data["Factor5"] +  # 非涨停
-        0.15 * stock_data["Factor6"] +  # 量价配合
-        0.15 * stock_data["Factor7"] +  # 趋势确认
-        0.10 * stock_data["Factor8"] +  # 涨幅控制
-        0.05 * stock_data["Factor9"] +  # MACD金叉
-        0.05 * stock_data["Factor10"]  # 连续上涨控制
+        0.12 * stock_data["Factor1"] +  # 5日线突破
+        0.12 * stock_data["Factor2"] +  # 均线多头排列
+        0.23 * stock_data["Factor3"] +  # 放量确认
+        0.04 * stock_data["Factor4"] +  # 主力资金流入（最新日期）
+        0.04 * stock_data["Factor5"] +  # 非涨停
+        0.12 * stock_data["Factor6"] +  # 量价配合
+        0.12 * stock_data["Factor7"] +  # 趋势确认
+        0.08 * stock_data["Factor8"] +  # 涨幅控制
+        0.04 * stock_data["Factor9"] +  # MACD金叉
+        0.04 * stock_data["Factor10"] +  # 连续上涨控制
+        0.05 * stock_data["Factor11"]  # 基本面因子
     )
 
     recommendations = stock_data.copy()
@@ -168,26 +174,25 @@ def stock_recommendation_strategy(stock_data):
 
 
 def get_stock_data(symbol, start_date, end_date):
-    return ak.stock_zh_a_hist(
-        symbol=symbol,
-        period="daily",
-        start_date=start_date,
-        end_date=end_date,
-        adjust="qfq",
-        timeout=10,
-    )
-
-
-def get_stock_info(symbol):
-    stock_info = ak.stock_individual_info_em(symbol=symbol)
-    return stock_info
+    try:
+        return ak.stock_zh_a_hist(
+            symbol=symbol,
+            period="daily",
+            start_date=start_date,
+            end_date=end_date,
+            adjust="qfq",
+            timeout=20,
+        )
+    except KeyError as e:
+        logging.error(f"获取股票数据时出错: {e}")
+        return pd.DataFrame()  # 返回空的 DataFrame 以继续处理其他股票
 
 
 def filter_stocks():
     stock_info = ak.stock_zh_a_spot_em()
-    # 过滤创业板、科创板股票
+    # 过滤科创板股票
     stock_info = stock_info[~stock_info["代码"].str.startswith(
-        ("3", "4", "8", "9", "68", "bj"))]
+        ("4", "8", "9", "68", "bj"))]
     # 过滤新股，次新股
     stock_info = stock_info[~stock_info["代码"].str.startswith(("N", "C"))]
     # 过滤ST股票
@@ -198,11 +203,12 @@ def filter_stocks():
     stock_info = stock_info[stock_info["成交量"] != 0]
     stock_no_list = stock_info["代码"].tolist()
     # 市值大于40亿小于200亿的股票
-    stock_no_list = stock_info[(stock_info["总市值"] > 40e8) & (stock_info["总市值"] < 200e8)]["代码"].tolist()
+    stock_no_list = stock_info[(stock_info["总市值"] > 40e8)
+                               & (stock_info["总市值"] < 200e8)]["代码"].tolist()
     # 排序
     stock_no_list.sort()
     # 返回股票代码与名称两列
-    return stock_info[["代码", "名称"]]
+    return stock_info[["代码", "名称", "市盈率-动态", "市净率"]]
 
 
 def send_email(subject, body):
@@ -238,11 +244,11 @@ def job():
             stock_code = row["代码"]
             stock_name = row["名称"]
             logging.info(f"处理股票：{stock_name}({stock_code})  index: {idx}")
-            stock_data = get_stock_data(stock_code, "20241223", "20250225")
+            stock_data = get_stock_data(stock_code, "20250101", "202503017")
             # 数据不为空
             if stock_data.empty:
                 continue
-            stock_recommendation = stock_recommendation_strategy(stock_data)
+            stock_recommendation = stock_recommendation_strategy(stock_data, row)
             if stock_recommendation is None:
                 continue
             new_recommendation = pd.DataFrame({
@@ -261,9 +267,10 @@ def job():
             time.sleep(0.2)
             # 筛选score > 0.9的股票
             all_recommendations = all_recommendations[all_recommendations["评分"]
-                                                      > 0.9]
-            # 打印目前的推荐股票数量
-            logging.info(len(all_recommendations))
+                                                      >= 0.95]
+            # 打印目前的推荐全部股票
+            logging.info(all_recommendations)
+
             # 如果all_recommendations已经有了20条，结束
             if len(all_recommendations) >= 20:
                 break
