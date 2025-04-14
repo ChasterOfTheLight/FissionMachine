@@ -244,7 +244,7 @@ def job():
             stock_code = row["代码"]
             stock_name = row["名称"]
             logging.info(f"处理股票：{stock_name}({stock_code})  index: {idx}")
-            stock_data = get_stock_data(stock_code, "20250301", "20250402")
+            stock_data = get_stock_data(stock_code, "20250301", "20250403")
             # 数据不为空
             if stock_data.empty:
                 continue

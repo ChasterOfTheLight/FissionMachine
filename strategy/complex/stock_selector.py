@@ -4,6 +4,19 @@ import akshare as ak
 import talib as ta
 from datetime import datetime, timedelta
 import os
+import logging
+import time
+
+def retry_on_failure(func, max_retries=3, delay=2):
+    """带重试机制的函数执行器"""
+    for i in range(max_retries):
+        try:
+            return func()
+        except Exception as e:
+            if i == max_retries - 1:
+                raise e
+            logging.warning(f"第{i+1}次尝试失败，等待{delay}秒后重试...")
+            time.sleep(delay)
 
 class StockSelector:
     """
