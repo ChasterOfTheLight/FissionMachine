@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from itertools import product
 
-class FootballCalculator:
+class FootballScorePredicition:
     def __init__(self, root):
         self.root = root
         self.root.title("足球比分计算器")
@@ -93,5 +93,5 @@ class FootballCalculator:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = FootballCalculator(root)
+    app = FootballScorePredicition(root)
     root.mainloop()
