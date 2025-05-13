@@ -17,6 +17,7 @@ def get_hot_concepts():
         # 排除日涨停_含一字、昨日连板_含一字和昨日涨停
         concept_rank = concept_rank[~concept_rank['板块名称'].str.contains("日涨停_含一字")]
         concept_rank = concept_rank[~concept_rank['板块名称'].str.contains("昨日连板_含一字")]
+        concept_rank = concept_rank[~concept_rank['板块名称'].str.contains("昨日连板")]
 
         # 添加综合评分列，使用实际可用的指标
         concept_rank['score'] = (
@@ -114,11 +115,11 @@ def aggressive_stock_strategy(stock_data, stock_code):
 
     return {
         '股票代码': stock_code,
-        '日期': latest.name,
+        '日期': latest['日期'],
         '评分': score,
         'RSI': latest['RSI'],
         '成交量比': latest['Volume_Ratio'],
-        '涨速': latest['Price_Speed']
+        '涨速': latest['涨跌幅']
     }
 
 def run_strategy():
@@ -147,6 +148,9 @@ def run_strategy():
                 # 应用策略
                 result = aggressive_stock_strategy(stock_data, stock['代码'])
                 if result and result['评分'] >= 0.7:  # 只推荐评分大于0.7的股票
+                    # 去重
+                    if any(r['股票代码'] == result['股票代码'] for r in recommendations):
+                        continue
                     result['所属概念'] = concept
                     result['股票名称'] = stock['名称']  # 添加股票名称
                     recommendations.append(result)
