@@ -18,6 +18,7 @@ def get_hot_concepts():
         concept_rank = concept_rank[~concept_rank['板块名称'].str.contains("日涨停_含一字")]
         concept_rank = concept_rank[~concept_rank['板块名称'].str.contains("昨日连板_含一字")]
         concept_rank = concept_rank[~concept_rank['板块名称'].str.contains("昨日连板")]
+        concept_rank = concept_rank[~concept_rank['板块名称'].str.contains("昨日涨停")]
 
         # 添加综合评分列，使用实际可用的指标
         concept_rank['score'] = (
@@ -45,7 +46,7 @@ def get_concept_leading_stocks(concept_name):
         # 按照市值和涨跌幅排序,找出龙头股
         stocks = stocks.sort_values(by=['成交额', '涨跌幅'], ascending=[False, False])
         # 返回代码和名称
-        return stocks.head(5)[['代码', '名称']].to_dict('records')
+        return stocks.head(5)[['代码', '名称', '涨跌幅']].to_dict('records')
     except Exception as e:
         logging.error(f"获取概念龙头股失败: {concept_name}: {e}")
         return []
