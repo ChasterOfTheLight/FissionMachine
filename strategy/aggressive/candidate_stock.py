@@ -56,10 +56,10 @@ def candidate_stock_strategy(stock_data, target_date):
     analysis_data["Factor1"] = ((analysis_data["收盘"] > analysis_data["MA3"]) & 
                                (analysis_data["收盘"] > analysis_data["MA5"])).astype(int)
     
-    # 因子3：最新1天的成交量超过20日均量的120%
+    # 因子3：最新1天的成交量超过20日均量的200%
     analysis_data["Volume_MA20"] = analysis_data["成交量"].rolling(window=20).mean()
     analysis_data["Volume_MA1"] = analysis_data["成交量"].rolling(window=1).mean()
-    analysis_data["Factor3"] = (analysis_data["Volume_MA1"] > analysis_data["Volume_MA20"] * 1.2).astype(int)
+    analysis_data["Factor3"] = (analysis_data["Volume_MA1"] > analysis_data["Volume_MA20"] * 2).astype(int)
 
     # MACD
     exp12 = analysis_data['收盘'].ewm(span=12, adjust=False).mean()
@@ -76,13 +76,18 @@ def candidate_stock_strategy(stock_data, target_date):
     analysis_data["20日新高"] = analysis_data["收盘"].rolling(window=20).max()
     analysis_data["Factor6"] = (analysis_data["收盘"] < analysis_data["20日新高"]).astype(int)
 
+    # 因子7：非高开低走
+    analysis_data["开盘涨幅"] = (analysis_data["开盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
+    analysis_data["Factor7"] = (~((analysis_data["开盘涨幅"] > 0) & (analysis_data["收盘"] >= analysis_data["开盘"]))).astype(int)
+
     # 计算评分
     analysis_data["Score"] = (
-        0.25 * analysis_data["Factor1"] +
-        0.20 * analysis_data["Factor3"] +
-        0.20 * analysis_data["Factor4"] +
+        0.20 * analysis_data["Factor1"] +
+        0.15 * analysis_data["Factor3"] +
+        0.15 * analysis_data["Factor4"] +
         0.15 * analysis_data["Factor5"] +
-        0.20 * analysis_data["Factor6"]
+        0.15 * analysis_data["Factor6"] +
+        0.20 * analysis_data["Factor7"]
     )
         
     result = analysis_data.sort_values(by="日期", ascending=False).iloc[0]
@@ -106,7 +111,7 @@ if __name__ == "__main__":
     
     stock_list = filter_stocks()
     print(f"筛选后股票数量: {len(stock_list)}")
-    target_date = "20250526"  # 指定要分析的日期
+    target_date = "20250527"  # 指定要分析的日期
     results = []
     
     for idx, row in stock_list.iterrows():
