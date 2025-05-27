@@ -1,6 +1,7 @@
 import akshare as ak
 import pandas as pd
 import logging
+from datetime import datetime
 
 def get_stock_data(symbol, start_date, end_date):
     try:
@@ -30,53 +31,69 @@ def filter_stocks():
     stock_info["总市值"] = stock_info["总市值"] / 1e8
     return stock_info[["代码", "名称", "总市值"]]
 
-def candidate_stock_strategy(stock_data):
+def candidate_stock_strategy(stock_data, target_date):
+    """
+    @param stock_data: 完整的股票数据
+    @param target_date: 要分析的指定日期
+    """
     if len(stock_data) < 26:
         logging.warning("数据量不足以计算指标")
         return None
 
+    # 将日期列转换为datetime类型
+    stock_data['日期'] = pd.to_datetime(stock_data['日期'])
+    target_date = pd.to_datetime(target_date)   
+    # 获取指定日期之前(包含)的数据进行分析
+    analysis_data = stock_data[stock_data['日期'] <= target_date].copy()
+    if len(analysis_data) < 26:
+        return None
+
     # 计算3日、5日均线
-    stock_data["MA3"] = stock_data["收盘"].rolling(window=3).mean()
-    stock_data["MA5"] = stock_data["收盘"].rolling(window=5).mean()
+    analysis_data["MA3"] = analysis_data["收盘"].rolling(window=3).mean()
+    analysis_data["MA5"] = analysis_data["收盘"].rolling(window=5).mean()
 
     # 因子1：收盘价在3日线和5日线上
-    stock_data["Factor1"] = ((stock_data["收盘"] > stock_data["MA3"]) & 
-                            (stock_data["收盘"] > stock_data["MA5"])).astype(int)
+    analysis_data["Factor1"] = ((analysis_data["收盘"] > analysis_data["MA3"]) & 
+                               (analysis_data["收盘"] > analysis_data["MA5"])).astype(int)
     
     # 因子3：最新1天的成交量超过20日均量的120%
-    stock_data["Volume_MA20"] = stock_data["成交量"].rolling(window=20).mean()
-    stock_data["Volume_MA1"] = stock_data["成交量"].rolling(window=1).mean()
-    # 修改放量判断标准为超过20日均量的20%
-    stock_data["Factor3"] = (stock_data["Volume_MA1"] > stock_data["Volume_MA20"] * 1.2).astype(int)
+    analysis_data["Volume_MA20"] = analysis_data["成交量"].rolling(window=20).mean()
+    analysis_data["Volume_MA1"] = analysis_data["成交量"].rolling(window=1).mean()
+    analysis_data["Factor3"] = (analysis_data["Volume_MA1"] > analysis_data["Volume_MA20"] * 1.2).astype(int)
 
     # MACD
-    exp12 = stock_data['收盘'].ewm(span=12, adjust=False).mean()
-    exp26 = stock_data['收盘'].ewm(span=26, adjust=False).mean()
-    stock_data['MACD'] = exp12 - exp26
-    stock_data['Signal'] = stock_data['MACD'].ewm(span=9, adjust=False).mean()
-    # 因子4：MACD向上（MACD大于Signal线）
-    stock_data["Factor4"] = (stock_data["MACD"] > stock_data["Signal"]).astype(int)
+    exp12 = analysis_data['收盘'].ewm(span=12, adjust=False).mean()
+    exp26 = analysis_data['收盘'].ewm(span=26, adjust=False).mean()
+    analysis_data['MACD'] = exp12 - exp26
+    analysis_data['Signal'] = analysis_data['MACD'].ewm(span=9, adjust=False).mean()
+    analysis_data["Factor4"] = (analysis_data["MACD"] > analysis_data["Signal"]).astype(int)
 
-    # 因子5：当日非涨停（涨幅小于9.8%）
-    stock_data["涨跌幅"] = (stock_data["收盘"] - stock_data["收盘"].shift(1)) / stock_data["收盘"].shift(1) * 100
-    stock_data["Factor5"] = (stock_data["涨跌幅"] < 9.8).astype(int)
+    # 因子5：当日非涨停
+    analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
+    analysis_data["Factor5"] = (analysis_data["涨跌幅"] < 9.8).astype(int)
     
-    # 因子6：最近未创新高（当前价格低于20日新高）
-    stock_data["20日新高"] = stock_data["收盘"].rolling(window=20).max()
-    stock_data["Factor6"] = (stock_data["收盘"] < stock_data["20日新高"]).astype(int)
+    # 因子6：最近未创新高
+    analysis_data["20日新高"] = analysis_data["收盘"].rolling(window=20).max()
+    analysis_data["Factor6"] = (analysis_data["收盘"] < analysis_data["20日新高"]).astype(int)
 
-    # 更新评分权重 (重新分配因子2的权重)
-    stock_data["Score"] = (
-        0.25 * stock_data["Factor1"] +  # 5日线突破
-        0.20 * stock_data["Factor3"] +  # 放量确认
-        0.20 * stock_data["Factor4"] +  # MACD向上
-        0.15 * stock_data["Factor5"] +  # 非涨停
-        0.20 * stock_data["Factor6"]    # 未突破新高
+    # 计算评分
+    analysis_data["Score"] = (
+        0.25 * analysis_data["Factor1"] +
+        0.20 * analysis_data["Factor3"] +
+        0.20 * analysis_data["Factor4"] +
+        0.15 * analysis_data["Factor5"] +
+        0.20 * analysis_data["Factor6"]
     )
-
-    # 返回最新一行
-    latest = stock_data.sort_values(by="日期", ascending=False).iloc[0]
-    return latest
+        
+    result = analysis_data.sort_values(by="日期", ascending=False).iloc[0]
+    
+    # 计算次日涨跌幅（如果有下一个交易日的数据）
+    next_day_data = stock_data[stock_data["日期"] > target_date].sort_values("日期")
+    if not next_day_data.empty:
+        next_day = next_day_data.iloc[0]
+        result["次日涨跌幅"] = (next_day["收盘"] - result["收盘"]) / result["收盘"] * 100
+    
+    return result
 
 # 示例用法
 if __name__ == "__main__":
@@ -89,6 +106,7 @@ if __name__ == "__main__":
     
     stock_list = filter_stocks()
     print(f"筛选后股票数量: {len(stock_list)}")
+    target_date = "20250526"  # 指定要分析的日期
     results = []
     
     for idx, row in stock_list.iterrows():
@@ -96,28 +114,31 @@ if __name__ == "__main__":
             break
             
         stock_code = row["代码"]
+        # 获取更长时间范围的数据
         stock_data = get_stock_data(stock_code, "20250401", "20250527")
         if not stock_data.empty:
-            result = candidate_stock_strategy(stock_data)
+            result = candidate_stock_strategy(stock_data, target_date)
             if result is not None and result["Score"] == 1.0:
+                # 计算成交量增量百分比
+                volume_increase = ((result["Volume_MA1"] - result["Volume_MA20"]) / result["Volume_MA20"] * 100)
                 results.append({
                     "代码": stock_code,
                     "名称": row["名称"],
                     "总市值": round(row["总市值"], 2),
                     "日期": result["日期"],
                     "收盘": result["收盘"],
-                    "1日均量": round(result["Volume_MA1"]/10000, 2),  # 1日平均成交量（万手）
-                    "20日均量": round(result["Volume_MA20"]/10000, 2),  # 20日平均成交量（万手）
-                    "20日新高": round(result["20日新高"]),  # 20日平均成交量（万手）
+                    "1日均量": round(result["Volume_MA1"]/10000, 2),
+                    "20日均量": round(result["Volume_MA20"]/10000, 2),
+                    "量比": round(volume_increase, 2),  # 添加成交量增量百分比
                     "涨跌幅": round(result["涨跌幅"], 2),
+                    "次日涨跌幅": round(result["次日涨跌幅"], 2) if "次日涨跌幅" in result else None,
                     "Score": result["Score"]
                 })
-                print(f"已找到 {len([r for r in results if r['Score'] == 1.0])} 个满分股票")
-                
+
+    # 输出结果
     df_result = pd.DataFrame(results)
     if not df_result.empty:
         print("\n满分股票列表:")
-        # 重新排列显示列的顺序并设置列名
         columns = {
             "代码": "代码",
             "名称": "名称",
@@ -126,10 +147,15 @@ if __name__ == "__main__":
             "收盘": "收盘",
             "1日均量": "1日均量(万手)",
             "20日均量": "20日均量(万手)",
+            "量比": "量比(%)",
             "涨跌幅": "涨跌幅(%)",
+            "次日涨跌幅": "次日涨跌幅(%)",
             "Score": "评分"
         }
         df_result = df_result.rename(columns=columns)
+        # 按量比降序排序
+        df_result = df_result.sort_values(by="量比(%)", ascending=False)
         print(df_result[list(columns.values())])
+        print(f"\n分析日期: {target_date}")
     else:
         print("\n未找到满分股票")
