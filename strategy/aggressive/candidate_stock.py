@@ -2,6 +2,7 @@ import akshare as ak
 import pandas as pd
 import logging
 from datetime import datetime
+import time
 
 def get_stock_data(symbol, start_date, end_date):
     try:
@@ -72,13 +73,12 @@ def candidate_stock_strategy(stock_data, target_date):
     analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
     analysis_data["Factor5"] = (analysis_data["涨跌幅"] < 9.8).astype(int)
     
-    # 因子6：最近未创新高
-    analysis_data["20日新高"] = analysis_data["收盘"].rolling(window=20).max()
-    analysis_data["Factor6"] = (analysis_data["收盘"] < analysis_data["20日新高"]).astype(int)
+    # 因子6：最近未创30日新高
+    analysis_data["30日新高"] = analysis_data["收盘"].rolling(window=30).max()
+    analysis_data["Factor6"] = (analysis_data["收盘"] < analysis_data["30日新高"]).astype(int)
 
-    # 因子7：非高开低走
-    analysis_data["开盘涨幅"] = (analysis_data["开盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
-    analysis_data["Factor7"] = (~((analysis_data["开盘涨幅"] > 0) & (analysis_data["收盘"] >= analysis_data["开盘"]))).astype(int)
+    # 因子7：收阳线或平盘
+    analysis_data["Factor7"] = (analysis_data["收盘"] >= analysis_data["开盘"]).astype(int)
 
     # 计算评分
     analysis_data["Score"] = (
@@ -110,18 +110,30 @@ if __name__ == "__main__":
     pd.set_option('display.unicode.east_asian_width', True)  # 处理中文对齐
     
     stock_list = filter_stocks()
-    print(f"筛选后股票数量: {len(stock_list)}")
-    target_date = "20250528"  # 指定要分析的日期
+    total_stocks = len(stock_list)
+    print(f"筛选后股票数量: {total_stocks}")
+    target_date = "20250528"
     results = []
+    request_count = 0
     
     for idx, row in stock_list.iterrows():
-        if len([r for r in results if r["Score"] == 1.0]) >= 20:
-            print("当前执行到的位置:", idx)
+        size = len(results)
+        if size >= 20:
+            print("已找到20个满分股票,停止搜索")
             break
-            
+        
+        # 显示进度
+        print(f"\r当前进度: {request_count+1}/{total_stocks} ({((request_count+1)/total_stocks*100):.1f}%)  当前已找到 {size} 个结果", end="")
+        
         stock_code = row["代码"]
-        # 获取更长时间范围的数据
-        stock_data = get_stock_data(stock_code, "20250401", "20250528")
+        request_count += 1
+        
+        # 每100次请求后强制休息
+        if request_count % 100 == 0:
+            print(f"\n已发送{request_count}个请求,暂停60秒...")
+            time.sleep(60)
+        
+        stock_data = get_stock_data(stock_code, "20250301", "20250528")
         if not stock_data.empty:
             result = candidate_stock_strategy(stock_data, target_date)
             if result is not None and result["Score"] == 1.0:
