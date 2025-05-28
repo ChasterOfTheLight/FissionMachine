@@ -111,16 +111,17 @@ if __name__ == "__main__":
     
     stock_list = filter_stocks()
     print(f"筛选后股票数量: {len(stock_list)}")
-    target_date = "20250527"  # 指定要分析的日期
+    target_date = "20250528"  # 指定要分析的日期
     results = []
     
     for idx, row in stock_list.iterrows():
         if len([r for r in results if r["Score"] == 1.0]) >= 20:
+            print("当前执行到的位置:", idx)
             break
             
         stock_code = row["代码"]
         # 获取更长时间范围的数据
-        stock_data = get_stock_data(stock_code, "20250401", "20250527")
+        stock_data = get_stock_data(stock_code, "20250401", "20250528")
         if not stock_data.empty:
             result = candidate_stock_strategy(stock_data, target_date)
             if result is not None and result["Score"] == 1.0:
