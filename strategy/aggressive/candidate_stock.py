@@ -4,6 +4,14 @@ import logging
 from datetime import datetime
 import time
 
+# 添加配置参数
+CONFIG = {
+    "start_date": "20250301",  # 历史数据开始日期
+    "end_date": "20250603",    # 历史数据结束日期
+    "target_date": "20250530",  # 分析目标日期
+    "single_stock": ""           # 单独分析的股票代码，为空则分析所有股票
+}
+
 def get_stock_data(symbol, start_date, end_date):
     try:
         return ak.stock_zh_a_hist(
@@ -75,7 +83,7 @@ def candidate_stock_strategy(stock_data, target_date):
     
     # 因子6：最近未创30日新高
     analysis_data["30日新高"] = analysis_data["收盘"].rolling(window=30).max()
-    analysis_data["Factor6"] = (analysis_data["收盘"] < analysis_data["30日新高"]).astype(int)
+    analysis_data["Factor6"] = (analysis_data["收盘"] <= analysis_data["30日新高"]).astype(int)
 
     # 因子7：收阳线或平盘
     analysis_data["Factor7"] = (analysis_data["收盘"] >= analysis_data["开盘"]).astype(int)
@@ -100,80 +108,148 @@ def candidate_stock_strategy(stock_data, target_date):
     
     return result
 
+# 在文件开头添加函数
+def get_stock_name(stock_code):
+    """获取股票名称的轻量级函数"""
+    try:
+        # 获取所有股票的代码和名称对应关系
+        stock_info = ak.stock_info_a_code_name()
+        # 查找指定股票代码的名称
+        stock_name = stock_info[stock_info['code'] == stock_code]['name'].values[0]
+        return stock_name
+    except:
+        return "未知"
+
 # 示例用法
 if __name__ == "__main__":
     # 设置pandas显示选项
-    pd.set_option('display.max_columns', None)  # 显示所有列
-    pd.set_option('display.width', None)  # 显示的宽度无限制
-    pd.set_option('display.float_format', lambda x: '%.2f' % x)  # 浮点数格式
-    pd.set_option('display.unicode.ambiguous_as_wide', True)  # 处理中文对齐
-    pd.set_option('display.unicode.east_asian_width', True)  # 处理中文对齐
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', None)
+    pd.set_option('display.float_format', lambda x: '%.2f' % x)
+    pd.set_option('display.unicode.ambiguous_as_wide', True)
+    pd.set_option('display.unicode.east_asian_width', True)
     
-    stock_list = filter_stocks()
-    total_stocks = len(stock_list)
-    print(f"筛选后股票数量: {total_stocks}")
-    target_date = "20250528"
+    target_date = CONFIG["target_date"]
     results = []
-    request_count = 0
     
-    for idx, row in stock_list.iterrows():
-        size = len(results)
-        if size >= 20:
-            print("已找到20个满分股票,停止搜索")
-            break
-        
-        # 显示进度
-        print(f"\r当前进度: {request_count+1}/{total_stocks} ({((request_count+1)/total_stocks*100):.1f}%)  当前已找到 {size} 个结果", end="")
-        
-        stock_code = row["代码"]
-        request_count += 1
-        
-        # 每100次请求后强制休息
-        if request_count % 100 == 0:
-            print(f"\n已发送{request_count}个请求,暂停60秒...")
-            time.sleep(60)
-        
-        stock_data = get_stock_data(stock_code, "20250301", "20250528")
+    if CONFIG["single_stock"]:
+        # 单独分析指定股票
+        stock_data = get_stock_data(CONFIG["single_stock"], CONFIG["start_date"], CONFIG["end_date"])
         if not stock_data.empty:
             result = candidate_stock_strategy(stock_data, target_date)
-            if result is not None and result["Score"] == 1.0:
-                # 计算成交量增量百分比
+            if result is not None:
+                try:
+                    stock_name = get_stock_name(CONFIG["single_stock"])
+                    spot_info = ak.stock_zh_a_spot_em()
+                    total_mv = float(spot_info[spot_info["代码"] == CONFIG["single_stock"]]["总市值"].values[0]) / 1e8
+                except:
+                    stock_name = "未知"
+                    total_mv = 0
+                
                 volume_increase = ((result["Volume_MA1"] - result["Volume_MA20"]) / result["Volume_MA20"] * 100)
                 results.append({
-                    "代码": stock_code,
-                    "名称": row["名称"],
-                    "总市值": round(row["总市值"], 2),
+                    "代码": CONFIG["single_stock"],
+                    "名称": stock_name,
+                    "总市值": round(total_mv, 2),
                     "日期": result["日期"],
                     "收盘": result["收盘"],
                     "1日均量": round(result["Volume_MA1"]/10000, 2),
                     "20日均量": round(result["Volume_MA20"]/10000, 2),
-                    "量比": round(volume_increase, 2),  # 添加成交量增量百分比
+                    "量比": round(volume_increase, 2),
                     "涨跌幅": round(result["涨跌幅"], 2),
                     "次日涨跌幅": round(result["次日涨跌幅"], 2) if "次日涨跌幅" in result else None,
                     "Score": result["Score"]
                 })
-
-    # 输出结果
-    df_result = pd.DataFrame(results)
-    if not df_result.empty:
-        print("\n满分股票列表:")
-        columns = {
-            "代码": "代码",
-            "名称": "名称",
-            "总市值": "总市值(亿)",
-            "日期": "日期",
-            "收盘": "收盘",
-            "1日均量": "1日均量(万手)",
-            "20日均量": "20日均量(万手)",
-            "量比": "量比(%)",
-            "涨跌幅": "涨跌幅(%)",
-            "次日涨跌幅": "次日涨跌幅(%)",
-            "Score": "评分"
-        }
-        df_result = df_result.rename(columns=columns)
-        # 按量比降序排序
-        df_result = df_result.sort_values(by="量比(%)", ascending=False)
-        print(df_result[list(columns.values())])
-        print(f"\n分析日期: {target_date}")
+                
+                # 输出单个股票分析结果
+                df_result = pd.DataFrame(results)
+                if not df_result.empty:
+                    print("\n股票分析结果:")
+                    columns = {
+                        "代码": "代码",
+                        "名称": "名称",
+                        "总市值": "总市值(亿)",
+                        "日期": "日期",
+                        "收盘": "收盘",
+                        "1日均量": "1日均量(万手)",
+                        "20日均量": "20日均量(万手)",
+                        "量比": "量比(%)",
+                        "涨跌幅": "涨跌幅(%)",
+                        "次日涨跌幅": "次日涨跌幅(%)",
+                        "Score": "评分"
+                    }
+                    df_result = df_result.rename(columns=columns)
+                    print(df_result[list(columns.values())])
+                    print(f"\n分析日期: {target_date}")
+                else:
+                    print("\n分析失败")
+            else:
+                print(f"\n股票 {CONFIG['single_stock']} 数据不足以进行分析")
+        else:
+            print(f"\n获取股票 {CONFIG['single_stock']} 数据失败")
     else:
-        print("\n未找到满分股票")
+        # 批量筛选逻辑
+        stock_list = filter_stocks()
+        total_stocks = len(stock_list)
+        print(f"筛选后股票数量: {total_stocks}")
+        request_count = 0
+        
+        for idx, row in stock_list.iterrows():
+            request_count += 1
+            
+            # 显示进度
+            print(f"\r进度: {request_count}/{total_stocks} ({(request_count/total_stocks*100):.1f}%)", end="")
+            
+            # 每100次请求后强制休息
+            if request_count % 100 == 0:
+                print(f"\n已发送{request_count}个请求,暂停60秒...")
+                time.sleep(60)
+            
+            stock_code = row["代码"]
+            stock_data = get_stock_data(stock_code, CONFIG["start_date"], CONFIG["end_date"])
+            if not stock_data.empty:
+                result = candidate_stock_strategy(stock_data, target_date)
+                if result is not None and result["Score"] == 1.0:
+                    volume_increase = ((result["Volume_MA1"] - result["Volume_MA20"]) / result["Volume_MA20"] * 100)
+                    results.append({
+                        "代码": stock_code,
+                        "名称": row["名称"],
+                        "总市值": round(row["总市值"], 2),
+                        "日期": result["日期"],
+                        "收盘": result["收盘"],
+                        "1日均量": round(result["Volume_MA1"]/10000, 2),
+                        "20日均量": round(result["Volume_MA20"]/10000, 2),
+                        "量比": round(volume_increase, 2),
+                        "涨跌幅": round(result["涨跌幅"], 2),
+                        "次日涨跌幅": round(result["次日涨跌幅"], 2) if "次日涨跌幅" in result else None,
+                        "Score": result["Score"]
+                    })
+                    
+                    # 如果找到20个满分股票就停止搜索
+                    if len(results) >= 20:
+                        print("\n已找到20个满分股票,停止搜索")
+                        break
+
+        # 输出结果
+        df_result = pd.DataFrame(results)
+        if not df_result.empty:
+            print("\n满分股票列表:")
+            columns = {
+                "代码": "代码",
+                "名称": "名称",
+                "总市值": "总市值(亿)",
+                "日期": "日期",
+                "收盘": "收盘",
+                "1日均量": "1日均量(万手)",
+                "20日均量": "20日均量(万手)",
+                "量比": "量比(%)",
+                "涨跌幅": "涨跌幅(%)",
+                "次日涨跌幅": "次日涨跌幅(%)",
+                "Score": "评分"
+            }
+            df_result = df_result.rename(columns=columns)
+            df_result = df_result.sort_values(by="量比(%)", ascending=False)
+            print(df_result[list(columns.values())])
+            print(f"\n分析日期: {target_date}")
+        else:
+            print("\n未找到满分股票")
