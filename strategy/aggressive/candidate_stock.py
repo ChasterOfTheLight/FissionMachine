@@ -217,7 +217,7 @@ if __name__ == "__main__":
                 
                 df_result = pd.DataFrame(results)
                 df_result = df_result.rename(columns=OUTPUT_COLUMNS)
-                print(df_result[list(columns.values())])
+                print(df_result[list(OUTPUT_COLUMNS.values())])
                 print(f"\n分析日期: {target_date}")
                 print(f"股票 {CONFIG['single_stock']} 分析完成")
             else:
