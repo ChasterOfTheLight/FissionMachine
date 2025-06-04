@@ -26,8 +26,8 @@ def format_result(stock_code, stock_name, total_mv, result):
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250603",
-    "target_date": "20250603",
+    "end_date": "20250604",
+    "target_date": "20250604",
     "single_stock": "",
     "limit_up_threshold": 9.8,
     "request_batch_size": 100,
@@ -215,7 +215,7 @@ if __name__ == "__main__":
                 
                 df_result = pd.DataFrame(results)
                 df_result = df_result.rename(columns=OUTPUT_COLUMNS)
-                print(df_result[list(columns.values())])
+                print(df_result[list(OUTPUT_COLUMNS.values())])
                 print(f"\n分析日期: {target_date}")
                 print(f"股票 {CONFIG['single_stock']} 分析完成")
             else:
