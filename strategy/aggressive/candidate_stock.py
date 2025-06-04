@@ -14,29 +14,15 @@ def format_result(stock_code, stock_name, total_mv, result):
         "总市值": round(total_mv, 2),
         "日期": result["日期"],
         "收盘": result["收盘"],
-        "成交额": round(result["成交额"]/10000, 2),  # 成交金额，单位转为万元
+        "成交额": round(result["成交额"]/10000, 2),
         "1日均量": round(result["Volume_MA1"]/10000, 2),
         "20日均量": round(result["Volume_MA20"]/10000, 2),
         "量比": round(volume_increase, 2),
+        "前20日涨幅": round(result["前20日涨幅"], 2) if "前20日涨幅" in result and pd.notna(result["前20日涨幅"]) else None,
         "涨跌幅": round(result["涨跌幅"], 2),
         "次日涨跌幅": round(result["次日涨跌幅"], 2) if "次日涨跌幅" in result else None,
         "Score": result["Score"]
     }
-
-# 添加配置参数
-CONFIG = {
-    "start_date": "20250301",
-    "end_date": "20250603",
-    "target_date": "20250603",
-    "single_stock": "",
-    "limit_up_threshold": 9.8,
-    "request_batch_size": 100,
-    "batch_sleep_time": 60,
-    "request_timeout": 20,
-    "min_market_value": 40e8,
-    "max_market_value": 200e8,
-    "max_results": 20,
-}
 
 # 统一的输出列定义
 OUTPUT_COLUMNS = {
@@ -49,9 +35,25 @@ OUTPUT_COLUMNS = {
     "1日均量": "1日均量(万手)",
     "20日均量": "20日均量(万手)",
     "量比": "量比(%)",
+    "前20日涨幅": "前20日涨幅(%)",
     "涨跌幅": "涨跌幅(%)",
     "次日涨跌幅": "次日涨跌幅(%)",
     "Score": "评分"
+}
+
+# 添加配置参数
+CONFIG = {
+    "start_date": "20250301",
+    "end_date": "20250604",
+    "target_date": "20250604",
+    "single_stock": "",
+    "limit_up_threshold": 9.8,
+    "request_batch_size": 100,
+    "batch_sleep_time": 60,
+    "request_timeout": 20,
+    "min_market_value": 40e8,
+    "max_market_value": 200e8,
+    "max_results": 20,
 }
 
 def get_stock_data(symbol, start_date, end_date):
@@ -113,9 +115,9 @@ def candidate_stock_strategy(stock_data, target_date):
     analysis_data["Volume_MA1"] = analysis_data["成交量"].rolling(window=1).mean()
     analysis_data["Factor3"] = (analysis_data["成交量"] > analysis_data["Volume_MA20"] * 2).astype(int)
     
-    # 删除有问题的代码块 - 我们已经在第50行有了正确的 analysis_data
-    # if not needs_modification:
-    #     analysis_data = stock_data[stock_data['日期'] <= target_date]
+    # 新增：计算前20交易日涨幅
+    analysis_data["20日前收盘"] = analysis_data["收盘"].shift(20)
+    analysis_data["前20日涨幅"] = ((analysis_data["收盘"] - analysis_data["20日前收盘"]) / analysis_data["20日前收盘"] * 100)
     
     # MACD
     exp12 = analysis_data['收盘'].ewm(span=12, adjust=False).mean()
@@ -229,7 +231,7 @@ if __name__ == "__main__":
         print(f"筛选后股票数量: {total_stocks}")
         request_count = 0
         collected_count = 0  # 已收集的满分股票数量
-        max_results = 20     # 最大结果数量限制
+        max_results = 40     # 最大结果数量限制
         
         for idx, row in stock_list.iterrows():
             # 如果已收集足够数量的结果，提前退出
