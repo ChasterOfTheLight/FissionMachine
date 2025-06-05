@@ -44,16 +44,16 @@ OUTPUT_COLUMNS = {
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250604",
-    "target_date": "20250604",
+    "end_date": "20250605",
+    "target_date": "20250605",
     "single_stock": "",
     "limit_up_threshold": 9.8,
-    "request_batch_size": 100,
-    "batch_sleep_time": 60,
+    "request_batch_size": 150,
+    "batch_sleep_time": 90,
     "request_timeout": 20,
     "min_market_value": 40e8,
     "max_market_value": 200e8,
-    "max_results": 20,
+    "max_results": 30,
 }
 
 def get_stock_data(symbol, start_date, end_date):
@@ -127,8 +127,8 @@ def candidate_stock_strategy(stock_data, target_date):
     analysis_data["Factor4"] = (analysis_data["MACD"] > analysis_data["Signal"]).astype(int)
 
     # 因子5：当日非涨停
-    analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
-    analysis_data["Factor5"] = (analysis_data["涨跌幅"] < CONFIG["limit_up_threshold"]).astype(int)  # 使用配置变量
+    # analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
+    # analysis_data["Factor5"] = (analysis_data["涨跌幅"] < CONFIG["limit_up_threshold"]).astype(int)  # 使用配置变量
     
     # 因子6：最近未创30日新高
     analysis_data["30日新高"] = analysis_data["收盘"].rolling(window=30).max()
@@ -139,12 +139,12 @@ def candidate_stock_strategy(stock_data, target_date):
 
     # 计算评分
     analysis_data["Score"] = (
-        0.20 * analysis_data["Factor1"] +
-        0.15 * analysis_data["Factor3"] +
-        0.15 * analysis_data["Factor4"] +
-        0.15 * analysis_data["Factor5"] +
-        0.15 * analysis_data["Factor6"] +
-        0.20 * analysis_data["Factor7"]
+        0.20 * analysis_data["Factor1"] +    # 5日线突破
+        0.3 * analysis_data["Factor3"] +    # 成交额超20日均量
+        0.15 * analysis_data["Factor4"] +    # MACD金叉
+        # 0.15 * analysis_data["Factor5"] +  # 非涨停
+        0.15 * analysis_data["Factor6"] +    # 最近未创30日新高
+        0.20 * analysis_data["Factor7"]      # 收阳线或平盘
     )
         
     result = analysis_data.sort_values(by="日期", ascending=False).iloc[0]
@@ -231,7 +231,7 @@ if __name__ == "__main__":
         print(f"筛选后股票数量: {total_stocks}")
         request_count = 0
         collected_count = 0  # 已收集的满分股票数量
-        max_results = 40     # 最大结果数量限制
+        max_results = CONFIG["max_results"]     # 最大结果数量限制
         
         for idx, row in stock_list.iterrows():
             # 如果已收集足够数量的结果，提前退出
