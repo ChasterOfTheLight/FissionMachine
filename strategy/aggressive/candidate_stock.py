@@ -44,16 +44,16 @@ OUTPUT_COLUMNS = {
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250605",
-    "target_date": "20250605",
+    "end_date": "20250606",
+    "target_date": "20250606",
     "single_stock": "",
     "limit_up_threshold": 9.8,
-    "request_batch_size": 150,
-    "batch_sleep_time": 90,
+    "request_batch_size": 400,
+    "batch_sleep_time": 300,
     "request_timeout": 20,
     "min_market_value": 40e8,
     "max_market_value": 200e8,
-    "max_results": 30,
+    "max_results": 25,
 }
 
 def get_stock_data(symbol, start_date, end_date):
@@ -99,7 +99,7 @@ def candidate_stock_strategy(stock_data, target_date):
     target_date = pd.to_datetime(target_date)   
     # 获取指定日期之前(包含)的数据进行分析
     analysis_data = stock_data[stock_data['日期'] <= target_date].copy()
-    if len(analysis_data) < 26:
+    if len(analysis_data) < 30:
         return None
 
     # 计算3日、5日均线
@@ -126,7 +126,9 @@ def candidate_stock_strategy(stock_data, target_date):
     analysis_data['Signal'] = analysis_data['MACD'].ewm(span=9, adjust=False).mean()
     analysis_data["Factor4"] = (analysis_data["MACD"] > analysis_data["Signal"]).astype(int)
 
-    # 因子5：当日非涨停
+    # 因子5：前20日涨幅小于30%
+    analysis_data["Factor5"] = (analysis_data["前20日涨幅"] < 30).astype(int)
+
     # analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
     # analysis_data["Factor5"] = (analysis_data["涨跌幅"] < CONFIG["limit_up_threshold"]).astype(int)  # 使用配置变量
     
@@ -140,9 +142,9 @@ def candidate_stock_strategy(stock_data, target_date):
     # 计算评分
     analysis_data["Score"] = (
         0.20 * analysis_data["Factor1"] +    # 5日线突破
-        0.3 * analysis_data["Factor3"] +    # 成交额超20日均量
+        0.20 * analysis_data["Factor3"] +    # 成交额超20日均量
         0.15 * analysis_data["Factor4"] +    # MACD金叉
-        # 0.15 * analysis_data["Factor5"] +  # 非涨停
+        0.10 * analysis_data["Factor5"] +  # 前20日涨幅小于30%
         0.15 * analysis_data["Factor6"] +    # 最近未创30日新高
         0.20 * analysis_data["Factor7"]      # 收阳线或平盘
     )
@@ -258,6 +260,8 @@ if __name__ == "__main__":
                     formatted_result = format_result(stock_code, row["名称"], row["总市值"], result)
                     results.append(formatted_result)
                     collected_count += 1  # 增加已收集数量
+            # 短暂暂停一会
+            time.sleep(0.1)
 
         # 批量分析部分（第272行左右）
         df_result = pd.DataFrame(results)
