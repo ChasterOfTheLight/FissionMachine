@@ -4,25 +4,21 @@ import logging
 from datetime import datetime
 import time
 
-# 添加 format_result 函数定义
-def format_result(stock_code, stock_name, total_mv, result):
-    """格式化股票分析结果"""
-    volume_increase = ((result["Volume_MA1"] - result["Volume_MA20"]) / result["Volume_MA20"] * 100)
-    return {
-        "代码": stock_code,
-        "名称": stock_name,
-        "总市值": round(total_mv, 2),
-        "日期": result["日期"],
-        "收盘": result["收盘"],
-        "成交额": round(result["成交额"]/10000, 2),
-        "1日均量": round(result["Volume_MA1"]/10000, 2),
-        "20日均量": round(result["Volume_MA20"]/10000, 2),
-        "量比": round(volume_increase, 2),
-        "前20日涨幅": round(result["前20日涨幅"], 2) if "前20日涨幅" in result and pd.notna(result["前20日涨幅"]) else None,
-        "涨跌幅": round(result["涨跌幅"], 2),
-        "次日涨跌幅": round(result["次日涨跌幅"], 2) if "次日涨跌幅" in result else None,
-        "Score": result["Score"]
-    }
+# 配置参数
+CONFIG = {
+    "start_date": "20250301",
+    "end_date": "20250610",
+    "target_date": "20250609",
+    "single_stock": "",
+    "request_batch_size": 400,
+    "batch_sleep_time": 300,
+    "request_timeout": 20,
+    "min_market_value": 30e8,  # 降低市值下限到30亿
+    "max_market_value": 300e8, # 提高市值上限到300亿
+    "max_results": 25,
+    "min_daily_return": 5.0,   # 最小日涨幅要求(%)
+    "consecutive_days": 3,     # 连续上涨天数要求
+}
 
 # 统一的输出列定义
 OUTPUT_COLUMNS = {
@@ -32,29 +28,32 @@ OUTPUT_COLUMNS = {
     "日期": "日期",
     "收盘": "收盘",
     "成交额": "成交额(万元)",
-    "1日均量": "1日均量(万手)",
-    "20日均量": "20日均量(万手)",
+    "当日涨幅": "当日涨幅(%)",
+    "连续涨幅": "3日累计涨幅(%)",
     "量比": "量比(%)",
-    "前20日涨幅": "前20日涨幅(%)",
-    "涨跌幅": "涨跌幅(%)",
-    "次日涨跌幅": "次日涨跌幅(%)",
+    "MACD": "MACD",
+    "DEA": "DEA",
+    "DIF": "DIF",
     "Score": "评分"
 }
 
-# 添加配置参数
-CONFIG = {
-    "start_date": "20250301",
-    "end_date": "20250610",
-    "target_date": "20250609",
-    "single_stock": "",
-    "limit_up_threshold": 9.8,
-    "request_batch_size": 400,
-    "batch_sleep_time": 300,
-    "request_timeout": 20,
-    "min_market_value": 40e8,
-    "max_market_value": 200e8,
-    "max_results": 25,
-}
+def format_result(stock_code, stock_name, total_mv, result):
+    """格式化股票分析结果"""
+    return {
+        "代码": stock_code,
+        "名称": stock_name,
+        "总市值": round(total_mv, 2),
+        "日期": result["日期"],
+        "收盘": result["收盘"],
+        "成交额": round(result["成交额"]/10000, 2),
+        "当日涨幅": round(result["涨跌幅"], 2),
+        "连续涨幅": round(result["累计涨幅"], 2),
+        "量比": round(result["量比"], 2),
+        "MACD": round(result["MACD"], 3),
+        "DEA": round(result["Signal"], 3),
+        "DIF": round(result["DIF"], 3),
+        "Score": result["Score"]
+    }
 
 def get_stock_data(symbol, start_date, end_date):
     try:
@@ -85,78 +84,62 @@ def filter_stocks():
     stock_info["总市值"] = stock_info["总市值"] / 1e8
     return stock_info[["代码", "名称", "总市值"]]
 
-def candidate_stock_strategy(stock_data, target_date):
+def hot_stock_strategy(stock_data, target_date):
     """
-    @param stock_data: 完整的股票数据
-    @param target_date: 要分析的指定日期
+    强势股票策略
+    - MACD指标强势
+    - 连续3天涨幅超过5%
+    - 量能放大
     """
     if len(stock_data) < 26:
-        logging.warning("数据量不足以计算指标")
         return None
 
-    # 将日期列转换为datetime类型
+    # 数据预处理
     stock_data['日期'] = pd.to_datetime(stock_data['日期'])
-    target_date = pd.to_datetime(target_date)   
-    # 获取指定日期之前(包含)的数据进行分析
+    target_date = pd.to_datetime(target_date)
     analysis_data = stock_data[stock_data['日期'] <= target_date].copy()
     if len(analysis_data) < 30:
         return None
 
-    # 计算3日、5日均线
-    analysis_data["MA3"] = analysis_data["收盘"].rolling(window=3).mean()
-    analysis_data["MA5"] = analysis_data["收盘"].rolling(window=5).mean()
-
-    # 因子1：收盘价在3日线和5日线上
-    analysis_data["Factor1"] = ((analysis_data["收盘"] > analysis_data["MA3"]) & 
-                               (analysis_data["收盘"] > analysis_data["MA5"])).astype(int)
+    # 计算涨跌幅
+    analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
     
-    # 因子3：最新1天的成交量超过20日均量的200%
-    analysis_data["Volume_MA20"] = analysis_data["成交量"].rolling(window=20).mean()
-    analysis_data["Volume_MA1"] = analysis_data["成交量"].rolling(window=1).mean()
-    analysis_data["Factor3"] = (analysis_data["成交量"] > analysis_data["Volume_MA20"] * 2).astype(int)
-    
-    # 新增：计算前20交易日涨幅
-    analysis_data["20日前收盘"] = analysis_data["收盘"].shift(20)
-    analysis_data["前20日涨幅"] = ((analysis_data["收盘"] - analysis_data["20日前收盘"]) / analysis_data["20日前收盘"] * 100)
-    
-    # MACD
+    # 计算MACD
     exp12 = analysis_data['收盘'].ewm(span=12, adjust=False).mean()
     exp26 = analysis_data['收盘'].ewm(span=26, adjust=False).mean()
-    analysis_data['MACD'] = exp12 - exp26
-    analysis_data['Signal'] = analysis_data['MACD'].ewm(span=9, adjust=False).mean()
-    analysis_data["Factor4"] = (analysis_data["MACD"] > analysis_data["Signal"]).astype(int)
-
-    # 因子5：前20日涨幅小于30%
-    analysis_data["Factor5"] = (analysis_data["前20日涨幅"] < 30).astype(int)
-
-    # analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
-    # analysis_data["Factor5"] = (analysis_data["涨跌幅"] < CONFIG["limit_up_threshold"]).astype(int)  # 使用配置变量
+    analysis_data['DIF'] = exp12 - exp26  # DIF快线
+    analysis_data['Signal'] = analysis_data['DIF'].ewm(span=9, adjust=False).mean()  # DEA慢线
+    analysis_data['MACD'] = 2 * (analysis_data['DIF'] - analysis_data['Signal'])  # MACD柱
     
-    # 因子6：最近未创30日新高
-    analysis_data["30日新高"] = analysis_data["收盘"].rolling(window=30).max()
-    analysis_data["Factor6"] = (analysis_data["收盘"] <= analysis_data["30日新高"]).astype(int)
+    # 计算量比
+    analysis_data["MA10_Volume"] = analysis_data["成交量"].rolling(window=10).mean()
+    analysis_data["量比"] = analysis_data["成交量"] / analysis_data["MA10_Volume"] * 100
 
-    # 因子7：收阳线或平盘
-    analysis_data["Factor7"] = (analysis_data["收盘"] >= analysis_data["开盘"]).astype(int)
+    # 获取最近N天数据
+    latest_data = analysis_data.tail(CONFIG["consecutive_days"])
+    
+    # 计算累计涨幅
+    analysis_data.loc[:, "累计涨幅"] = latest_data["涨跌幅"].sum()
 
-    # 计算评分
+    # 因子1：MACD柱值为正且大于10日均值
+    analysis_data["Factor1"] = (analysis_data["MACD"] > 0) & \
+                              (analysis_data["MACD"] > analysis_data["MACD"].rolling(10).mean())
+    
+    # 因子2：连续N天涨幅均超过要求
+    min_daily_return = CONFIG["min_daily_return"]
+    analysis_data["Factor2"] = (latest_data["涨跌幅"] > min_daily_return).all()
+    
+    # 因子3：量能是否放大（当日成交量大于10日均量的1.5倍）
+    analysis_data["Factor3"] = analysis_data["量比"] > 150
+
+    # 计算综合得分
     analysis_data["Score"] = (
-        0.20 * analysis_data["Factor1"] +    # 5日线突破
-        0.20 * analysis_data["Factor3"] +    # 成交额超20日均量
-        0.15 * analysis_data["Factor4"] +    # MACD金叉
-        0.10 * analysis_data["Factor5"] +  # 前20日涨幅小于30%
-        0.15 * analysis_data["Factor6"] +    # 最近未创30日新高
-        0.20 * analysis_data["Factor7"]      # 收阳线或平盘
+        0.4 * analysis_data["Factor1"].astype(int) +  # MACD强度权重
+        0.4 * analysis_data["Factor2"].astype(int) +  # 连续上涨权重
+        0.2 * analysis_data["Factor3"].astype(int)    # 量能权重
     )
-        
+
     result = analysis_data.sort_values(by="日期", ascending=False).iloc[0]
-    
-    # 计算次日涨跌幅（如果有下一个交易日的数据）
-    next_day_data = stock_data[stock_data["日期"] > target_date].sort_values("日期")
-    if not next_day_data.empty:
-        next_day = next_day_data.iloc[0]
-        result["次日涨跌幅"] = (next_day["收盘"] - result["收盘"]) / result["收盘"] * 100
-    
     return result
 
 # 在文件开头添加函数
@@ -203,7 +186,7 @@ if __name__ == "__main__":
         # 单独分析指定股票
         stock_data = get_stock_data(CONFIG["single_stock"], CONFIG["start_date"], CONFIG["end_date"])
         if not stock_data.empty:
-            result = candidate_stock_strategy(stock_data, target_date)
+            result = hot_stock_strategy(stock_data, target_date)
             if result is not None:
                 try:
                     stock_name = get_stock_name(CONFIG["single_stock"])
@@ -254,7 +237,7 @@ if __name__ == "__main__":
             stock_code = row["代码"]
             stock_data = get_stock_data(stock_code, CONFIG["start_date"], CONFIG["end_date"])
             if not stock_data.empty:
-                result = candidate_stock_strategy(stock_data, CONFIG["target_date"])  # 使用配置变量
+                result = hot_stock_strategy(stock_data, CONFIG["target_date"])  # 使用配置变量
                 if result is not None and result["Score"] == 1.0:
                     # 使用统一的格式化函数
                     formatted_result = format_result(stock_code, row["名称"], row["总市值"], result)
