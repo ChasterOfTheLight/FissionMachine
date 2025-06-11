@@ -7,15 +7,15 @@ import time
 # 配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250610",
-    "target_date": "20250609",
+    "end_date": "20250611",
+    "target_date": "20250611",
     "single_stock": "",
     "request_batch_size": 400,
-    "batch_sleep_time": 300,
+    "batch_sleep_time": 480,
     "request_timeout": 20,
     "min_market_value": 30e8,  # 降低市值下限到30亿
     "max_market_value": 300e8, # 提高市值上限到300亿
-    "max_results": 25,
+    "max_results": 10,
     "min_daily_return": 5.0,   # 最小日涨幅要求(%)
     "consecutive_days": 3,     # 连续上涨天数要求
 }
@@ -244,7 +244,7 @@ if __name__ == "__main__":
                     results.append(formatted_result)
                     collected_count += 1  # 增加已收集数量
             # 短暂暂停一会
-            time.sleep(0.1)
+            time.sleep(0.15)
 
         # 批量分析部分（第272行左右）
         df_result = pd.DataFrame(results)

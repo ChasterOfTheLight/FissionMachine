@@ -3,6 +3,21 @@ import pandas as pd
 import logging
 from datetime import datetime
 import time
+import sys
+import traceback
+
+# 配置日志格式
+def setup_logger():
+    """配置日志格式和输出"""
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            logging.FileHandler(f'stock_analysis_{datetime.now().strftime("%Y%m%d")}.log')
+        ]
+    )
 
 # 添加 format_result 函数定义
 def format_result(stock_code, stock_name, total_mv, result):
@@ -44,46 +59,79 @@ OUTPUT_COLUMNS = {
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250610",
-    "target_date": "20250609",
+    "end_date": "20250611",
+    "target_date": "20250611",
     "single_stock": "",
     "limit_up_threshold": 9.8,
     "request_batch_size": 400,
-    "batch_sleep_time": 300,
+    "batch_sleep_time": 480,
     "request_timeout": 20,
     "min_market_value": 40e8,
     "max_market_value": 200e8,
-    "max_results": 25,
+    "max_results": 20,
 }
 
 def get_stock_data(symbol, start_date, end_date):
+    """获取股票数据，增加错误详情"""
     try:
-        return ak.stock_zh_a_hist(
+        data = ak.stock_zh_a_hist(
             symbol=symbol,
             period="daily",
             start_date=start_date,
             end_date=end_date,
             adjust="qfq",
-            timeout=CONFIG["request_timeout"],  # 使用配置变量
+            timeout=CONFIG["request_timeout"],
         )
+        return data
     except Exception as e:
-        logging.error(f"获取股票数据失败: {e}")
+        error_info = traceback.format_exc()
+        logging.error(f"获取股票 {symbol} 数据失败:\n错误类型: {type(e).__name__}\n错误信息: {str(e)}\n详细信息:\n{error_info}")
         return pd.DataFrame()
 
 def filter_stocks():
-    stock_info = ak.stock_zh_a_spot_em()
-    # 过滤科创板、新股、ST、退市、停牌、总市值范围
-    stock_info = stock_info[~stock_info["代码"].str.startswith(("4", "8", "9", "68", "bj"))]
-    stock_info = stock_info[~stock_info["代码"].str.startswith(("N", "C"))]
-    stock_info = stock_info[~stock_info["名称"].str.contains("ST")]
-    stock_info = stock_info[~stock_info["名称"].str.contains("退市")]
-    stock_info = stock_info[stock_info["成交量"] != 0]
-    # 使用配置变量
-    stock_info = stock_info[(stock_info["总市值"] > CONFIG["min_market_value"]) & (stock_info["总市值"] < CONFIG["max_market_value"])]
-    stock_info = stock_info.sort_values(by="代码")
-    # 将总市值单位转换为亿元
-    stock_info["总市值"] = stock_info["总市值"] / 1e8
-    return stock_info[["代码", "名称", "总市值"]]
+    """过滤股票，增加处理进度日志"""
+    try:
+        logging.info("开始获取股票列表...")
+        start_time = time.time()
+        stock_info = ak.stock_zh_a_spot_em()
+        logging.info(f"获取原始股票数据完成，共 {len(stock_info)} 只股票")
+
+        # 过滤过程
+        initial_count = len(stock_info)
+        stock_info = stock_info[~stock_info["代码"].str.startswith(("4", "8", "9", "68", "bj"))]
+        logging.info(f"过滤科创板等后剩余: {len(stock_info)} 只")
+        
+        stock_info = stock_info[~stock_info["代码"].str.startswith(("N", "C"))]
+        logging.info(f"过滤新股后剩余: {len(stock_info)} 只")
+        
+        stock_info = stock_info[~stock_info["名称"].str.contains("ST")]
+        stock_info = stock_info[~stock_info["名称"].str.contains("退市")]
+        logging.info(f"过滤ST和退市股后剩余: {len(stock_info)} 只")
+        
+        stock_info = stock_info[stock_info["成交量"] != 0]
+        logging.info(f"过滤停牌股后剩余: {len(stock_info)} 只")
+        
+        # 市值过滤
+        stock_info = stock_info[
+            (stock_info["总市值"] > CONFIG["min_market_value"]) & 
+            (stock_info["总市值"] < CONFIG["max_market_value"])
+        ]
+        
+        stock_info = stock_info.sort_values(by="代码")
+        stock_info["总市值"] = stock_info["总市值"] / 1e8
+        
+        final_count = len(stock_info)
+        elapsed_time = time.time() - start_time
+        
+        logging.info(f"股票筛选完成，耗时: {elapsed_time:.2f}秒")
+        logging.info(f"筛选前: {initial_count} 只，筛选后: {final_count} 只")
+        logging.info(f"市值范围: {CONFIG['min_market_value']/1e8:.0f}亿 - {CONFIG['max_market_value']/1e8:.0f}亿")
+        
+        return stock_info[["代码", "名称", "总市值"]]
+    except Exception as e:
+        error_info = traceback.format_exc()
+        logging.error(f"股票筛选过程发生错误:\n错误类型: {type(e).__name__}\n错误信息: {str(e)}\n详细信息:\n{error_info}")
+        return pd.DataFrame()
 
 def candidate_stock_strategy(stock_data, target_date):
     """
@@ -189,6 +237,11 @@ def get_stock_info(stock_code):
 
 # 示例用法
 if __name__ == "__main__":
+    # 设置日志
+    setup_logger()
+    logging.info("程序开始运行...")
+    logging.info(f"配置信息: {CONFIG}")
+    
     # 设置pandas显示选项
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', None)
@@ -200,6 +253,7 @@ if __name__ == "__main__":
     results = []
     
     if CONFIG["single_stock"]:
+        logging.info(f"开始分析单只股票: {CONFIG['single_stock']}")
         # 单独分析指定股票
         stock_data = get_stock_data(CONFIG["single_stock"], CONFIG["start_date"], CONFIG["end_date"])
         if not stock_data.empty:
@@ -227,10 +281,16 @@ if __name__ == "__main__":
         else:
             print(f"\n获取股票 {CONFIG['single_stock']} 数据失败")
     else:
-        # 批量筛选逻辑
+        logging.info("开始批量分析股票...")
         stock_list = filter_stocks()
+        if stock_list.empty:
+            logging.error("股票筛选失败，程序退出")
+            sys.exit(1)
+            
         total_stocks = len(stock_list)
-        print(f"筛选后股票数量: {total_stocks}")
+        logging.info(f"开始分析 {total_stocks} 只股票")
+        start_time = time.time()
+        
         request_count = 0
         collected_count = 0  # 已收集的满分股票数量
         max_results = CONFIG["max_results"]     # 最大结果数量限制
@@ -261,7 +321,7 @@ if __name__ == "__main__":
                     results.append(formatted_result)
                     collected_count += 1  # 增加已收集数量
             # 短暂暂停一会
-            time.sleep(0.1)
+            time.sleep(0.15)
 
         # 批量分析部分（第272行左右）
         df_result = pd.DataFrame(results)
@@ -273,3 +333,7 @@ if __name__ == "__main__":
             print(f"\n分析日期: {target_date}")
         else:
             print("\n未找到满分股票")
+        
+        elapsed_time = time.time() - start_time
+        logging.info(f"分析完成，总耗时: {elapsed_time:.2f}秒")
+        logging.info(f"共找到 {len(results)} 只满分股票")
