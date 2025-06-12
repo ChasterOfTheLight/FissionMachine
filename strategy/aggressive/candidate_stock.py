@@ -59,8 +59,8 @@ OUTPUT_COLUMNS = {
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250611",
-    "target_date": "20250611",
+    "end_date": "20250612",
+    "target_date": "20250612",
     "single_stock": "",
     "limit_up_threshold": 9.8,
     "request_batch_size": 400,
@@ -154,9 +154,10 @@ def candidate_stock_strategy(stock_data, target_date):
     analysis_data["MA3"] = analysis_data["收盘"].rolling(window=3).mean()
     analysis_data["MA5"] = analysis_data["收盘"].rolling(window=5).mean()
 
-    # 因子1：收盘价在3日线和5日线上
-    analysis_data["Factor1"] = ((analysis_data["收盘"] > analysis_data["MA3"]) & 
-                               (analysis_data["收盘"] > analysis_data["MA5"])).astype(int)
+    # 因子1：收盘价在3日线和5日线上并且为正
+    analysis_data["Factor1"] = ((analysis_data["收盘"] > analysis_data["MA3"]) &
+                               (analysis_data["收盘"] > analysis_data["MA5"])).astype(int) & (analysis_data["涨跌幅"] > 0).astype(int)
+    
     
     # 因子3：最新1天的成交量超过20日均量的200%
     analysis_data["Volume_MA20"] = analysis_data["成交量"].rolling(window=20).mean()
