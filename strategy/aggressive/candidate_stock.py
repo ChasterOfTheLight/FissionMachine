@@ -15,7 +15,6 @@ def setup_logger():
         datefmt='%Y-%m-%d %H:%M:%S',
         handlers=[
             logging.StreamHandler(sys.stdout),
-            logging.FileHandler(f'stock_analysis_{datetime.now().strftime("%Y%m%d")}.log')
         ]
     )
 
@@ -59,8 +58,8 @@ OUTPUT_COLUMNS = {
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250612",
-    "target_date": "20250612",
+    "end_date": "20250618",
+    "target_date": "20250617",
     "single_stock": "",
     "limit_up_threshold": 9.8,
     "request_batch_size": 400,

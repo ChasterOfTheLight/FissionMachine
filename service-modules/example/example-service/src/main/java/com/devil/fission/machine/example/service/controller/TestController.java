@@ -26,6 +26,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
@@ -185,6 +187,23 @@ public class TestController {
             throw new RuntimeException(e);
         }
         return Response.success();
+    }
+    
+    /**
+     * sonar test.
+     */
+    @PostMapping(value = "/sonar")
+    public Response<String> sonar() {
+        for (int i = 0; i < 10; i++) {
+            try {
+                URL url = new URL("http://example.com");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                // 使用连接...
+            } catch (Exception e) {
+                // 处理异常
+            }
+        }   // 不合规
+        return Response.success("success");
     }
     
 }

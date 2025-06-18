@@ -7,8 +7,8 @@ import time
 # 配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250611",
-    "target_date": "20250611",
+    "end_date": "20250616",
+    "target_date": "20250616",
     "single_stock": "",
     "request_batch_size": 400,
     "batch_sleep_time": 480,
