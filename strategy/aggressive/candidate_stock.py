@@ -35,6 +35,7 @@ def format_result(stock_code, stock_name, total_mv, result):
         "前20日涨幅": round(result["前20日涨幅"], 2) if "前20日涨幅" in result and pd.notna(result["前20日涨幅"]) else None,
         "涨跌幅": round(result["涨跌幅"], 2),
         "次日涨跌幅": round(result["次日涨跌幅"], 2) if "次日涨跌幅" in result else None,
+        "后10日涨幅": round(result["后10日涨幅"], 2) if "后10日涨幅" in result else None,
         "Score": result["Score"]
     }
 
@@ -52,14 +53,15 @@ OUTPUT_COLUMNS = {
     "前20日涨幅": "前20日涨幅(%)",
     "涨跌幅": "涨跌幅(%)",
     "次日涨跌幅": "次日涨跌幅(%)",
+    "后10日涨幅": "后10日涨幅(%)",
     "Score": "评分"
 }
 
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250618",
-    "target_date": "20250617",
+    "end_date": "20250619",
+    "target_date": "20250603",
     "single_stock": "",
     "limit_up_threshold": 9.8,
     "request_batch_size": 400,
@@ -204,6 +206,11 @@ def candidate_stock_strategy(stock_data, target_date):
     if not next_day_data.empty:
         next_day = next_day_data.iloc[0]
         result["次日涨跌幅"] = (next_day["收盘"] - result["收盘"]) / result["收盘"] * 100
+
+        # 计算后10日涨幅（如果有足够的数据）
+        if len(next_day_data) >= 10:
+            day_10_price = next_day_data.iloc[9]["收盘"]  # 获取第10个交易日的收盘价
+            result["后10日涨幅"] = (day_10_price - result["收盘"]) / result["收盘"] * 100
     
     return result
 
