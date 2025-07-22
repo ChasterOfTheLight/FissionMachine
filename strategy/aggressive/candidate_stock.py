@@ -60,8 +60,8 @@ OUTPUT_COLUMNS = {
 # 添加配置参数
 CONFIG = {
     "start_date": "20250301",
-    "end_date": "20250619",
-    "target_date": "20250603",
+    "end_date": "20250625",
+    "target_date": "20250624",
     "single_stock": "",
     "limit_up_threshold": 9.8,
     "request_batch_size": 400,
@@ -70,6 +70,16 @@ CONFIG = {
     "min_market_value": 40e8,
     "max_market_value": 200e8,
     "max_results": 20,
+    "factor_weights": {
+        "Factor1": 0.18,  # 5日线突破
+        "Factor2": 0.18,  # 成交额超20日均量
+        "Factor3": 0.13,  # MACD金叉
+        "Factor4": 0.10,  # 前20日涨幅小于30%
+        "Factor5": 0.13,  # 最近未创30日新高
+        "Factor6": 0.18,  # 收阳线或平盘
+        "Factor7": 0.10,  # 换手率因子
+        "Factor8": 0.10   # 行业强度因子
+    },
 }
 
 def get_stock_data(symbol, start_date, end_date):
@@ -163,7 +173,7 @@ def candidate_stock_strategy(stock_data, target_date):
     # 因子3：最新1天的成交量超过20日均量的200%
     analysis_data["Volume_MA20"] = analysis_data["成交量"].rolling(window=20).mean()
     analysis_data["Volume_MA1"] = analysis_data["成交量"].rolling(window=1).mean()
-    analysis_data["Factor3"] = (analysis_data["成交量"] > analysis_data["Volume_MA20"] * 2).astype(int)
+    analysis_data["Factor2"] = (analysis_data["成交量"] > analysis_data["Volume_MA20"] * 2).astype(int)
     
     # 新增：计算前20交易日涨幅
     analysis_data["20日前收盘"] = analysis_data["收盘"].shift(20)
@@ -174,29 +184,46 @@ def candidate_stock_strategy(stock_data, target_date):
     exp26 = analysis_data['收盘'].ewm(span=26, adjust=False).mean()
     analysis_data['MACD'] = exp12 - exp26
     analysis_data['Signal'] = analysis_data['MACD'].ewm(span=9, adjust=False).mean()
-    analysis_data["Factor4"] = (analysis_data["MACD"] > analysis_data["Signal"]).astype(int)
+    analysis_data["Factor3"] = (analysis_data["MACD"] > analysis_data["Signal"]).astype(int)
 
-    # 因子5：前20日涨幅小于30%
-    analysis_data["Factor5"] = (analysis_data["前20日涨幅"] < 30).astype(int)
+    # 前20日涨幅小于30%
+    analysis_data["Factor4"] = (analysis_data["前20日涨幅"] < 30).astype(int)
 
     # analysis_data["涨跌幅"] = (analysis_data["收盘"] - analysis_data["收盘"].shift(1)) / analysis_data["收盘"].shift(1) * 100
     # analysis_data["Factor5"] = (analysis_data["涨跌幅"] < CONFIG["limit_up_threshold"]).astype(int)  # 使用配置变量
     
-    # 因子6：最近未创30日新高
+    # 最近未创30日新高
     analysis_data["30日新高"] = analysis_data["收盘"].rolling(window=30).max()
-    analysis_data["Factor6"] = (analysis_data["收盘"] <= analysis_data["30日新高"]).astype(int)
+    analysis_data["Factor5"] = (analysis_data["收盘"] <= analysis_data["30日新高"]).astype(int)
 
-    # 因子7：收阳线或平盘
-    analysis_data["Factor7"] = (analysis_data["收盘"] >= analysis_data["开盘"]).astype(int)
+    # 收阳线或平盘
+    analysis_data["Factor6"] = (analysis_data["收盘"] >= analysis_data["开盘"]).astype(int)
+
+    # 换手率因子（假设有“换手率”列，实际可用akshare获取或自行计算）
+    # 例：近5日平均换手率大于全市场中位数
+    if "换手率" in stock_data.columns:
+        analysis_data["Turnover_MA5"] = analysis_data["换手率"].rolling(window=5).mean()
+        # 这里用5%为阈值举例，可根据实际情况调整
+        analysis_data["Factor7"] = (analysis_data["Turnover_MA5"] > 5).astype(int)
+    else:
+        analysis_data["Factor7"] = 0
+
+    # 行业强度因子（假设有“行业”列，且有行业涨跌幅数据，实际可用akshare或自定义行业强度字典）
+    # 例：所属行业近5日涨幅大于0
+    if "行业涨幅" in stock_data.columns:
+        analysis_data["Factor8"] = (analysis_data["行业涨幅"] > 0).astype(int)
+    else:
+        analysis_data["Factor8"] = 0
 
     # 计算评分
+    weights = CONFIG.get("factor_weights", {})
     analysis_data["Score"] = (
-        0.20 * analysis_data["Factor1"] +    # 5日线突破
-        0.20 * analysis_data["Factor3"] +    # 成交额超20日均量
-        0.15 * analysis_data["Factor4"] +    # MACD金叉
-        0.10 * analysis_data["Factor5"] +  # 前20日涨幅小于30%
-        0.15 * analysis_data["Factor6"] +    # 最近未创30日新高
-        0.20 * analysis_data["Factor7"]      # 收阳线或平盘
+        weights.get("Factor1", 0) * analysis_data["Factor1"] +
+        weights.get("Factor2", 0) * analysis_data["Factor2"] +
+        weights.get("Factor3", 0) * analysis_data["Factor3"] +
+        weights.get("Factor4", 0) * analysis_data["Factor4"] +
+        weights.get("Factor5", 0) * analysis_data["Factor5"] +
+        weights.get("Factor6", 0) * analysis_data["Factor6"]
     )
         
     result = analysis_data.sort_values(by="日期", ascending=False).iloc[0]
