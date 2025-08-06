@@ -21,6 +21,7 @@ target/
 /strategy/venv/
 .pybrokercache
 data_cache
+.scannerwork
 
 # Idea
 .idea
