@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * @author Devil
  * @date Created in 2023/9/25 10:46
  */
-@Aspect
+//@Aspect
 public class ServiceAspect {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceAspect.class);

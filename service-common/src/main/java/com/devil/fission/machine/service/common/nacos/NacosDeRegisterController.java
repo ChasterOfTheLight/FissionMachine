@@ -4,9 +4,9 @@ import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -18,16 +18,15 @@ import springfox.documentation.annotations.ApiIgnore;
  * @date Created in 2022/3/29 15:44
  */
 @ApiIgnore
+@RequiredArgsConstructor
 @RestController
 public class NacosDeRegisterController {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(NacosDeRegisterController.class);
     
-    @Autowired
-    private NacosServiceManager nacosServiceManager;
+    private final NacosServiceManager nacosServiceManager;
     
-    @Autowired
-    private NacosDiscoveryProperties nacosDiscoveryProperties;
+    private final NacosDiscoveryProperties nacosDiscoveryProperties;
     
     /**
      * 请求nacos取消登记.
