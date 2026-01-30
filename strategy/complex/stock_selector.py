@@ -28,7 +28,9 @@ class StockSelector:
             logging.info(f"共获取到 {len(stocks_df)} 只股票")
             return stocks_df
         except Exception as e:
-            logging.error(f"获取股票列表失败: {e}")
+            # 输出详细错误信息
+            logging.error("akshare 获取股票列表时出错，错误信息如下：")
+            logging.error(e)
             # 如果akshare失败，使用备选方案 - 创建一个测试股票列表
             logging.info("使用测试股票列表...")
             test_stocks = pd.DataFrame({
@@ -40,7 +42,7 @@ class StockSelector:
             return test_stocks
     
     def filter_stocks(self, stocks_df):
-        """过滤掉ST股票、停牌股票和科创板股票"""
+        """过滤掉ST股票、停牌股票、北交所股票和科创板股票"""
         logging.info("正在过滤股票...")
         
         # 排除科创板股票（688开头）
@@ -52,6 +54,9 @@ class StockSelector:
         # 排除停牌股票（成交量为0或最新价为0）
         filtered = filtered[filtered['成交量'] > 0]
         filtered = filtered[filtered['最新价'] > 0]
+
+        # 排除北交所股票（以“83”、“87”、“88”、“bj”开头）
+        filtered = filtered[~filtered['代码'].str.startswith(('bj'))]
         
         logging.info(f"过滤后剩余 {len(filtered)} 只股票")
         return filtered[['代码', '名称']]
