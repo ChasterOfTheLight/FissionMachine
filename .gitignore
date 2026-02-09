@@ -35,6 +35,9 @@ data_cache
 # Trae
 .trae
 
+# Qoder
+.qoder
+
 # Compiled class file
 *.class
 
